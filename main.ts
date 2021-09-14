@@ -35,23 +35,37 @@ export default class BridgePlugin extends Plugin {
 			path = this.getAbsoluteDumpPath();
 		}
 
-		let tagsCache : string[][] = [];
+		//@ts-ignore
+		let tagsCache = [];
 		//let counter = 0;
 
 		(async () => {
 			const fileCache = await Promise.all(
 				this.app.vault.getMarkdownFiles().map(async (tfile) => {
 					let currentCache = this.app.metadataCache.getFileCache(tfile);
-					let currentName = this.app.metadataCache.fileToLinktext(tfile, tfile.path);
-					let currentTags = currentCache.tags.toString();
+					let currentName = this.app.metadataCache.fileToLinktext(tfile, tfile.path, false);
+					let currentTags : string[] = []
+					if (currentCache.tags) {
+						//@ts-ignore
+						currentTags = currentCache.tags.map((tag) => {
+							//console.log(tag.tag)
+							//if (typeof tag.tag === 'string') {
+							//	currentTags.push(tag.tag)
+							//}
+							return tag.tag
+						});
+						console.log(currentTags);
+					} else {
+						currentTags = null
+					}
 					//counter += 1;
 					//let stringCounter = counter.toString
 					//let tagObject = {stringCounter: {name: currentName, tags: currentTags }};
-					tagsCache.push([currentName, currentTags]);
+					tagsCache.push([`"${currentName}"`, `"${currentTags}"`]);
 				}))})();
 					
 
-		
+		//@ts-ignore
 		let content = tagsCache
 		writeFileSync(path, content.toString());
 		console.log('wrote the array file');
