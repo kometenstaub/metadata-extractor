@@ -52,7 +52,7 @@ export default class BridgePlugin extends Plugin {
 							//if (typeof tag.tag === 'string') {
 							//	currentTags.push(tag.tag)
 							//}
-							return tag.tag
+							return `"${tag.tag}"`
 						});
 						console.log(currentTags);
 					} else {
@@ -61,13 +61,15 @@ export default class BridgePlugin extends Plugin {
 					//counter += 1;
 					//let stringCounter = counter.toString
 					//let tagObject = {stringCounter: {name: currentName, tags: currentTags }};
-					tagsCache.push([`"${currentName}"`, `"${currentTags}"`]);
+					tagsCache.push([`["${currentName}"`, `[${currentTags}]]`]);
 				}))})();
 					
 
 		//@ts-ignore
 		let content = tagsCache
-		writeFileSync(path, content.toString());
+		//let content = content.map
+		console.log(content)
+		writeFileSync(path, "[" + content.toString() + "]");
 		console.log('wrote the array file');
 	}
 
