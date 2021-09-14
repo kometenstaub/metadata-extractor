@@ -1,56 +1,106 @@
-import { App, Modal, Notice, Plugin, PluginSettingTab, Setting } from 'obsidian';
-
-interface MyPluginSettings {
-	mySetting: string;
+import { App, Modal, Notice, Plugin, PluginSettingTab, Setting, FileSystemAdapter, getAllTags, TFile, CacheItem, TagCache} from 'obsidian';
+import { statSync, writeFileSync } from 'fs';
+interface BridgeSettings {
+	dumpPath: string;
 }
 
-const DEFAULT_SETTINGS: MyPluginSettings = {
-	mySetting: 'default'
+const DEFAULT_SETTINGS: BridgeSettings = {
+	dumpPath: ''
 }
 
-export default class MyPlugin extends Plugin {
-	settings: MyPluginSettings;
+export default class BridgePlugin extends Plugin {
+	settings: BridgeSettings;
+
+	// from: https://github.com/tillahoffmann/obsidian-jupyter/blob/e1e28db25fd74cd16844b37d0fe2eda9c3f2b1ee/main.ts#L175
+	getRelativeDumpPath(): string {
+		return `${this.app.vault.configDir}/plugins/bridge/tags.py`;
+	}
+
+	getAbsoluteDumpPath(): string {
+		return `${this.getBasePath()}/${this.getRelativeDumpPath()}`;
+	}
+
+	getBasePath(): string {
+		if (this.app.vault.adapter instanceof FileSystemAdapter) {
+			return (this.app.vault.adapter as FileSystemAdapter).getBasePath();
+		}
+		throw new Error('cannot determine base path');
+	}
+
+
+	async getTags() {
+		let path = this.settings.dumpPath;
+		// only set the path to the plugin folder if no other path is specified
+		if (!this.settings.dumpPath) {
+			path = this.getAbsoluteDumpPath();
+		}
+
+		let tagsCache : string[][] = [];
+		//let counter = 0;
+
+		(async () => {
+			const fileCache = await Promise.all(
+				this.app.vault.getMarkdownFiles().map(async (tfile) => {
+					let currentCache = this.app.metadataCache.getFileCache(tfile);
+					let currentName = this.app.metadataCache.fileToLinktext(tfile, tfile.path);
+					let currentTags = currentCache.tags.toString();
+					//counter += 1;
+					//let stringCounter = counter.toString
+					//let tagObject = {stringCounter: {name: currentName, tags: currentTags }};
+					tagsCache.push([currentName, currentTags]);
+				}))})();
+					
+
+		
+		let content = tagsCache
+		writeFileSync(path, content.toString());
+		console.log('wrote the array file');
+	}
+
+
 
 	async onload() {
-		console.log('loading plugin');
+		console.log('loading Bridge plugin');
 
 		await this.loadSettings();
 
-		this.addRibbonIcon('dice', 'Sample Plugin', () => {
-			new Notice('This is a notice!');
-		});
+		//this.addRibbonIcon('dice', 'Sample Plugin', () => {
+		//	new Notice('This is a notice!');
+		//});
 
-		this.addStatusBarItem().setText('Status Bar Text');
+		//this.addStatusBarItem().setText('Status Bar Text');
 
 		this.addCommand({
-			id: 'open-sample-modal',
-			name: 'Open Sample Modal',
-			// callback: () => {
-			// 	console.log('Simple Callback');
-			// },
-			checkCallback: (checking: boolean) => {
-				let leaf = this.app.workspace.activeLeaf;
-				if (leaf) {
-					if (!checking) {
-						new SampleModal(this.app).open();
-					}
-					return true;
-				}
-				return false;
+			id: 'dump-tags-json',
+			name: 'Write file names with associated tags to disk.',
+			callback: () => {
+				console.log('writing file...');
+				this.getTags();
 			}
+
+			//checkCallback: (checking: boolean) => {
+			//	let leaf = this.app.workspace.activeLeaf;
+			//	if (leaf) {
+			//		if (!checking) {
+			//			new SampleModal(this.app).open();
+			//		}
+			//		return true;
+			//	}
+			//	return false;
+			//}
 		});
 
-		this.addSettingTab(new SampleSettingTab(this.app, this));
+		this.addSettingTab(new BridgeSettingTab(this.app, this));
 
-		this.registerCodeMirror((cm: CodeMirror.Editor) => {
-			console.log('codemirror', cm);
-		});
+		//this.registerCodeMirror((cm: CodeMirror.Editor) => {
+		//	console.log('codemirror', cm);
+		//});
 
-		this.registerDomEvent(document, 'click', (evt: MouseEvent) => {
-			console.log('click', evt);
-		});
+		//this.registerDomEvent(document, 'click', (evt: MouseEvent) => {
+		//	console.log('click', evt);
+		//});
 
-		this.registerInterval(window.setInterval(() => console.log('setInterval'), 5 * 60 * 1000));
+		//this.registerInterval(window.setInterval(() => console.log('setInterval'), 5 * 60 * 1000));
 	}
 
 	onunload() {
@@ -66,26 +116,26 @@ export default class MyPlugin extends Plugin {
 	}
 }
 
-class SampleModal extends Modal {
-	constructor(app: App) {
-		super(app);
-	}
+//class SampleModal extends Modal {
+//	constructor(app: App) {
+//		super(app);
+//	}
+//
+//	onOpen() {
+//		let {contentEl} = this;
+//		contentEl.setText('Woah!');
+//	}
+//
+//	onClose() {
+//		let {contentEl} = this;
+//		contentEl.empty();
+//	}
+//}
+//
+class BridgeSettingTab extends PluginSettingTab {
+	plugin: BridgePlugin;
 
-	onOpen() {
-		let {contentEl} = this;
-		contentEl.setText('Woah!');
-	}
-
-	onClose() {
-		let {contentEl} = this;
-		contentEl.empty();
-	}
-}
-
-class SampleSettingTab extends PluginSettingTab {
-	plugin: MyPlugin;
-
-	constructor(app: App, plugin: MyPlugin) {
+	constructor(app: App, plugin: BridgePlugin) {
 		super(app, plugin);
 		this.plugin = plugin;
 	}
@@ -95,17 +145,17 @@ class SampleSettingTab extends PluginSettingTab {
 
 		containerEl.empty();
 
-		containerEl.createEl('h2', {text: 'Settings for my awesome plugin.'});
+		containerEl.createEl('h2', {text: 'Bridge Plugin Settings'});
 
 		new Setting(containerEl)
-			.setName('Setting #1')
-			.setDesc('It\'s a secret')
+			.setName('file-dump path')
+			.setDesc('Where the dumped files will be saved.')
 			.addText(text => text
-				.setPlaceholder('Enter your secret')
+				.setPlaceholder('/home/user/Downloads/')
 				.setValue('')
 				.onChange(async (value) => {
-					console.log('Secret: ' + value);
-					this.plugin.settings.mySetting = value;
+					console.log('Saved path for dumping files:' + value);
+					this.plugin.settings.dumpPath = value;
 					await this.plugin.saveSettings();
 				}));
 	}
