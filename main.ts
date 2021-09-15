@@ -9,10 +9,6 @@ const DEFAULT_SETTINGS: BridgeSettings = {
 	dumpPath: ''
 }
 
-interface TagsFile {
-	items : {};
-}
-
 
 export default class BridgePlugin extends Plugin {
 	settings: BridgeSettings;
@@ -42,7 +38,7 @@ export default class BridgePlugin extends Plugin {
 		}
 
 	
-		let tagsCache : Array<{}> = [];
+		let tagsCache : Array<{name : string, tags: string[]}> = [];
 
 		(async () => {
 			const fileCache = await Promise.all(
@@ -50,35 +46,21 @@ export default class BridgePlugin extends Plugin {
 					let currentCache = this.app.metadataCache.getFileCache(tfile);
 					let currentName : string = this.app.metadataCache.fileToLinktext(tfile, tfile.path, false);
 					let currentTags : string[] = []
+					// currentCache.tags contains an object with .tag as the tag and .position of where it is for each file
 					if (currentCache.tags) {
-						currentTags = currentCache.tags.map((tag) => {
-							return tag.tag
+						currentTags = currentCache.tags.map((tagObject) => {
+							return tagObject.tag
 						});
-						//console.log(currentTags);
 					} else {
 						currentTags = null
 					}
-					//counter += 1;
-					//let stringCounter = counter.toString
-					//let tagObject = {stringCounter: {name: currentName, tags: currentTags }};
-					console.log(currentName)
-					console.log(currentTags)
-					tagsCache.push({ currentName, currentTags })
+					tagsCache.push({ name: currentName, tags: currentTags })
 				}))})();
 					
 
 		let content = tagsCache
-		//let content = content.map
-		console.log(content)
-		//console.log(content[0])
-		//let accumulator = '';
-		//content.map((index) => {
-		//	accumulator += content[index].toString()
-		//})
-		//console.log(content)
-		//console.log(accumulator)
 		writeFileSync(path, JSON.stringify(content, null, 2));
-		console.log('wrote the array file');
+		console.log('wrote the json file');
 	}
 
 
@@ -88,43 +70,18 @@ export default class BridgePlugin extends Plugin {
 
 		await this.loadSettings();
 
-		//this.addRibbonIcon('dice', 'Sample Plugin', () => {
-		//	new Notice('This is a notice!');
-		//});
-
-		//this.addStatusBarItem().setText('Status Bar Text');
-
 		this.addCommand({
 			id: 'dump-tags-json',
 			name: 'Write file names with associated tags to disk.',
 			callback: () => {
-				console.log('writing file...');
+				console.log('collecting tags...');
 				this.getTags();
 			}
 
-			//checkCallback: (checking: boolean) => {
-			//	let leaf = this.app.workspace.activeLeaf;
-			//	if (leaf) {
-			//		if (!checking) {
-			//			new SampleModal(this.app).open();
-			//		}
-			//		return true;
-			//	}
-			//	return false;
-			//}
 		});
 
 		this.addSettingTab(new BridgeSettingTab(this.app, this));
 
-		//this.registerCodeMirror((cm: CodeMirror.Editor) => {
-		//	console.log('codemirror', cm);
-		//});
-
-		//this.registerDomEvent(document, 'click', (evt: MouseEvent) => {
-		//	console.log('click', evt);
-		//});
-
-		//this.registerInterval(window.setInterval(() => console.log('setInterval'), 5 * 60 * 1000));
 	}
 
 	onunload() {
@@ -140,22 +97,6 @@ export default class BridgePlugin extends Plugin {
 	}
 }
 
-//class SampleModal extends Modal {
-//	constructor(app: App) {
-//		super(app);
-//	}
-//
-//	onOpen() {
-//		let {contentEl} = this;
-//		contentEl.setText('Woah!');
-//	}
-//
-//	onClose() {
-//		let {contentEl} = this;
-//		contentEl.empty();
-//	}
-//}
-//
 class BridgeSettingTab extends PluginSettingTab {
 	plugin: BridgePlugin;
 
@@ -182,5 +123,6 @@ class BridgeSettingTab extends PluginSettingTab {
 					this.plugin.settings.dumpPath = value;
 					await this.plugin.saveSettings();
 				}));
+
 	}
 }
