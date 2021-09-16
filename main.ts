@@ -1,4 +1,4 @@
-import { App, Modal, Notice, Plugin, PluginSettingTab, Setting, FileSystemAdapter, getAllTags, TFile, CacheItem, TagCache} from 'obsidian';
+import { App, Modal, Notice, Plugin, PluginSettingTab, Setting, FileSystemAdapter, getAllTags, TFile, CacheItem, TagCache } from 'obsidian';
 import { statSync, writeFileSync } from 'fs';
 import { stringify } from 'querystring';
 interface BridgeSettings {
@@ -37,28 +37,40 @@ export default class BridgePlugin extends Plugin {
 			path = this.getAbsoluteDumpPath();
 		}
 
-	
-		let tagsCache : Array<{name : string, tags: string[]}> = [];
+
+		let tagsCache: Array<{ name: string, tags: string[] }> = [];
 
 		(async () => {
 			const fileCache = await Promise.all(
 				this.app.vault.getMarkdownFiles().map(async (tfile) => {
 					let currentCache = this.app.metadataCache.getFileCache(tfile);
-					let currentName : string = this.app.metadataCache.fileToLinktext(tfile, tfile.path, false);
-					let currentTags : string[] = []
-					// currentCache.tags contains an object with .tag as the tag and .position of where it is for each file
+					let currentName: string = this.app.metadataCache.fileToLinktext(tfile, tfile.path, false);
+					let currentTags: string[] = [];
+					// currentCache.tags contains an object with .tag as the tags and .position of where it is for each file
 					if (currentCache.tags) {
 						currentTags = currentCache.tags.map((tagObject) => {
-							return tagObject.tag
+							return tagObject.tag;
 						});
-					} else {
-						currentTags = null
+						tagsCache.push({ name: currentName, tags: currentTags });
 					}
-					tagsCache.push({ name: currentName, tags: currentTags })
-				}))})();
-					
+				}))
+		})();
 
-		let content = tagsCache
+		//@ts-ignore
+		const allTags = this.app.metadataCache.getTags();
+		let tagToFile: Array<{ tag: string, files: string[] | string }> = [];
+		const onlyAllTags = Object.keys(allTags);
+		onlyAllTags.forEach((tag) => {
+			let fileNameArray: string[] = [];
+			tagsCache.map((fileWithTag) => {
+				if (fileWithTag.tags.contains(tag)) {
+					fileNameArray.push(fileWithTag.name);
+				}
+			})
+			tagToFile.push({ tag: tag.slice(1), files: fileNameArray });
+		})
+
+		let content = tagToFile;
 		writeFileSync(path, JSON.stringify(content, null, 2));
 		console.log('wrote the json file');
 	}
@@ -106,11 +118,11 @@ class BridgeSettingTab extends PluginSettingTab {
 	}
 
 	display(): void {
-		let {containerEl} = this;
+		let { containerEl } = this;
 
 		containerEl.empty();
 
-		containerEl.createEl('h2', {text: 'Bridge Plugin Settings'});
+		containerEl.createEl('h2', { text: 'Bridge Plugin Settings' });
 
 		new Setting(containerEl)
 			.setName('file-dump path')
