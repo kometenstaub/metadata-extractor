@@ -55,14 +55,14 @@ export default class BridgePlugin extends Plugin {
 					// currentCache.tags contains an object with .tag as the tags and .position of where it is for each file
 					if (currentCache.tags) {
 						currentTags = currentCache.tags.map((tagObject) => {
-							return tagObject.tag;
+							return tagObject.tag.slice(1);
 						});
 					}
 					if (currentCache.frontmatter) {
 						if (currentCache.frontmatter.tags) {
 							const frontMatterTags = currentCache.frontmatter.tags;
-							console.log(frontMatterTags);
 							if (Array.isArray(frontMatterTags)) {
+								console.log('yes')
 								frontMatterTags.map((tag) => {
 									if (tag.slice(0, 1) === '#') {
 										currentTags.push(tag.slice(1));
@@ -73,6 +73,7 @@ export default class BridgePlugin extends Plugin {
 							} else if (typeof frontMatterTags === "string") {
 								const splitTags = frontMatterTags.split(",")
 								splitTags.map((tag) => {
+									tag = tag.replace(' ', '')
 									if (tag.slice(0, 1) === '#') {
 										currentTags.push(tag.slice(1));
 									} else {
@@ -80,13 +81,12 @@ export default class BridgePlugin extends Plugin {
 									}
 								})
 
-								currentTags.push(frontMatterTags.slice())
 							}
 						}
 					}
-					//TODO:get frontmatter tags with currentCache.frontmatter.tags
-					// consider array and string format depending on formatting in file
+						if (currentTags.length !== 0) {
 					tagsCache.push({ name: currentName, tags: currentTags });
+						}
 				}
 				))
 		})();
@@ -96,13 +96,14 @@ export default class BridgePlugin extends Plugin {
 		let tagToFile: Array<{ tag: string, filePaths: string[] | string }> = [];
 		const onlyAllTags = Object.keys(allTags);
 		onlyAllTags.forEach((tag) => {
+			tag = tag.slice(1)
 			let fileNameArray: string[] = [];
 			tagsCache.map((fileWithTag) => {
 				if (fileWithTag.tags.contains(tag)) {
 					fileNameArray.push(fileWithTag.name);
 				}
 			})
-			tagToFile.push({ tag: tag.slice(1), filePaths: fileNameArray });
+			tagToFile.push({ tag: tag, filePaths: fileNameArray });
 		})
 
 		let content = tagToFile;
