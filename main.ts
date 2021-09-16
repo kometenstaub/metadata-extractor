@@ -1,5 +1,7 @@
-import { App, Modal, Notice, Plugin, PluginSettingTab, Setting, FileSystemAdapter, getAllTags, TFile, CacheItem, TagCache} from 'obsidian';
+import { App, Modal, Notice, Plugin, PluginSettingTab, Setting, FileSystemAdapter, getAllTags, TFile, CacheItem, TagCache } from 'obsidian';
 import { statSync, writeFileSync } from 'fs';
+import { stringify } from 'querystring';
+import { Interface } from 'readline';
 interface BridgeSettings {
 	dumpPath: string;
 }
@@ -8,12 +10,13 @@ const DEFAULT_SETTINGS: BridgeSettings = {
 	dumpPath: ''
 }
 
+
 export default class BridgePlugin extends Plugin {
 	settings: BridgeSettings;
 
 	// from: https://github.com/tillahoffmann/obsidian-jupyter/blob/e1e28db25fd74cd16844b37d0fe2eda9c3f2b1ee/main.ts#L175
 	getRelativeDumpPath(): string {
-		return `${this.app.vault.configDir}/plugins/bridge/tags.py`;
+		return `${this.app.vault.configDir}/plugins/bridge/tags.json`;
 	}
 
 	getAbsoluteDumpPath(): string {
@@ -28,6 +31,7 @@ export default class BridgePlugin extends Plugin {
 	}
 
 
+
 	async getTags() {
 		let path = this.settings.dumpPath;
 		// only set the path to the plugin folder if no other path is specified
@@ -35,88 +39,62 @@ export default class BridgePlugin extends Plugin {
 			path = this.getAbsoluteDumpPath();
 		}
 
-		//@ts-ignore
-		let tagsCache = [];
-		//let counter = 0;
+
+		let tagsCache: Array<{ name: string, tags: string[] }> = [];
 
 		(async () => {
 			const fileCache = await Promise.all(
 				this.app.vault.getMarkdownFiles().map(async (tfile) => {
 					let currentCache = this.app.metadataCache.getFileCache(tfile);
-					let currentName = this.app.metadataCache.fileToLinktext(tfile, tfile.path, false);
-					let currentTags : string[] = []
+					let currentName: string = tfile.path
+					let currentTags: string[] = [];
+					// currentCache.tags contains an object with .tag as the tags and .position of where it is for each file
 					if (currentCache.tags) {
-						//@ts-ignore
-						currentTags = currentCache.tags.map((tag) => {
-							//console.log(tag.tag)
-							//if (typeof tag.tag === 'string') {
-							//	currentTags.push(tag.tag)
-							//}
-							return `"${tag.tag}"`
+						currentTags = currentCache.tags.map((tagObject) => {
+							return tagObject.tag;
 						});
-						console.log(currentTags);
-					} else {
-						currentTags = null
+						tagsCache.push({ name: currentName, tags: currentTags });
 					}
-					//counter += 1;
-					//let stringCounter = counter.toString
-					//let tagObject = {stringCounter: {name: currentName, tags: currentTags }};
-					tagsCache.push([`["${currentName}"`, `[${currentTags}]]`]);
-				}))})();
-					
+				}))
+		})();
 
 		//@ts-ignore
-		let content = tagsCache
-		//let content = content.map
-		console.log(content)
-		writeFileSync(path, "[" + content.toString() + "]");
-		console.log('wrote the array file');
+		const allTags = this.app.metadataCache.getTags();
+		let tagToFile: Array<{ tag: string, files: string[] | string }> = [];
+		const onlyAllTags = Object.keys(allTags);
+		onlyAllTags.forEach((tag) => {
+			let fileNameArray: string[] = [];
+			tagsCache.map((fileWithTag) => {
+				if (fileWithTag.tags.contains(tag)) {
+					fileNameArray.push(fileWithTag.name);
+				}
+			})
+			tagToFile.push({ tag: tag.slice(1), files: fileNameArray });
+		})
+
+		let content = tagToFile;
+		writeFileSync(path, JSON.stringify(content, null, 2));
+		console.log('wrote the tagToFile JSON file');
 	}
 
 
 
 	async onload() {
-		console.log('loading Bridge plugin');
+		console.log('loading Launcher Bridge plugin');
 
 		await this.loadSettings();
 
-		//this.addRibbonIcon('dice', 'Sample Plugin', () => {
-		//	new Notice('This is a notice!');
-		//});
-
-		//this.addStatusBarItem().setText('Status Bar Text');
-
 		this.addCommand({
-			id: 'dump-tags-json',
-			name: 'Write file names with associated tags to disk.',
+			id: 'write-tags-json',
+			name: 'Write JSON file with tags and associated file names to disk.',
 			callback: () => {
-				console.log('writing file...');
 				this.getTags();
 			}
 
-			//checkCallback: (checking: boolean) => {
-			//	let leaf = this.app.workspace.activeLeaf;
-			//	if (leaf) {
-			//		if (!checking) {
-			//			new SampleModal(this.app).open();
-			//		}
-			//		return true;
-			//	}
-			//	return false;
-			//}
 		});
 
 		this.addSettingTab(new BridgeSettingTab(this.app, this));
 
-		//this.registerCodeMirror((cm: CodeMirror.Editor) => {
-		//	console.log('codemirror', cm);
-		//});
-
-		//this.registerDomEvent(document, 'click', (evt: MouseEvent) => {
-		//	console.log('click', evt);
-		//});
-
-		//this.registerInterval(window.setInterval(() => console.log('setInterval'), 5 * 60 * 1000));
 	}
 
 	onunload() {
@@ -132,22 +110,6 @@ export default class BridgePlugin extends Plugin {
 	}
 }
 
-//class SampleModal extends Modal {
-//	constructor(app: App) {
-//		super(app);
-//	}
-//
-//	onOpen() {
-//		let {contentEl} = this;
-//		contentEl.setText('Woah!');
-//	}
-//
-//	onClose() {
-//		let {contentEl} = this;
-//		contentEl.empty();
-//	}
-//}
-//
 class BridgeSettingTab extends PluginSettingTab {
 	plugin: BridgePlugin;
 
@@ -157,22 +119,23 @@ class BridgeSettingTab extends PluginSettingTab {
 	}
 
 	display(): void {
-		let {containerEl} = this;
+		let { containerEl } = this;
 
 		containerEl.empty();
 
-		containerEl.createEl('h2', {text: 'Bridge Plugin Settings'});
+		containerEl.createEl('h2', { text: 'Bridge Plugin Settings' });
 
 		new Setting(containerEl)
-			.setName('file-dump path')
-			.setDesc('Where the dumped files will be saved.')
+			.setName('File-write path')
+			.setDesc('Where the tag-to-file-names JSON file will be saved.')
 			.addText(text => text
-				.setPlaceholder('/home/user/Downloads/')
-				.setValue('')
+				.setPlaceholder('/home/user/Downloads/tags.json')
+				.setValue(this.plugin.settings.dumpPath)
 				.onChange(async (value) => {
-					console.log('Saved path for dumping files:' + value);
 					this.plugin.settings.dumpPath = value;
 					await this.plugin.saveSettings();
+
 				}));
+
 	}
 }
