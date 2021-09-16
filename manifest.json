@@ -1,10 +1,10 @@
 {
-	"id": "obsidian-sample-plugin",
-	"name": "Bridge",
+	"id": "launcher-bridge",
+	"name": "Launcher Bridge",
 	"version": "0.0.1",
 	"minAppVersion": "0.12.15",
-	"description": "This is a sample plugin for Obsidian. This plugin demonstrates some of the capabilities of the Obsidian API.",
-	"author": "Obsidian",
-	"authorUrl": "https://obsidian.md/about",
+	"description": "This plugin provides a bridge for Launchers like Alfred and Ulauncher to read certain parts of the metadata cache.",
+	"author": "kometenstaub",
+	"authorUrl": "https://github.com/kometenstaub",
 	"isDesktopOnly": true
 }

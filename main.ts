@@ -1,6 +1,7 @@
 import { App, Modal, Notice, Plugin, PluginSettingTab, Setting, FileSystemAdapter, getAllTags, TFile, CacheItem, TagCache } from 'obsidian';
 import { statSync, writeFileSync } from 'fs';
 import { stringify } from 'querystring';
+import { Interface } from 'readline';
 interface BridgeSettings {
 	dumpPath: string;
 }
@@ -30,6 +31,7 @@ export default class BridgePlugin extends Plugin {
 	}
 
 
+
 	async getTags() {
 		let path = this.settings.dumpPath;
 		// only set the path to the plugin folder if no other path is specified
@@ -44,7 +46,7 @@ export default class BridgePlugin extends Plugin {
 			const fileCache = await Promise.all(
 				this.app.vault.getMarkdownFiles().map(async (tfile) => {
 					let currentCache = this.app.metadataCache.getFileCache(tfile);
-					let currentName: string = this.app.metadataCache.fileToLinktext(tfile, tfile.path, false);
+					let currentName: string = tfile.path
 					let currentTags: string[] = [];
 					// currentCache.tags contains an object with .tag as the tags and .position of where it is for each file
 					if (currentCache.tags) {
@@ -72,21 +74,20 @@ export default class BridgePlugin extends Plugin {
 
 		let content = tagToFile;
 		writeFileSync(path, JSON.stringify(content, null, 2));
-		console.log('wrote the json file');
+		console.log('wrote the tagToFile JSON file');
 	}
 
 
 
 	async onload() {
-		console.log('loading Bridge plugin');
+		console.log('loading Launcher Bridge plugin');
 
 		await this.loadSettings();
 
 		this.addCommand({
-			id: 'dump-tags-json',
-			name: 'Write file names with associated tags to disk.',
+			id: 'write-tags-json',
+			name: 'Write JSON file with tags and associated file names to disk.',
 			callback: () => {
-				console.log('collecting tags...');
 				this.getTags();
 			}
 
@@ -125,15 +126,15 @@ class BridgeSettingTab extends PluginSettingTab {
 		containerEl.createEl('h2', { text: 'Bridge Plugin Settings' });
 
 		new Setting(containerEl)
-			.setName('file-dump path')
-			.setDesc('Where the dumped files will be saved.')
+			.setName('File-write path')
+			.setDesc('Where the tag-to-file-names JSON file will be saved.')
 			.addText(text => text
-				.setPlaceholder('/home/user/Downloads/')
-				.setValue('')
+				.setPlaceholder('/home/user/Downloads/tags.json')
+				.setValue(this.plugin.settings.dumpPath)
 				.onChange(async (value) => {
-					console.log('Saved path for dumping files:' + value);
 					this.plugin.settings.dumpPath = value;
 					await this.plugin.saveSettings();
+
 				}));
 
 	}
