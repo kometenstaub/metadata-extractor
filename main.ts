@@ -189,7 +189,8 @@ class BridgeSettingTab extends PluginSettingTab {
 
 		new Setting(containerEl)
 			.setName('File-write path for tags')
-			.setDesc('Where the tag-to-file-names JSON file will be saved.')
+			.setDesc('Where the tag-to-file-names JSON file will be saved. Requires the file name with extension. \
+			If this is filled in, the setting below won\'t have any effect.')
 			.addText(text => text
 				.setPlaceholder('/home/user/Downloads/tags.json')
 				.setValue(this.plugin.settings.tagPath)
@@ -201,7 +202,8 @@ class BridgeSettingTab extends PluginSettingTab {
 
 		new Setting(containerEl)
 			.setName('File name of tag-to-file-names JSON')
-			.setDesc('requires the .json extension; leave empty if setting above was changed')
+			.setDesc('Requires the .json extension. \
+			Only change this setting if you want to change the name of the saved json in the plugin folder.')
 			.addText(text => text
 				.setPlaceholder('tags.json')
 				.setValue(this.plugin.settings.tagFile)
@@ -213,7 +215,8 @@ class BridgeSettingTab extends PluginSettingTab {
 
 		new Setting(containerEl)
 			.setName('File-write path for metadata')
-			.setDesc('Where the metadata JSON file will be saved.')
+			.setDesc('Where the metadata JSON file will be saved. Requires the file name with extension. \
+			If this is filled in, the setting below won\'t have any effect.')
 			.addText(text => text
 				.setPlaceholder('/home/user/Downloads/metadata.json')
 				.setValue(this.plugin.settings.metadataPath)
@@ -226,7 +229,8 @@ class BridgeSettingTab extends PluginSettingTab {
 
 		new Setting(containerEl)
 			.setName('File name of metadata JSON')
-			.setDesc('requires the .json extension; leave empty if setting above was changed')
+			.setDesc('Requires the .json extension; leave empty if setting above was changed. \
+			Only change this setting if you want to change the name of the saved json in the plugin folder.')
 			.addText(text => text
 				.setPlaceholder('metadata.json')
 				.setValue(this.plugin.settings.metadataFile)
