@@ -39,7 +39,7 @@ Example:
 ```
 
 
-The other one write a JSON file to disk with metadata for each file name.
+The other one writes a JSON file to disk with metadata for each file name.
 
 ID: `write-file-cache`
 
@@ -48,47 +48,41 @@ Example:
 ```json
 [
   {
-    "displayName": "Start here",
-    "cache": {
-      "filePath": "Start here.md",
-      "tags": [
-        "tag1",
-        "tag2"
-      ],
-      "headings": [
-        "Quick Start"
-      ],
-      "aliases": [
-        "test this alias"
-      ]
-    }
+    "fileName": "Start here",
+    "relativePath": "Start here.md",
+    "tags": [
+      "tag1",
+      "tag2"
+    ],
+    "headings": [
+      "Quick Start"
+    ],
+    "aliases": [
+      "test this alias"
+    ]
   },
   {
-    "displayName": "Zettelkasten prefixer",
-    "cache": {
-      "filePath": "Plugins/Zettelkasten prefixer.md",
-      "tags": [],
-      "headings": [],
-      "aliases": [
-        [
-          "first zettel",
-          "second zettel"
-        ]
+    "fileName": "Zettelkasten prefixer",
+    "relativePath": "Plugins/Zettelkasten prefixer.md",
+    "tags": [],
+    "headings": [],
+    "aliases": [
+      [
+        "first zettel",
+        "second zettel"
       ]
-    }
+    ]
   },
   {
-    "displayName": "Workspaces",
-    "cache": {
-      "filePath": "Plugins/Workspaces.md",
-      "tags": [],
-      "headings": [
-        "Save a workspace",
-        "Load a workspace",
-        "Commands"
-      ],
-      "aliases": []
-    }
+    "fileName": "Workspaces",
+    "relativePath": "Plugins/Workspaces.md",
+    "tags": [],
+    "headings": [
+      "Save a workspace",
+      "Load a workspace",
+      "Commands"
+    ],
+    "aliases": []
   }
 ]
 ```
