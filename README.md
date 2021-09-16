@@ -8,6 +8,8 @@ It contains two commands which can be executed on a cron job with the [Advanced 
 
 One writes a JSON file to disk with each tag and its corresponding file paths.
 
+ID: `write-tags-json`
+
 Example:
 
 ```json
@@ -38,6 +40,8 @@ Example:
 
 
 The other one write a JSON file to disk with metadata for each file name.
+
+ID: `write-file-cache`
 
 Example:
 
