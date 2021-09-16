@@ -21,7 +21,7 @@ export default class BridgePlugin extends Plugin {
 
 	// from: https://github.com/tillahoffmann/obsidian-jupyter/blob/e1e28db25fd74cd16844b37d0fe2eda9c3f2b1ee/main.ts#L175
 	getRelativeDumpPath(fileName: string): string {
-		return `${this.app.vault.configDir}/plugins/bridge/${fileName}`;
+		return `${this.app.vault.configDir}/plugins/launcher-bridge/${fileName}`;
 	}
 
 	getAbsoluteDumpPath(fileName: string): string {
