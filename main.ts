@@ -57,14 +57,43 @@ export default class BridgePlugin extends Plugin {
 						currentTags = currentCache.tags.map((tagObject) => {
 							return tagObject.tag;
 						});
-						tagsCache.push({ name: currentName, tags: currentTags });
 					}
-				}))
+					if (currentCache.frontmatter) {
+						if (currentCache.frontmatter.tags) {
+							const frontMatterTags = currentCache.frontmatter.tags;
+							console.log(frontMatterTags);
+							if (Array.isArray(frontMatterTags)) {
+								frontMatterTags.map((tag) => {
+									if (tag.slice(0, 1) === '#') {
+										currentTags.push(tag.slice(1));
+									} else {
+										currentTags.push(tag);
+									}
+								})
+							} else if (typeof frontMatterTags === "string") {
+								const splitTags = frontMatterTags.split(",")
+								splitTags.map((tag) => {
+									if (tag.slice(0, 1) === '#') {
+										currentTags.push(tag.slice(1));
+									} else {
+										currentTags.push(tag);
+									}
+								})
+
+								currentTags.push(frontMatterTags.slice())
+							}
+						}
+					}
+					//TODO:get frontmatter tags with currentCache.frontmatter.tags
+					// consider array and string format depending on formatting in file
+					tagsCache.push({ name: currentName, tags: currentTags });
+				}
+				))
 		})();
 
 		//@ts-ignore
 		const allTags = this.app.metadataCache.getTags();
-		let tagToFile: Array<{ tag: string, files: string[] | string }> = [];
+		let tagToFile: Array<{ tag: string, filePaths: string[] | string }> = [];
 		const onlyAllTags = Object.keys(allTags);
 		onlyAllTags.forEach((tag) => {
 			let fileNameArray: string[] = [];
@@ -73,7 +102,7 @@ export default class BridgePlugin extends Plugin {
 					fileNameArray.push(fileWithTag.name);
 				}
 			})
-			tagToFile.push({ tag: tag.slice(1), files: fileNameArray });
+			tagToFile.push({ tag: tag.slice(1), filePaths: fileNameArray });
 		})
 
 		let content = tagToFile;
@@ -99,6 +128,8 @@ export default class BridgePlugin extends Plugin {
 					let currentTags: string[] = [];
 					let currentFrontmatter: string[] = [];
 					let currentHeadings: string[] = [];
+					//TODO: get the tags from frontmatter as well, maybe make it a function
+					// because it is needed at two places
 					if (currentCache.tags) {
 						currentTags = currentCache.tags.map((tagObject) => {
 							return tagObject.tag.slice(1);
@@ -111,13 +142,14 @@ export default class BridgePlugin extends Plugin {
 					} else if (currentCache.frontmatter) {
 						//@ts-ignore
 						currentFrontmatter = [currentCache.frontmatter.aliases]
-					}
+					}// #check if `null`, then let it be empty
+					// Obsidian does this when `aliases:` is empty
 
 					if (currentCache.headings) {
 						currentHeadings = currentCache.headings.map((headings) => {
 							return headings.heading;
 						})
-					}
+					}//TODO: get heading data: currentCache.headings.level
 
 					metadataCache.push({ fileName: displayName, relativePath: relativeFilePath, tags: currentTags, headings: currentHeadings, aliases: currentFrontmatter })
 
