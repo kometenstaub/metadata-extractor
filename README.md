@@ -1,57 +1,96 @@
-## Obsidian Sample Plugin
+# Launcher Bridge plugin
 
-This is a sample plugin for Obsidian (https://obsidian.md).
+This plugin is supposed to be a bridge between launchers like Alfred or Ulauncher and Obsidian.
 
-This project uses Typescript to provide type checking and documentation.
-The repo depends on the latest plugin API (obsidian.d.ts) in Typescript Definition format, which contains TSDoc comments describing what it does.
+It contains two commands which can be executed on a cron job with the [Advanced URI plugin](https://github.com/Vinzent03/obsidian-advanced-uri).
 
-**Note:** The Obsidian API is still in early alpha and is subject to change at any time!
+## There are two commands
 
-This sample plugin demonstrates some of the basic functionality the plugin API can do.
-- Changes the default font color to red using `styles.css`.
-- Adds a ribbon icon, which shows a Notice when clicked.
-- Adds a command "Open Sample Modal" which opens a Modal.
-- Adds a plugin setting tab to the settings page.
-- Registers a global click event and output 'click' to the console.
-- Registers a global interval which logs 'setInterval' to the console.
+One writes a JSON file to disk with each tag and its corresponding file paths.
 
-### First time developing plugins?
+Example:
 
-Quick starting guide for new plugin devs:
+```json
+[
+  {
+    "tag": "css-themes",
+    "files": [
+      "Advanced topics/Contributing to Obsidian.md"
+    ]
+  },
+  {
+    "tag": "insider-build",
+    "files": [
+      "Advanced topics/Insider builds.md"
+    ]
+  },
+  {
+    "tag": "tags",
+    "files": [
+      "Plugins/Markdown format converter.md",
+      "How to/Working with tags.md",
+      "How to/Format your notes.md",
+      "How to/Basic note taking.md"
+    ]
+  }
+]
+```
 
-- Make a copy of this repo as a template with the "Use this template" button (login to GitHub if you don't see it).
-- Clone your repo to a local development folder. For convenience, you can place this folder in your `.obsidian/plugins/your-plugin-name` folder.
-- Install NodeJS, then run `npm i` in the command line under your repo folder.
-- Run `npm run dev` to compile your plugin from `main.ts` to `main.js`.
-- Make changes to `main.ts` (or create new `.ts` files). Those changes should be automatically compiled into `main.js`.
-- Reload Obsidian to load the new version of your plugin.
-- Enable plugin in settings window.
-- For updates to the Obsidian API run `npm update` in the command line under your repo folder.
 
-### Releasing new releases
+The other one write a JSON file to disk with metadata for each file name.
 
-- Update your `manifest.json` with your new version number, such as `1.0.1`, and the minimum Obsidian version required for your latest release.
-- Update your `versions.json` file with `"new-plugin-version": "minimum-obsidian-version"` so older versions of Obsidian can download an older version of your plugin that's compatible.
-- Create new GitHub release using your new version number as the "Tag version". Use the exact version number, don't include a prefix `v`. See here for an example: https://github.com/obsidianmd/obsidian-sample-plugin/releases
-- Upload the files `manifest.json`, `main.js`, `styles.css` as binary attachments.
-- Publish the release.
+Example:
 
-### Adding your plugin to the community plugin list
+```json
+[
+  {
+    "displayName": "Start here",
+    "cache": {
+      "filePath": "Start here.md",
+      "tags": [
+        "tag1",
+        "tag2"
+      ],
+      "headings": [
+        "Quick Start"
+      ],
+      "aliases": [
+        "test this alias"
+      ]
+    }
+  },
+  {
+    "displayName": "Zettelkasten prefixer",
+    "cache": {
+      "filePath": "Plugins/Zettelkasten prefixer.md",
+      "tags": [],
+      "headings": [],
+      "aliases": [
+        [
+          "first zettel",
+          "second zettel"
+        ]
+      ]
+    }
+  },
+  {
+    "displayName": "Workspaces",
+    "cache": {
+      "filePath": "Plugins/Workspaces.md",
+      "tags": [],
+      "headings": [
+        "Save a workspace",
+        "Load a workspace",
+        "Commands"
+      ],
+      "aliases": []
+    }
+  }
+]
+```
 
-- Publish an initial version.
-- Make sure you have a `README.md` file in the root of your repo.
-- Make a pull request at https://github.com/obsidianmd/obsidian-releases to add your plugin.
+## Configuration
 
-### How to use
+If you don't touch any settings, the files will be saved to the plugin folder. You can configure their names in the settings.
 
-- Clone this repo.
-- `npm i` or `yarn` to install dependencies
-- `npm run dev` to start compilation in watch mode.
-
-### Manually installing the plugin
-
-- Copy over `main.js`, `styles.css`, `manifest.json` to your vault `VaultFolder/.obsidian/plugins/your-plugin-id/`.
-
-### API Documentation
-
-See https://github.com/obsidianmd/obsidian-api
+You can however also specify absolute paths for each file. They need to include the file name and extension in this case. The setting above won't have any effect then.
