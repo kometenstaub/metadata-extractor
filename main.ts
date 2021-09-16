@@ -89,7 +89,7 @@ export default class BridgePlugin extends Plugin {
 		if (!this.settings.metadataPath) {
 			path = this.getAbsoluteDumpPath(fileName);
 		}
-		let metadataCache: { displayName: string,  filePath: string, tags: string[], headings: string[], aliases: string[]  }[] = [];
+		let metadataCache: { fileName: string,  relativePath: string, tags: string[], headings: string[], aliases: string[]  }[] = [];
 
 		(async () => {
 			const fileCache = await Promise.all(
@@ -120,11 +120,10 @@ export default class BridgePlugin extends Plugin {
 						})
 					}
 
-					metadataCache.push({ displayName: displayName, filePath: relativeFilePath, tags: currentTags, headings: currentHeadings, aliases: currentFrontmatter  })
+					metadataCache.push({ fileName: displayName, relativePath: relativeFilePath, tags: currentTags, headings: currentHeadings, aliases: currentFrontmatter  })
 
 
 				}))
-			//console.log(metadataCache)
 		})();
 		writeFileSync(path, JSON.stringify(metadataCache, null, 2));
 		console.log('wrote the metadata JSON file');
