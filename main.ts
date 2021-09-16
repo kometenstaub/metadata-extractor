@@ -62,7 +62,6 @@ export default class BridgePlugin extends Plugin {
 						if (currentCache.frontmatter.tags) {
 							const frontMatterTags = currentCache.frontmatter.tags;
 							if (Array.isArray(frontMatterTags)) {
-								console.log('yes')
 								frontMatterTags.map((tag) => {
 									if (tag.slice(0, 1) === '#') {
 										currentTags.push(tag.slice(1));
