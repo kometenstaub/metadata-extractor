@@ -1,7 +1,7 @@
 {
-  "name": "obsidian-sample-plugin",
+  "name": "launcher-bridge",
   "version": "0.12.0",
-  "description": "This is a sample plugin for Obsidian (https://obsidian.md)",
+  "description": "Plugin that is supposed to provide a bridge for launchers like Alfred and Ulauncher.",
   "main": "main.js",
   "scripts": {
     "dev": "rollup --config rollup.config.js -w",

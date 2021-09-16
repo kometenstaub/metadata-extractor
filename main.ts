@@ -1,7 +1,5 @@
-import { App, Modal, Notice, Plugin, PluginSettingTab, Setting, FileSystemAdapter, getAllTags, TFile, CacheItem, TagCache, FrontMatterCache, HeadingCache } from 'obsidian';
-import { statSync, writeFileSync } from 'fs';
-import { stringify } from 'querystring';
-import { Interface } from 'readline';
+import { App, Plugin, PluginSettingTab, Setting, FileSystemAdapter } from 'obsidian';
+import { writeFileSync } from 'fs';
 interface BridgeSettings {
 	tagPath: string;
 	metadataPath: string;
