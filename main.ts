@@ -44,7 +44,6 @@ export default class BridgePlugin extends Plugin {
 			path = this.getAbsoluteDumpPath(fileName);
 		}
 
-
 		let tagsCache: Array<{ name: string, tags: string[] }> = [];
 
 		(async () => {
@@ -89,7 +88,7 @@ export default class BridgePlugin extends Plugin {
 		if (!this.settings.metadataPath) {
 			path = this.getAbsoluteDumpPath(fileName);
 		}
-		let metadataCache: { fileName: string,  relativePath: string, tags: string[], headings: string[], aliases: string[]  }[] = [];
+		let metadataCache: { fileName: string, relativePath: string, tags: string[], headings: string[], aliases: string[] }[] = [];
 
 		(async () => {
 			const fileCache = await Promise.all(
@@ -120,7 +119,7 @@ export default class BridgePlugin extends Plugin {
 						})
 					}
 
-					metadataCache.push({ fileName: displayName, relativePath: relativeFilePath, tags: currentTags, headings: currentHeadings, aliases: currentFrontmatter  })
+					metadataCache.push({ fileName: displayName, relativePath: relativeFilePath, tags: currentTags, headings: currentHeadings, aliases: currentFrontmatter })
 
 
 				}))
