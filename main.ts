@@ -48,21 +48,26 @@ export default class BridgePlugin extends Plugin {
 			path = this.getAbsoluteDumpPath(fileName);
 		}
 
-		let tagsCache: Array<{ name: string; tags: string[] }> = [];
+		let tagsCache: { name: string; tags: string[] }[] = [];
 
 		(async () => {
 			const fileCache = await Promise.all(
 				this.app.vault.getMarkdownFiles().map(async (tfile) => {
 					let currentCache =
 						this.app.metadataCache.getFileCache(tfile);
-					let currentName: string = tfile.path;
+					let relativePath: string = tfile.path;
+					//let displayName: string = this.app.metadataCache.fileToLinktext(tfile, tfile.path, false);
 					let currentTags: string[] = [];
 					// currentCache.tags contains an object with .tag as the tags and .position of where it is for each file
 					currentTags = getAllTags(currentCache);
-					currentTags = currentTags.map((tag) => tag.slice(1));
+					currentTags = currentTags.map((tag) =>
+						tag.slice(1).toLowerCase()
+					);
+					// remove duplicate tags in file
+					currentTags = Array.from(new Set(currentTags));
 					if (currentTags.length !== 0) {
 						tagsCache.push({
-							name: currentName,
+							name: relativePath,
 							tags: currentTags,
 						});
 					}
@@ -75,9 +80,11 @@ export default class BridgePlugin extends Plugin {
 		const allTagsFromCache = tagsCache.map((element) => {
 			return element.tags;
 		});
-		const reducedAllTagsFromCache = allTagsFromCache.reduce((acc, tag) => {
-			return acc.concat(tag);
-		});
+		const reducedAllTagsFromCache = allTagsFromCache.reduce(
+			(acc, tagArray) => {
+				return acc.concat(tagArray.map((tag) => tag.toLowerCase()));
+			}
+		);
 		const uniqueAllTagsFromCache = Array.from(
 			new Set(reducedAllTagsFromCache)
 		);
@@ -135,7 +142,11 @@ export default class BridgePlugin extends Plugin {
 
 					currentTags = getAllTags(currentCache);
 					if (currentTags.length !== 0) {
-						currentTags = currentTags.map((tag) => tag.slice(1));
+						currentTags = currentTags.map((tag) =>
+							tag.slice(1).toLowerCase()
+						);
+						// remove duplicate tags in file
+						currentTags = Array.from(new Set(currentTags));
 					} else {
 						currentTags = null;
 					}
