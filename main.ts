@@ -1,4 +1,4 @@
-import { App, Plugin, PluginSettingTab, Setting, FileSystemAdapter, getAllTags } from 'obsidian';
+import { App, Plugin, PluginSettingTab, Setting, FileSystemAdapter, getAllTags, parseFrontMatterAliases } from 'obsidian';
 import { writeFileSync } from 'fs';
 interface BridgeSettings {
 	tagPath: string;
@@ -50,7 +50,7 @@ export default class BridgePlugin extends Plugin {
 			const fileCache = await Promise.all(
 				this.app.vault.getMarkdownFiles().map(async (tfile) => {
 					let currentCache = this.app.metadataCache.getFileCache(tfile);
-					let currentName: string = tfile.path
+					let currentName: string = tfile.path;
 					let currentTags: string[] = [];
 					// currentCache.tags contains an object with .tag as the tags and .position of where it is for each file
 					currentTags = getAllTags(currentCache);
@@ -97,42 +97,28 @@ export default class BridgePlugin extends Plugin {
 					const displayName = tfile.basename;
 					const relativeFilePath: string = tfile.path;
 					const currentCache = this.app.metadataCache.getFileCache(tfile);
-					let currentTags: string[] = [];
-					let currentFrontmatter: string[] = [];
-					let currentHeadings: string[] = [];
+					let currentTags: string[] | null;
+					let currentFrontmatterAliases: string[] | null;
+					let currentHeadings: string[] | null;
 
 					currentTags = getAllTags(currentCache);
 					if (currentTags.length !== 0) {
 						currentTags = currentTags.map((tag) => tag.slice(1));
 					} else {
-						currentTags = null
+						currentTags = null;
 					}
 
-					//headings and frontmatter aliases don't work
-
-					if (currentCache.frontmatter) {
-						if (currentCache.frontmatter.aliases === null) {
-							currentFrontmatter = null
-						} else if (Array.isArray(currentCache.frontmatter.aliases) && currentCache.frontmatter.aliases.length === 0) {
-							currentFrontmatter = null
-						} else if (Array.isArray(currentCache.frontmatter.aliases) && currentCache.frontmatter.aliases.length >= 0) {
-							currentFrontmatter = currentCache.frontmatter.aliases
-						} else if ((typeof currentCache.frontmatter.aliases === 'string') && currentCache.frontmatter.aliases.length >= 0){
-							currentFrontmatter = [currentCache.frontmatter.aliases];
-						} else {
-							currentFrontmatter = null
-						}
-					}
+					currentFrontmatterAliases = parseFrontMatterAliases(currentCache.frontmatter);
 
 					if (currentCache.headings) {
 						currentHeadings = currentCache.headings.map((headings) => {
 							return headings.heading;
 						})
 					} else {
-						currentHeadings = null
+						currentHeadings = null;
 					}
 
-					metadataCache.push({ fileName: displayName, relativePath: relativeFilePath, tags: currentTags, headings: currentHeadings, aliases: currentFrontmatter })
+					metadataCache.push({ fileName: displayName, relativePath: relativeFilePath, tags: currentTags, headings: currentHeadings, aliases: currentFrontmatterAliases });
 
 
 				}))
