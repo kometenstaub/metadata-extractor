@@ -16,23 +16,21 @@ Example:
 [
   {
     "tag": "css-themes",
-    "files": [
+    "relativePaths": [
       "Advanced topics/Contributing to Obsidian.md"
     ]
   },
   {
     "tag": "insider-build",
-    "files": [
+    "relativePaths": [
       "Advanced topics/Insider builds.md"
     ]
   },
   {
-    "tag": "tags",
-    "files": [
-      "Plugins/Markdown format converter.md",
-      "How to/Working with tags.md",
-      "How to/Format your notes.md",
-      "How to/Basic note taking.md"
+    "tag": "anothertag",
+    "relativePaths": [
+      "Plugins/Zettelkasten prefixer.md",
+      "Advanced topics/Using obsidian URI.md"
     ]
   }
 ]
@@ -55,7 +53,10 @@ Example:
       "tag2"
     ],
     "headings": [
-      "Quick Start"
+      {
+        "heading": "Quick Start",
+        "level": 2
+      }
     ],
     "aliases": [
       "test this alias"
@@ -64,28 +65,30 @@ Example:
   {
     "fileName": "Zettelkasten prefixer",
     "relativePath": "Plugins/Zettelkasten prefixer.md",
-    "tags": [],
-    "headings": [],
+    "tags": [
+      "test1",
+      "test2",
+      "tag",
+      "anothertag"
+    ],
+    "headings": [
+      {
+        "heading": "heading 1",
+        "level": 1
+      },
+      {
+        "heading": "heading 2",
+        "level": 2
+      }
+    ],
     "aliases": [
-      [
-        "first zettel",
-        "second zettel"
-      ]
+      "help"
     ]
   },
-  {
-    "fileName": "Workspaces",
-    "relativePath": "Plugins/Workspaces.md",
-    "tags": [],
-    "headings": [
-      "Save a workspace",
-      "Load a workspace",
-      "Commands"
-    ],
-    "aliases": []
-  }
 ]
 ```
+
+If there are no tags, headings or aliases, their value is `null`.
 
 ## Configuration
 

@@ -72,7 +72,7 @@ export default class BridgePlugin extends Plugin {
 
 		//@ts-ignore
 		const allTags = this.app.metadataCache.getTags();
-		let tagToFile: Array<{ tag: string; filePaths: string[] | string }> =
+		let tagToFile: Array<{ tag: string; relativePaths: string[] | string }> =
 			[];
 		const onlyAllTags = Object.keys(allTags);
 		onlyAllTags.forEach((tag) => {
@@ -83,7 +83,7 @@ export default class BridgePlugin extends Plugin {
 					fileNameArray.push(fileWithTag.name);
 				}
 			});
-			tagToFile.push({ tag: tag, filePaths: fileNameArray });
+			tagToFile.push({ tag: tag, relativePaths: fileNameArray });
 		});
 
 		let content = tagToFile;
