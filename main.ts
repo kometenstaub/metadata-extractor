@@ -1,20 +1,26 @@
-import { App, Plugin, PluginSettingTab, Setting, FileSystemAdapter, getAllTags, parseFrontMatterAliases } from 'obsidian';
+import {
+	App,
+	Plugin,
+	PluginSettingTab,
+	Setting,
+	FileSystemAdapter,
+	getAllTags,
+	parseFrontMatterAliases,
+} from 'obsidian';
 import { writeFileSync } from 'fs';
 interface BridgeSettings {
 	tagPath: string;
 	metadataPath: string;
 	tagFile: string;
 	metadataFile: string;
-
 }
 
 const DEFAULT_SETTINGS: BridgeSettings = {
 	tagPath: '',
 	metadataPath: '',
 	tagFile: 'tags.json',
-	metadataFile: 'metadata.json'
-}
-
+	metadataFile: 'metadata.json',
+};
 
 export default class BridgePlugin extends Plugin {
 	settings: BridgeSettings;
@@ -35,8 +41,6 @@ export default class BridgePlugin extends Plugin {
 		throw new Error('cannot determine base path');
 	}
 
-
-
 	async getTags(fileName: string) {
 		let path = this.settings.tagPath;
 		// only set the path to the plugin folder if no other path is specified
@@ -44,27 +48,32 @@ export default class BridgePlugin extends Plugin {
 			path = this.getAbsoluteDumpPath(fileName);
 		}
 
-		let tagsCache: Array<{ name: string, tags: string[] }> = [];
+		let tagsCache: Array<{ name: string; tags: string[] }> = [];
 
 		(async () => {
 			const fileCache = await Promise.all(
 				this.app.vault.getMarkdownFiles().map(async (tfile) => {
-					let currentCache = this.app.metadataCache.getFileCache(tfile);
+					let currentCache =
+						this.app.metadataCache.getFileCache(tfile);
 					let currentName: string = tfile.path;
 					let currentTags: string[] = [];
 					// currentCache.tags contains an object with .tag as the tags and .position of where it is for each file
 					currentTags = getAllTags(currentCache);
 					currentTags = currentTags.map((tag) => tag.slice(1));
 					if (currentTags.length !== 0) {
-						tagsCache.push({ name: currentName, tags: currentTags });
+						tagsCache.push({
+							name: currentName,
+							tags: currentTags,
+						});
 					}
-				}
-				))
+				})
+			);
 		})();
 
 		//@ts-ignore
 		const allTags = this.app.metadataCache.getTags();
-		let tagToFile: Array<{ tag: string, filePaths: string[] | string }> = [];
+		let tagToFile: Array<{ tag: string; filePaths: string[] | string }> =
+			[];
 		const onlyAllTags = Object.keys(allTags);
 		onlyAllTags.forEach((tag) => {
 			tag = tag.slice(1);
@@ -73,15 +82,14 @@ export default class BridgePlugin extends Plugin {
 				if (fileWithTag.tags.contains(tag)) {
 					fileNameArray.push(fileWithTag.name);
 				}
-			})
+			});
 			tagToFile.push({ tag: tag, filePaths: fileNameArray });
-		})
+		});
 
 		let content = tagToFile;
 		writeFileSync(path, JSON.stringify(content, null, 2));
 		console.log('wrote the tagToFile JSON file');
 	}
-
 
 	async getFileCache(fileName: string) {
 		let path = this.settings.metadataPath;
@@ -89,14 +97,21 @@ export default class BridgePlugin extends Plugin {
 		if (!this.settings.metadataPath) {
 			path = this.getAbsoluteDumpPath(fileName);
 		}
-		let metadataCache: { fileName: string, relativePath: string, tags: string[], headings: string[], aliases: string[] }[] = [];
+		let metadataCache: {
+			fileName: string;
+			relativePath: string;
+			tags: string[];
+			headings: string[];
+			aliases: string[];
+		}[] = [];
 
 		(async () => {
 			const fileCache = await Promise.all(
 				this.app.vault.getMarkdownFiles().map(async (tfile) => {
 					const displayName = tfile.basename;
 					const relativeFilePath: string = tfile.path;
-					const currentCache = this.app.metadataCache.getFileCache(tfile);
+					const currentCache =
+						this.app.metadataCache.getFileCache(tfile);
 					let currentTags: string[] | null;
 					let currentFrontmatterAliases: string[] | null;
 					let currentHeadings: string[] | null;
@@ -108,20 +123,29 @@ export default class BridgePlugin extends Plugin {
 						currentTags = null;
 					}
 
-					currentFrontmatterAliases = parseFrontMatterAliases(currentCache.frontmatter);
+					currentFrontmatterAliases = parseFrontMatterAliases(
+						currentCache.frontmatter
+					);
 
 					if (currentCache.headings) {
-						currentHeadings = currentCache.headings.map((headings) => {
-							return headings.heading;
-						})
+						currentHeadings = currentCache.headings.map(
+							(headings) => {
+								return headings.heading;
+							}
+						);
 					} else {
 						currentHeadings = null;
 					}
 
-					metadataCache.push({ fileName: displayName, relativePath: relativeFilePath, tags: currentTags, headings: currentHeadings, aliases: currentFrontmatterAliases });
-
-
-				}))
+					metadataCache.push({
+						fileName: displayName,
+						relativePath: relativeFilePath,
+						tags: currentTags,
+						headings: currentHeadings,
+						aliases: currentFrontmatterAliases,
+					});
+				})
+			);
 		})();
 		writeFileSync(path, JSON.stringify(metadataCache, null, 2));
 		console.log('wrote the metadata JSON file');
@@ -137,8 +161,7 @@ export default class BridgePlugin extends Plugin {
 			name: 'Write JSON file with tags and associated file names to disk.',
 			callback: () => {
 				this.getTags(this.settings.tagFile);
-			}
-
+			},
 		});
 
 		this.addCommand({
@@ -146,12 +169,10 @@ export default class BridgePlugin extends Plugin {
 			name: 'Write JSON with file metadata (headings, aliases, tags) to disk.',
 			callback: () => {
 				this.getFileCache(this.settings.metadataFile);
-			}
-
+			},
 		});
 
 		this.addSettingTab(new BridgeSettingTab(this.app, this));
-
 	}
 
 	onunload() {
@@ -159,7 +180,11 @@ export default class BridgePlugin extends Plugin {
 	}
 
 	async loadSettings() {
-		this.settings = Object.assign({}, DEFAULT_SETTINGS, await this.loadData());
+		this.settings = Object.assign(
+			{},
+			DEFAULT_SETTINGS,
+			await this.loadData()
+		);
 	}
 
 	async saveSettings() {
@@ -184,55 +209,66 @@ class BridgeSettingTab extends PluginSettingTab {
 
 		new Setting(containerEl)
 			.setName('File-write path for tags')
-			.setDesc('Where the tag-to-file-names JSON file will be saved. Requires the file name with extension. \
-			If this is filled in, the setting below won\'t have any effect.')
-			.addText(text => text
-				.setPlaceholder('/home/user/Downloads/tags.json')
-				.setValue(this.plugin.settings.tagPath)
-				.onChange(async (value) => {
-					this.plugin.settings.tagPath = value;
-					await this.plugin.saveSettings();
-
-				}));
+			.setDesc(
+				"Where the tag-to-file-names JSON file will be saved. Requires the file name with extension. \
+			If this is filled in, the setting below won't have any effect."
+			)
+			.addText((text) =>
+				text
+					.setPlaceholder('/home/user/Downloads/tags.json')
+					.setValue(this.plugin.settings.tagPath)
+					.onChange(async (value) => {
+						this.plugin.settings.tagPath = value;
+						await this.plugin.saveSettings();
+					})
+			);
 
 		new Setting(containerEl)
 			.setName('File name of tag-to-file-names JSON')
-			.setDesc('Requires the .json extension. \
-			Only change this setting if you want to change the name of the saved json in the plugin folder.')
-			.addText(text => text
-				.setPlaceholder('tags.json')
-				.setValue(this.plugin.settings.tagFile)
-				.onChange(async (value) => {
-					this.plugin.settings.tagFile = value;
-					await this.plugin.saveSettings();
-
-				}));
+			.setDesc(
+				'Requires the .json extension. \
+			Only change this setting if you want to change the name of the saved json in the plugin folder.'
+			)
+			.addText((text) =>
+				text
+					.setPlaceholder('tags.json')
+					.setValue(this.plugin.settings.tagFile)
+					.onChange(async (value) => {
+						this.plugin.settings.tagFile = value;
+						await this.plugin.saveSettings();
+					})
+			);
 
 		new Setting(containerEl)
 			.setName('File-write path for metadata')
-			.setDesc('Where the metadata JSON file will be saved. Requires the file name with extension. \
-			If this is filled in, the setting below won\'t have any effect.')
-			.addText(text => text
-				.setPlaceholder('/home/user/Downloads/metadata.json')
-				.setValue(this.plugin.settings.metadataPath)
-				.onChange(async (value) => {
-					this.plugin.settings.metadataPath = value;
-					await this.plugin.saveSettings();
-
-				}));
-
+			.setDesc(
+				"Where the metadata JSON file will be saved. Requires the file name with extension. \
+			If this is filled in, the setting below won't have any effect."
+			)
+			.addText((text) =>
+				text
+					.setPlaceholder('/home/user/Downloads/metadata.json')
+					.setValue(this.plugin.settings.metadataPath)
+					.onChange(async (value) => {
+						this.plugin.settings.metadataPath = value;
+						await this.plugin.saveSettings();
+					})
+			);
 
 		new Setting(containerEl)
 			.setName('File name of metadata JSON')
-			.setDesc('Requires the .json extension; leave empty if setting above was changed. \
-			Only change this setting if you want to change the name of the saved json in the plugin folder.')
-			.addText(text => text
-				.setPlaceholder('metadata.json')
-				.setValue(this.plugin.settings.metadataFile)
-				.onChange(async (value) => {
-					this.plugin.settings.metadataFile = value;
-					await this.plugin.saveSettings();
-
-				}));
+			.setDesc(
+				'Requires the .json extension; leave empty if setting above was changed. \
+			Only change this setting if you want to change the name of the saved json in the plugin folder.'
+			)
+			.addText((text) =>
+				text
+					.setPlaceholder('metadata.json')
+					.setValue(this.plugin.settings.metadataFile)
+					.onChange(async (value) => {
+						this.plugin.settings.metadataFile = value;
+						await this.plugin.saveSettings();
+					})
+			);
 	}
 }
