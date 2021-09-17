@@ -101,7 +101,7 @@ export default class BridgePlugin extends Plugin {
 			fileName: string;
 			relativePath: string;
 			tags: string[];
-			headings: string[];
+			headings: { heading: string; level: number }[] | null;
 			aliases: string[];
 		}[] = [];
 
@@ -114,7 +114,9 @@ export default class BridgePlugin extends Plugin {
 						this.app.metadataCache.getFileCache(tfile);
 					let currentTags: string[] | null;
 					let currentFrontmatterAliases: string[] | null;
-					let currentHeadings: string[] | null;
+					let currentHeadings:
+						| { heading: string; level: number }[]
+						| null = [];
 
 					currentTags = getAllTags(currentCache);
 					if (currentTags.length !== 0) {
@@ -128,11 +130,12 @@ export default class BridgePlugin extends Plugin {
 					);
 
 					if (currentCache.headings) {
-						currentHeadings = currentCache.headings.map(
-							(headings) => {
-								return headings.heading;
-							}
-						);
+						currentCache.headings.map((headings) => {
+							currentHeadings.push({
+								heading: headings.heading,
+								level: headings.level,
+							});
+						});
 					} else {
 						currentHeadings = null;
 					}

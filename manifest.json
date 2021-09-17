@@ -1,7 +1,7 @@
 {
 	"id": "launcher-bridge",
 	"name": "Launcher Bridge",
-	"version": "0.0.6",
+	"version": "0.1.0",
 	"minAppVersion": "0.12.15",
 	"description": "This plugin provides a bridge for Launchers like Alfred and Ulauncher to read certain parts of the metadata cache.",
 	"author": "kometenstaub",
