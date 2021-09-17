@@ -70,13 +70,28 @@ export default class BridgePlugin extends Plugin {
 			);
 		})();
 
+		// own version of this.app.metadataCache.getTags()
+		// it doesn't include subtags if there is only one tag/subtag/subsubtag
+		const allTagsFromCache = tagsCache.map((element) => {
+			return element.tags;
+		});
+		const reducedAllTagsFromCache = allTagsFromCache.reduce((acc, tag) => {
+			return acc.concat(tag);
+		});
+		const uniqueAllTagsFromCache = Array.from(
+			new Set(reducedAllTagsFromCache)
+		);
+
 		//@ts-ignore
-		const allTags = this.app.metadataCache.getTags();
-		let tagToFile: Array<{ tag: string; relativePaths: string[] | string }> =
-			[];
-		const onlyAllTags = Object.keys(allTags);
-		onlyAllTags.forEach((tag) => {
-			tag = tag.slice(1);
+		//const allTags = this.app.metadataCache.getTags();
+		// the method above also returns distinct tag, tag/subtag, tag/subtag/subsubtag
+		let tagToFile: Array<{
+			tag: string;
+			relativePaths: string[] | string;
+		}> = [];
+		//const onlyAllTags = Object.keys(allTags);
+		uniqueAllTagsFromCache.forEach((tag) => {
+			//tag = tag.slice(1);
 			let fileNameArray: string[] = [];
 			tagsCache.map((fileWithTag) => {
 				if (fileWithTag.tags.contains(tag)) {
