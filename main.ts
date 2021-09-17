@@ -1,4 +1,4 @@
-import { App, Plugin, PluginSettingTab, Setting, FileSystemAdapter } from 'obsidian';
+import { App, Plugin, PluginSettingTab, Setting, FileSystemAdapter, getAllTags } from 'obsidian';
 import { writeFileSync } from 'fs';
 interface BridgeSettings {
 	tagPath: string;
@@ -53,36 +53,8 @@ export default class BridgePlugin extends Plugin {
 					let currentName: string = tfile.path
 					let currentTags: string[] = [];
 					// currentCache.tags contains an object with .tag as the tags and .position of where it is for each file
-					if (currentCache.tags) {
-						currentTags = currentCache.tags.map((tagObject) => {
-							return tagObject.tag.slice(1);
-						});
-					}
-					if (currentCache.frontmatter) {
-						if (currentCache.frontmatter.tags) {
-							const frontMatterTags = currentCache.frontmatter.tags;
-							if (Array.isArray(frontMatterTags)) {
-								frontMatterTags.map((tag) => {
-									if (tag.slice(0, 1) === '#') {
-										currentTags.push(tag.slice(1));
-									} else {
-										currentTags.push(tag);
-									}
-								})
-							} else if (typeof frontMatterTags === "string") {
-								const splitTags = frontMatterTags.split(",")
-								splitTags.map((tag) => {
-									tag = tag.replace(' ', '')
-									if (tag.slice(0, 1) === '#') {
-										currentTags.push(tag.slice(1));
-									} else {
-										currentTags.push(tag);
-									}
-								})
-
-							}
-						}
-					}
+					currentTags = getAllTags(currentCache)
+					currentTags = currentTags.map((tag) => tag.slice(1))
 						if (currentTags.length !== 0) {
 					tagsCache.push({ name: currentName, tags: currentTags });
 						}
