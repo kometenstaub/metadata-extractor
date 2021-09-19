@@ -9,6 +9,7 @@ import {
 	CachedMetadata,
 } from 'obsidian';
 import { writeFileSync } from 'fs';
+import { stringify } from 'querystring';
 interface BridgeSettings {
 	writeFilesOnLaunch: boolean;
 	writingFrequency: string;
@@ -150,7 +151,23 @@ export default class BridgePlugin extends Plugin {
 			tags: string[];
 			headings: { heading: string; level: number }[] | null;
 			aliases: string[];
+			links: { link: string; relativePath: string }[] | null;
 		}[] = [];
+
+		interface linkToPath {
+			[key: string]: string;
+		}
+
+		let fileMap: linkToPath = {};
+		//@ts-ignore
+		for (let [key, value] of Object.entries(this.app.vault.fileMap)) {
+			const newKey: string = key;
+			if (newKey.slice(-3) === '.md') {
+				let link: string = newKey.split('/').last();
+				link = link.slice(0, -3);
+				fileMap[link] = newKey;
+			}
+		}
 
 		(async () => {
 			const fileCache = await Promise.all(
@@ -164,6 +181,10 @@ export default class BridgePlugin extends Plugin {
 					let currentHeadings:
 						| { heading: string; level: number }[]
 						| null = [];
+					let currentLinks: {
+						link: string;
+						relativePath: string | null;
+					}[] = [];
 
 					currentTags = this.getUniqueTags(currentCache);
 					if (currentTags.length === 0) {
@@ -185,12 +206,38 @@ export default class BridgePlugin extends Plugin {
 						currentHeadings = null;
 					}
 
+					if (currentCache.links) {
+						currentCache.links.map((links) => {
+							const fullLink = links.link;
+							let path: string = '';
+							//TODO: need to account for headings and block references and strip them
+							if (!fullLink.includes('#')) {
+								path = fileMap[fullLink];
+								// account for uncreated files
+								if (!path) {
+									currentLinks.push({
+										link: fullLink,
+										relativePath: null,
+									});
+								} else {
+									currentLinks.push({
+										link: fullLink,
+										relativePath: path,
+									});
+								}
+							}
+						});
+					} else {
+						currentLinks = null;
+					}
+
 					metadataCache.push({
 						fileName: displayName,
 						relativePath: relativeFilePath,
 						tags: currentTags,
 						headings: currentHeadings,
 						aliases: currentFrontmatterAliases,
+						links: currentLinks,
 					});
 				})
 			);
