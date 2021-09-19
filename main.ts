@@ -24,7 +24,7 @@ const DEFAULT_SETTINGS: BridgeSettings = {
 	tagFile: 'tags.json',
 	metadataFile: 'metadata.json',
 	writingFrequency: '120',
-	writeFilesOnLaunch: true,
+	writeFilesOnLaunch: false,
 };
 
 export default class BridgePlugin extends Plugin {
