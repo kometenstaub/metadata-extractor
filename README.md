@@ -1,14 +1,13 @@
-# Launcher Bridge plugin
+# Metadata extractor Obsidian plugin
 
-This plugin is supposed to be a bridge between launchers like Alfred or Ulauncher and Obsidian.
+This Obsidian plugin provides metadata export for third-party apps.
 
-It contains two commands which can be executed on a cron job with the [Advanced URI plugin](https://github.com/Vinzent03/obsidian-advanced-uri).
+## There are two JSON-exports
 
-## There are two commands
+They can be executed on a schedule.
 
 One writes a JSON file to disk with each tag and its corresponding file paths.
 
-ID: `write-tags-json`
 
 Example:
 
@@ -38,8 +37,6 @@ Example:
 
 
 The other one writes a JSON file to disk with metadata for each file name.
-
-ID: `write-file-cache`
 
 Example:
 

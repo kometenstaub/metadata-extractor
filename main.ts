@@ -6,9 +6,12 @@ import {
 	FileSystemAdapter,
 	getAllTags,
 	parseFrontMatterAliases,
+	CachedMetadata,
 } from 'obsidian';
 import { writeFileSync } from 'fs';
 interface BridgeSettings {
+	writeFilesOnLaunch: boolean;
+	writingFrequency: string;
 	tagPath: string;
 	metadataPath: string;
 	tagFile: string;
@@ -20,32 +23,46 @@ const DEFAULT_SETTINGS: BridgeSettings = {
 	metadataPath: '',
 	tagFile: 'tags.json',
 	metadataFile: 'metadata.json',
+	writingFrequency: '120',
+	writeFilesOnLaunch: true,
 };
 
 export default class BridgePlugin extends Plugin {
 	settings: BridgeSettings;
+	intervalId1: number | null = null;
+	intervalId2: number | null = null;
 
-	// from: https://github.com/tillahoffmann/obsidian-jupyter/blob/e1e28db25fd74cd16844b37d0fe2eda9c3f2b1ee/main.ts#L175
-	getRelativeDumpPath(fileName: string): string {
-		return `${this.app.vault.configDir}/plugins/launcher-bridge/${fileName}`;
-	}
-
-	getAbsoluteDumpPath(fileName: string): string {
-		return `${this.getBasePath()}/${this.getRelativeDumpPath(fileName)}`;
-	}
-
-	getBasePath(): string {
+	// https://github.com/tillahoffmann/obsidian-jupyter/blob/e1e28db25fd74cd16844b37d0fe2eda9c3f2b1ee/main.ts#L175
+	getAbsolutePath(fileName: string): string {
+		let basePath;
+		let relativePath;
+		// base path
 		if (this.app.vault.adapter instanceof FileSystemAdapter) {
-			return (this.app.vault.adapter as FileSystemAdapter).getBasePath();
+			basePath = (
+				this.app.vault.adapter as FileSystemAdapter
+			).getBasePath();
+		} else {
+			throw new Error('Cannot determine base path.');
 		}
-		throw new Error('cannot determine base path');
+		// relative path
+		relativePath = `${this.app.vault.configDir}/plugins/metadata-extractor/${fileName}`;
+		// absolute path
+		return `${basePath}/${relativePath}`;
 	}
 
-	async getTags(fileName: string) {
+	getUniqueTags(currentCache: CachedMetadata): string[] {
+		let currentTags = getAllTags(currentCache);
+		currentTags = currentTags.map((tag) => tag.slice(1).toLowerCase());
+		// remove duplicate tags in file
+		currentTags = Array.from(new Set(currentTags));
+		return currentTags;
+	}
+
+	async writeTagsToJSON(fileName: string) {
 		let path = this.settings.tagPath;
 		// only set the path to the plugin folder if no other path is specified
 		if (!this.settings.tagPath) {
-			path = this.getAbsoluteDumpPath(fileName);
+			path = this.getAbsolutePath(fileName);
 		}
 
 		let tagsCache: { name: string; tags: string[] }[] = [];
@@ -57,14 +74,8 @@ export default class BridgePlugin extends Plugin {
 						this.app.metadataCache.getFileCache(tfile);
 					let relativePath: string = tfile.path;
 					//let displayName: string = this.app.metadataCache.fileToLinktext(tfile, tfile.path, false);
-					let currentTags: string[] = [];
-					// currentCache.tags contains an object with .tag as the tags and .position of where it is for each file
-					currentTags = getAllTags(currentCache);
-					currentTags = currentTags.map((tag) =>
-						tag.slice(1).toLowerCase()
-					);
-					// remove duplicate tags in file
-					currentTags = Array.from(new Set(currentTags));
+					const currentTags: string[] =
+						this.getUniqueTags(currentCache);
 					if (currentTags.length !== 0) {
 						tagsCache.push({
 							name: relativePath,
@@ -77,7 +88,7 @@ export default class BridgePlugin extends Plugin {
 
 		// own version of this.app.metadataCache.getTags()
 		// it doesn't include subtags if there is only one tag/subtag/subsubtag
-		const allTagsFromCache = tagsCache.map((element) => {
+		const allTagsFromCache: string[][] = tagsCache.map((element) => {
 			return element.tags;
 		});
 		const reducedAllTagsFromCache = allTagsFromCache.reduce(
@@ -89,14 +100,10 @@ export default class BridgePlugin extends Plugin {
 			new Set(reducedAllTagsFromCache)
 		);
 
-		//@ts-ignore
-		//const allTags = this.app.metadataCache.getTags();
-		// the method above also returns distinct tag, tag/subtag, tag/subtag/subsubtag
 		let tagToFile: Array<{
 			tag: string;
 			relativePaths: string[] | string;
 		}> = [];
-		//const onlyAllTags = Object.keys(allTags);
 		uniqueAllTagsFromCache.forEach((tag) => {
 			//tag = tag.slice(1);
 			let fileNameArray: string[] = [];
@@ -110,14 +117,14 @@ export default class BridgePlugin extends Plugin {
 
 		let content = tagToFile;
 		writeFileSync(path, JSON.stringify(content, null, 2));
-		console.log('wrote the tagToFile JSON file');
+		console.log('Metadata Extractor plugin: wrote the tagToFile JSON file');
 	}
 
-	async getFileCache(fileName: string) {
+	async writeCacheToJSON(fileName: string) {
 		let path = this.settings.metadataPath;
 		// only set the path to the plugin folder if no other path is specified
 		if (!this.settings.metadataPath) {
-			path = this.getAbsoluteDumpPath(fileName);
+			path = this.getAbsolutePath(fileName);
 		}
 		let metadataCache: {
 			fileName: string;
@@ -140,14 +147,8 @@ export default class BridgePlugin extends Plugin {
 						| { heading: string; level: number }[]
 						| null = [];
 
-					currentTags = getAllTags(currentCache);
-					if (currentTags.length !== 0) {
-						currentTags = currentTags.map((tag) =>
-							tag.slice(1).toLowerCase()
-						);
-						// remove duplicate tags in file
-						currentTags = Array.from(new Set(currentTags));
-					} else {
+					currentTags = this.getUniqueTags(currentCache);
+					if (currentTags.length === 0) {
 						currentTags = null;
 					}
 
@@ -177,11 +178,41 @@ export default class BridgePlugin extends Plugin {
 			);
 		})();
 		writeFileSync(path, JSON.stringify(metadataCache, null, 2));
-		console.log('wrote the metadata JSON file');
+		console.log('Metadata Extractor plugin: wrote the metadata JSON file');
+	}
+
+	async setWritingSchedule(tagFileName: string, metadataFileName: string) {
+		if (this.settings.writingFrequency !== '0') {
+			const intervalInMinutes = parseInt(this.settings.writingFrequency);
+			let milliseconds = intervalInMinutes * 60000;
+
+			// schedule for tagsToJSON
+			window.clearInterval(this.intervalId1);
+			this.intervalId1 = null;
+			this.intervalId1 = window.setInterval(
+				() => this.writeTagsToJSON(tagFileName),
+				milliseconds
+			);
+			// API function to cancel interval when plugin unloads
+			this.registerInterval(this.intervalId1);
+
+			// schedule for metadataCache to JSON
+			window.clearInterval(this.intervalId2);
+			this.intervalId2 = null;
+			this.intervalId2 = window.setInterval(
+				() => this.writeCacheToJSON(metadataFileName),
+				milliseconds
+			);
+			// API function to cancel interval when plugin unloads
+			this.registerInterval(this.intervalId2);
+		} else if (this.settings.writingFrequency === '0') {
+			window.clearInterval(this.intervalId1);
+			window.clearInterval(this.intervalId2);
+		}
 	}
 
 	async onload() {
-		console.log('loading Launcher Bridge plugin');
+		console.log('loading Metadata Extractor plugin');
 
 		await this.loadSettings();
 
@@ -189,23 +220,35 @@ export default class BridgePlugin extends Plugin {
 			id: 'write-tags-json',
 			name: 'Write JSON file with tags and associated file names to disk.',
 			callback: () => {
-				this.getTags(this.settings.tagFile);
+				this.writeTagsToJSON(this.settings.tagFile);
 			},
 		});
 
 		this.addCommand({
-			id: 'write-file-cache',
-			name: 'Write JSON with file metadata (headings, aliases, tags) to disk.',
+			id: 'write-metadata-json',
+			name: 'Write JSON file with metadata to disk.',
 			callback: () => {
-				this.getFileCache(this.settings.metadataFile);
+				this.writeCacheToJSON(this.settings.metadataFile);
 			},
 		});
 
 		this.addSettingTab(new BridgeSettingTab(this.app, this));
+
+		if (this.settings.writeFilesOnLaunch) {
+			this.app.workspace.onLayoutReady(() => {
+				this.writeTagsToJSON(this.settings.tagFile);
+				this.writeCacheToJSON(this.settings.metadataFile);
+			});
+		}
+
+		await this.setWritingSchedule(
+			this.settings.tagFile,
+			this.settings.metadataFile
+		);
 	}
 
 	onunload() {
-		console.log('unloading plugin');
+		console.log('unloading Metadata Extractor plugin');
 	}
 
 	async loadSettings() {
@@ -234,7 +277,7 @@ class BridgeSettingTab extends PluginSettingTab {
 
 		containerEl.empty();
 
-		containerEl.createEl('h2', { text: 'Bridge Plugin Settings' });
+		containerEl.createEl('h2', { text: 'Metadata Extractor Settings' });
 
 		new Setting(containerEl)
 			.setName('File-write path for tags')
@@ -299,5 +342,42 @@ class BridgeSettingTab extends PluginSettingTab {
 						await this.plugin.saveSettings();
 					})
 			);
+
+		new Setting(containerEl)
+			.setName('Configure frequency for writing both JSON files')
+			.setDesc(
+				'The frequency has to be entered in minutes. Set it to 0 to disable the periodic writing.'
+			)
+			.addText((text) =>
+				text
+					.setPlaceholder('120')
+					.setValue(this.plugin.settings.writingFrequency)
+					.onChange(async (value) => {
+						if (value === '') {
+							this.plugin.settings.writingFrequency = '0';
+						} else {
+							this.plugin.settings.writingFrequency = value;
+						}
+						await this.plugin.saveSettings();
+						this.plugin.setWritingSchedule(
+							this.plugin.settings.tagFile,
+							this.plugin.settings.metadataFile
+						);
+					})
+			);
+
+		new Setting(containerEl)
+			.setName('Write JSON files automatically when Obsidian launches')
+			.setDesc(
+				'If enabled, the JSON files will be written each time Obsidian starts.'
+			)
+			.addToggle((toggle) => {
+				toggle
+					.setValue(this.plugin.settings.writeFilesOnLaunch)
+					.onChange((state) => {
+						this.plugin.settings.writeFilesOnLaunch = state;
+						this.plugin.saveSettings();
+					});
+			});
 	}
 }
