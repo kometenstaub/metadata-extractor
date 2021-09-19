@@ -23,7 +23,7 @@ const DEFAULT_SETTINGS: BridgeSettings = {
 	metadataPath: '',
 	tagFile: 'tags.json',
 	metadataFile: 'metadata.json',
-	writingFrequency: '120',
+	writingFrequency: '0',
 	writeFilesOnLaunch: false,
 };
 
