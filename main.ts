@@ -100,19 +100,37 @@ export default class BridgePlugin extends Plugin {
 			new Set(reducedAllTagsFromCache)
 		);
 
+		//@ts-ignore
+		const numberOfNotesWithTag: {} = this.app.metadataCache.getTags();
+		// Obsidian doesn' consistently lower case the tags
+		interface tagNumber {
+			[key: string]: number;
+		}
+		let tagsWithCount: tagNumber = {};
+		for (let [key, value] of Object.entries(numberOfNotesWithTag)) {
+			const newKey: string = key.slice(1).toLowerCase();
+			const newValue: number = value;
+			tagsWithCount[newKey] = newValue;
+		}
+
 		let tagToFile: Array<{
 			tag: string;
+			tagCount: number;
 			relativePaths: string[] | string;
 		}> = [];
 		uniqueAllTagsFromCache.forEach((tag) => {
-			//tag = tag.slice(1);
-			let fileNameArray: string[] = [];
+			const fileNameArray: string[] = [];
 			tagsCache.map((fileWithTag) => {
 				if (fileWithTag.tags.contains(tag)) {
 					fileNameArray.push(fileWithTag.name);
 				}
 			});
-			tagToFile.push({ tag: tag, relativePaths: fileNameArray });
+			const numberOfNotes: number = tagsWithCount[tag];
+			tagToFile.push({
+				tag: tag,
+				tagCount: numberOfNotes,
+				relativePaths: fileNameArray,
+			});
 		});
 
 		let content = tagToFile;
