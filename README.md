@@ -1,12 +1,12 @@
-# Launcher Bridge plugin
+# Obsidian Metadata Extractor
 
-This plugin is supposed to be a bridge between launchers like Alfred or Ulauncher and Obsidian.
+This plugin allows you to write Obsidian vault metadata, which is only accessible via plugin, onto the hard drive. This enables Third-party apps to access Obsidian metadata which they normally wouldn't be able to access. Exemplary use cases are launcher apps (e.g. Alfred, Ulauncher) or graph analysis software.
 
-It contains two commands which can be executed on a cron job with the [Advanced URI plugin](https://github.com/Vinzent03/obsidian-advanced-uri).
+Obsidian Metadata Extractor has two commands which can be triggered by third-party apps via the [Advanced URI plugin](https://github.com/Vinzent03/obsidian-advanced-uri), or automatically on Obsidian startup and/or a regular interval defined in the plugin's settings.
 
 ## There are two commands
 
-One writes a JSON file to disk with each tag and its corresponding file paths.
+The first one writes a JSON file to disk with each tag and its corresponding file paths.
 
 ID: `write-tags-json`
 
