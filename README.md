@@ -4,11 +4,13 @@ This plugin allows you to write Obsidian vault metadata, which is only accessibl
 
 Obsidian Metadata Extractor has two commands which can be triggered by third-party apps via the [Advanced URI plugin](https://github.com/Vinzent03/obsidian-advanced-uri), or automatically on Obsidian startup and/or a regular interval defined in the plugin's settings.
 
-## There are two commands
+## There are two JSON-exports
+
+
+They can be executed on a schedule.
 
 The first one writes a JSON file to disk with each tag and its corresponding file paths.
 
-ID: `write-tags-json`
 
 Example:
 
@@ -38,8 +40,6 @@ Example:
 
 
 The other one writes a JSON file to disk with metadata for each file name.
-
-ID: `write-file-cache`
 
 Example:
 
@@ -95,3 +95,5 @@ If there are no tags, headings or aliases, their value is `null`.
 If you don't touch any settings, the files will be saved to the plugin folder. You can configure their names in the settings.
 
 You can however also specify absolute paths for each file. They need to include the file name and extension in this case. The setting above won't have any effect then.
+
+You can also set the frequency for writing the JSON files in minutes (default setting is 0, so it is not enabled) and whether the JSON files should be written on launch (default setting is false).
