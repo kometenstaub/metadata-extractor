@@ -92,3 +92,5 @@ If there are no tags, headings or aliases, their value is `null`.
 If you don't touch any settings, the files will be saved to the plugin folder. You can configure their names in the settings.
 
 You can however also specify absolute paths for each file. They need to include the file name and extension in this case. The setting above won't have any effect then.
+
+You can also set the frequency and whether the JSON should be written on launch.
