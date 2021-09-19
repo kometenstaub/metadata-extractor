@@ -1,4 +1,4 @@
-# Metadata extractor Obsidian plugin
+# Metadata Extractor Obsidian plugin
 
 This Obsidian plugin provides metadata export for third-party apps.
 
