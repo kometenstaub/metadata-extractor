@@ -69,22 +69,18 @@ export default class BridgePlugin extends Plugin {
 		let tagsCache: { name: string; tags: string[] }[] = [];
 
 		(async () => {
-			const fileCache = await Promise.all(
-				this.app.vault.getMarkdownFiles().map(async (tfile) => {
-					let currentCache =
-						this.app.metadataCache.getFileCache(tfile);
-					let relativePath: string = tfile.path;
-					//let displayName: string = this.app.metadataCache.fileToLinktext(tfile, tfile.path, false);
-					const currentTags: string[] =
-						this.getUniqueTags(currentCache);
-					if (currentTags.length !== 0) {
-						tagsCache.push({
-							name: relativePath,
-							tags: currentTags,
-						});
-					}
-				})
-			);
+			this.app.vault.getMarkdownFiles().map(async (tfile) => {
+				let currentCache = this.app.metadataCache.getFileCache(tfile);
+				let relativePath: string = tfile.path;
+				//let displayName: string = this.app.metadataCache.fileToLinktext(tfile, tfile.path, false);
+				const currentTags: string[] = this.getUniqueTags(currentCache);
+				if (currentTags.length !== 0) {
+					tagsCache.push({
+						name: relativePath,
+						tags: currentTags,
+					});
+				}
+			});
 		})();
 
 		// own version of this.app.metadataCache.getTags()
@@ -103,7 +99,7 @@ export default class BridgePlugin extends Plugin {
 
 		//@ts-ignore
 		const numberOfNotesWithTag: {} = this.app.metadataCache.getTags();
-		// Obsidian doesn' consistently lower case the tags
+		// Obsidian doesn' consistently lower case the tags (it's a feature, it shows the most used version)
 		interface tagNumber {
 			[key: string]: number;
 		}
@@ -170,77 +166,78 @@ export default class BridgePlugin extends Plugin {
 		}
 
 		(async () => {
-			const fileCache = await Promise.all(
-				this.app.vault.getMarkdownFiles().map(async (tfile) => {
-					const displayName = tfile.basename;
-					const relativeFilePath: string = tfile.path;
-					const currentCache =
-						this.app.metadataCache.getFileCache(tfile);
-					let currentTags: string[] | null;
-					let currentFrontmatterAliases: string[] | null;
-					let currentHeadings:
-						| { heading: string; level: number }[]
-						| null = [];
-					let currentLinks: {
-						link: string;
-						relativePath: string | null;
-					}[] = [];
+			this.app.vault.getMarkdownFiles().map(async (tfile) => {
+				const displayName = tfile.basename;
+				const relativeFilePath: string = tfile.path;
+				const currentCache = this.app.metadataCache.getFileCache(tfile);
+				let currentTags: string[] | null;
+				let currentFrontmatterAliases: string[] | null;
+				let currentHeadings:
+					| { heading: string; level: number }[]
+					| null = [];
+				let currentLinks: {
+					link: string;
+					relativePath: string | null;
+				}[] = [];
 
-					currentTags = this.getUniqueTags(currentCache);
-					if (currentTags.length === 0) {
-						currentTags = null;
-					}
+				currentTags = this.getUniqueTags(currentCache);
+				if (currentTags.length === 0) {
+					currentTags = null;
+				}
 
-					currentFrontmatterAliases = parseFrontMatterAliases(
-						currentCache.frontmatter
-					);
+				currentFrontmatterAliases = parseFrontMatterAliases(
+					currentCache.frontmatter
+				);
 
-					if (currentCache.headings) {
-						currentCache.headings.map((headings) => {
-							currentHeadings.push({
-								heading: headings.heading,
-								level: headings.level,
-							});
+				if (currentCache.headings) {
+					currentCache.headings.map((headings) => {
+						currentHeadings.push({
+							heading: headings.heading,
+							level: headings.level,
 						});
-					} else {
-						currentHeadings = null;
-					}
-
-					if (currentCache.links) {
-						currentCache.links.map((links) => {
-							const fullLink = links.link;
-							let path: string = '';
-							//TODO: need to account for headings and block references and strip them
-							if (!fullLink.includes('#')) {
-								path = fileMap[fullLink];
-								// account for uncreated files
-								if (!path) {
-									currentLinks.push({
-										link: fullLink,
-										relativePath: null,
-									});
-								} else {
-									currentLinks.push({
-										link: fullLink,
-										relativePath: path,
-									});
-								}
-							}
-						});
-					} else {
-						currentLinks = null;
-					}
-
-					metadataCache.push({
-						fileName: displayName,
-						relativePath: relativeFilePath,
-						tags: currentTags,
-						headings: currentHeadings,
-						aliases: currentFrontmatterAliases,
-						links: currentLinks,
 					});
-				})
-			);
+				} else {
+					currentHeadings = null;
+				}
+
+				if (currentCache.links) {
+					currentCache.links.map((links) => {
+						let fullLink = links.link;
+						// account for relative links
+						if (fullLink.includes('/')) {
+							fullLink = fullLink.split('/').last();
+						}
+						let path: string = '';
+						//TODO: need to account for headings and block references and strip them
+						if (!fullLink.includes('#')) {
+							path = fileMap[fullLink];
+							// account for uncreated files
+							if (!path) {
+								currentLinks.push({
+									link: fullLink,
+									relativePath: null,
+								});
+							} else {
+								currentLinks.push({
+									link: fullLink,
+									relativePath: path,
+								});
+							}
+						}
+					});
+				} else {
+					currentLinks = null;
+				}
+
+				metadataCache.push({
+					fileName: displayName,
+					relativePath: relativeFilePath,
+					tags: currentTags,
+					headings: currentHeadings,
+					aliases: currentFrontmatterAliases,
+					links: currentLinks,
+				});
+			});
 		})();
 		writeFileSync(path, JSON.stringify(metadataCache, null, 2));
 		console.log('Metadata Extractor plugin: wrote the metadata JSON file');
