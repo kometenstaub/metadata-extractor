@@ -7,9 +7,11 @@ import {
 	getAllTags,
 	parseFrontMatterAliases,
 	CachedMetadata,
+	MetadataCache,
 } from 'obsidian';
 import { writeFileSync } from 'fs';
 import { stringify } from 'querystring';
+import { captureRejections } from 'events';
 interface BridgeSettings {
 	writeFilesOnLaunch: boolean;
 	writingFrequency: string;
@@ -141,14 +143,17 @@ export default class BridgePlugin extends Plugin {
 		if (!this.settings.metadataPath) {
 			path = this.getAbsolutePath(fileName);
 		}
-		let metadataCache: {
-			fileName: string;
-			relativePath: string;
-			tags: string[];
-			headings: { heading: string; level: number }[] | null;
-			aliases: string[];
-			links: { link: string; relativePath: string }[] | null;
-		}[] = [];
+		interface Metadata {
+			fileName?: string;
+			relativePath?: string;
+			tags?: string[];
+			headings?: { heading: string; level: number }[];
+			aliases?: string[];
+			links?: { link: string; relativePath?: string }[];
+			backlinks?: { link: string; relativePath: string }[];
+		}
+
+		let metadataCache: Metadata[] = [];
 
 		interface linkToPath {
 			[key: string]: string;
@@ -170,24 +175,33 @@ export default class BridgePlugin extends Plugin {
 				const displayName = tfile.basename;
 				const relativeFilePath: string = tfile.path;
 				const currentCache = this.app.metadataCache.getFileCache(tfile);
-				let currentTags: string[] | null;
-				let currentFrontmatterAliases: string[] | null;
-				let currentHeadings:
-					| { heading: string; level: number }[]
-					| null = [];
+				let currentTags: string[];
+				let currentAliases: string[];
+				let currentHeadings: { heading: string; level: number }[] = [];
 				let currentLinks: {
 					link: string;
-					relativePath: string | null;
+					relativePath?: string;
 				}[] = [];
 
+				let metaObj: Metadata = {};
+
 				currentTags = this.getUniqueTags(currentCache);
-				if (currentTags.length === 0) {
-					currentTags = null;
+				if (currentTags !== null) {
+					if (currentTags.length > 0) {
+						metaObj.tags = currentTags;
+					}
 				}
 
-				currentFrontmatterAliases = parseFrontMatterAliases(
-					currentCache.frontmatter
-				);
+				if (currentCache.frontmatter) {
+					currentAliases = parseFrontMatterAliases(
+						currentCache.frontmatter
+					);
+					if (currentAliases !== null) {
+						if (currentAliases.length > 0) {
+							metaObj.aliases = currentAliases;
+						}
+					}
+				}
 
 				if (currentCache.headings) {
 					currentCache.headings.map((headings) => {
@@ -196,8 +210,7 @@ export default class BridgePlugin extends Plugin {
 							level: headings.level,
 						});
 					});
-				} else {
-					currentHeadings = null;
+					metaObj.headings = currentHeadings;
 				}
 
 				if (currentCache.links) {
@@ -215,7 +228,6 @@ export default class BridgePlugin extends Plugin {
 							if (!path) {
 								currentLinks.push({
 									link: fullLink,
-									relativePath: null,
 								});
 							} else {
 								currentLinks.push({
@@ -225,18 +237,13 @@ export default class BridgePlugin extends Plugin {
 							}
 						}
 					});
-				} else {
-					currentLinks = null;
+					if (currentLinks.length > 0) {
+						metaObj.links = currentLinks;
+					}
 				}
-
-				metadataCache.push({
-					fileName: displayName,
-					relativePath: relativeFilePath,
-					tags: currentTags,
-					headings: currentHeadings,
-					aliases: currentFrontmatterAliases,
-					links: currentLinks,
-				});
+				if (Object.keys(metaObj).length > 0) {
+					metadataCache.push(metaObj);
+				}
 			});
 		})();
 		writeFileSync(path, JSON.stringify(metadataCache, null, 2));
