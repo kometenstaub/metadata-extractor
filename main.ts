@@ -9,7 +9,7 @@ import {
 	CachedMetadata,
 	MetadataCache,
 } from 'obsidian';
-import { writeFileSync } from 'fs';
+import { link, writeFileSync } from 'fs';
 import { stringify } from 'querystring';
 import { captureRejections } from 'events';
 interface BridgeSettings {
@@ -156,9 +156,8 @@ export default class BridgePlugin extends Plugin {
 				displayText?: string;
 			}[];
 			backlinks?: {
-				link: string;
+				fileName: string;
 				relativePath: string;
-				cleanLink?: string;
 			}[];
 		}
 
@@ -195,6 +194,9 @@ export default class BridgePlugin extends Plugin {
 				}[] = [];
 
 				let metaObj: Metadata = {};
+
+				metaObj.fileName = displayName;
+				metaObj.relativePath = relativeFilePath;
 
 				currentTags = this.getUniqueTags(currentCache);
 				if (currentTags !== null) {
@@ -345,11 +347,42 @@ export default class BridgePlugin extends Plugin {
 						metaObj.links = currentLinks;
 					}
 				}
+
 				if (Object.keys(metaObj).length > 0) {
 					metadataCache.push(metaObj);
 				}
 			});
 		})();
+		//backlinks
+		let backlinkObj: {
+			fileName: string;
+			relativePath: string;
+		}[] = [];
+		const newMetadataCache = metadataCache;
+		metadataCache.map((file) => {
+			const fileName = file.fileName;
+			const relativeFilePath = file.relativePath;
+			newMetadataCache.map((otherFile) => {
+				if (fileName !== otherFile.fileName) {
+					if (otherFile.links) {
+						//something doesn't work here
+						// has a problme with heading links
+						otherFile.links.map((links) => {
+							if (links.relativePath === relativeFilePath) {
+								// check if already present, only  push if not present
+								backlinkObj.push({
+									fileName: otherFile.fileName,
+									relativePath: links.relativePath,
+								});
+							}
+						});
+					}
+				}
+			});
+			file.backlinks = backlinkObj;
+			backlinkObj = [];
+		});
+
 		writeFileSync(path, JSON.stringify(metadataCache, null, 2));
 		console.log('Metadata Extractor plugin: wrote the metadata JSON file');
 	}
