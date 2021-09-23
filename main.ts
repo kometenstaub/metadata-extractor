@@ -149,8 +149,17 @@ export default class BridgePlugin extends Plugin {
 			tags?: string[];
 			headings?: { heading: string; level: number }[];
 			aliases?: string[];
-			links?: { link: string; relativePath?: string }[];
-			backlinks?: { link: string; relativePath: string }[];
+			links?: {
+				link: string;
+				relativePath?: string;
+				cleanLink?: string;
+				displayText?: string;
+			}[];
+			backlinks?: {
+				link: string;
+				relativePath: string;
+				cleanLink?: string;
+			}[];
 		}
 
 		let metadataCache: Metadata[] = [];
@@ -181,6 +190,8 @@ export default class BridgePlugin extends Plugin {
 				let currentLinks: {
 					link: string;
 					relativePath?: string;
+					cleanLink?: string;
+					displayText?: string;
 				}[] = [];
 
 				let metaObj: Metadata = {};
@@ -216,13 +227,13 @@ export default class BridgePlugin extends Plugin {
 				if (currentCache.links) {
 					currentCache.links.map((links) => {
 						let fullLink = links.link;
+						const aliasText = links.displayText;
 						// account for relative links
 						if (fullLink.includes('/')) {
 							fullLink = fullLink.split('/').last();
 						}
 						let path: string = '';
-						//TODO: need to account for headings and block references and strip them
-						if (!fullLink.includes('#')) {
+						if (!fullLink.includes('#') && aliasText === fullLink) {
 							path = fileMap[fullLink];
 							// account for uncreated files
 							if (!path) {
@@ -235,6 +246,99 @@ export default class BridgePlugin extends Plugin {
 									relativePath: path,
 								});
 							}
+						}
+						// heading/block ref and alias, but not to the same file
+						else if (
+							fullLink.includes('#') &&
+							fullLink.charAt(0) !== '#' &&
+							(!aliasText.includes('#') ||
+								!aliasText.includes('>'))
+						) {
+							const alias = aliasText;
+							const cleanLink = fullLink.replace(/#.+/g, '');
+							path = fileMap[cleanLink];
+							// account for uncreated files
+							if (!path) {
+								currentLinks.push({
+									link: fullLink,
+									cleanLink: cleanLink,
+									displayText: alias,
+								});
+							} else {
+								currentLinks.push({
+									link: fullLink,
+									relativePath: path,
+									cleanLink: cleanLink,
+									displayText: alias,
+								});
+							}
+						}
+						// heading/block ref and no alias, but not to the same file
+						else if (
+							fullLink.includes('#') &&
+							fullLink.charAt(0) !== '#' &&
+							aliasText.includes('#')
+						) {
+							const cleanLink = fullLink.replace(/#.+/g, '');
+							path = fileMap[cleanLink];
+							// account for uncreated files
+							if (!path) {
+								currentLinks.push({
+									link: fullLink,
+									cleanLink: cleanLink,
+								});
+							} else {
+								currentLinks.push({
+									link: fullLink,
+									relativePath: path,
+									cleanLink: cleanLink,
+								});
+							}
+						} // link with alias but not headings
+						else if (
+							!fullLink.includes('#') &&
+							fullLink !== aliasText
+						) {
+							const alias = aliasText;
+							path = fileMap[fullLink];
+							// account for uncreated files
+							if (!path) {
+								currentLinks.push({
+									link: fullLink,
+									displayText: alias,
+								});
+							} else {
+								currentLinks.push({
+									link: fullLink,
+									relativePath: path,
+									displayText: alias,
+								});
+							}
+						}
+						// heading/block ref to same file and alias
+						else if (
+							fullLink.charAt(0) === '#' &&
+							fullLink !== aliasText
+						) {
+							const alias = aliasText;
+							path = relativeFilePath;
+							currentLinks.push({
+								link: fullLink,
+								relativePath: path,
+								cleanLink: displayName,
+								displayText: alias,
+							});
+						} // only block ref/heading to same file, no alias
+						else if (
+							fullLink.charAt(0) === '#' &&
+							fullLink === aliasText
+						) {
+							path = relativeFilePath;
+							// account for uncreated files
+							currentLinks.push({
+								link: fullLink,
+								relativePath: path,
+							});
 						}
 					});
 					if (currentLinks.length > 0) {
