@@ -25,8 +25,9 @@ jobs:
       run: | 
         npm install
         npm run build --if-present
+        mkdir build/
         mkdir ${{ env.PLUGIN_NAME }}
-        cp main.js manifest.json ${{ env.PLUGIN_NAME }}
+        cp build/main.js build/manifest.json ${{ env.PLUGIN_NAME }}
         zip -r ${{ env.PLUGIN_NAME }}.zip ${{ env.PLUGIN_NAME }}
         ls
         echo "::set-output name=tag_name::$(git tag --sort version:refname | tail -n 1)"

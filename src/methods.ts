@@ -210,9 +210,10 @@ export default class Methods {
 				}
 
 				if (currentCache.links) {
-					if (currentCache.embeds) {
-						console.log(currentCache.embeds);
-					}
+                    //TODO: embeds need to be implemented differently
+					//if (currentCache.embeds) {
+					//	console.log(currentCache.embeds);
+					//}
 					currentCache.links.map((links) => {
 						let fullLink = links.link;
 						let aliasText: string = '';
@@ -344,6 +345,7 @@ export default class Methods {
 			});
 		})();
 		//backlinks
+        // TODO: should backlinks include more info, like heading/block reference/alias?
 		let backlinkObj: {
 			fileName: string;
 			relativePath: string;
