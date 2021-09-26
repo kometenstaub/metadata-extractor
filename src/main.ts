@@ -227,6 +227,9 @@ export default class BridgePlugin extends Plugin {
 				}
 
 				if (currentCache.links) {
+					if (currentCache.embeds) {
+						console.log(currentCache.embeds)
+					}
 					currentCache.links.map((links) => {
 						let fullLink = links.link;
 						const aliasText = links.displayText;
@@ -366,7 +369,7 @@ export default class BridgePlugin extends Plugin {
 				if (fileName !== otherFile.fileName) {
 					if (otherFile.links) {
 						//something doesn't work here
-						// has a problme with heading links
+						//that is because embeds aren't part of the .links in the metadataCache, so when I map over my metadataCache, it doesn't have the link and therefore doesn't find it.
 						otherFile.links.map((links) => {
 							if (links.relativePath === relativeFilePath) {
 								// check if already present, only  push if not present
