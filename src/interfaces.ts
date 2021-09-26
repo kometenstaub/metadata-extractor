@@ -33,3 +33,9 @@ export interface tagNumber {
 	[key: string]: number;
 }
 
+export interface links {
+	link: string;
+	relativePath?: string;
+	cleanLink?: string;
+	displayText?: string;
+}

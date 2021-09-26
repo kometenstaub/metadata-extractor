@@ -5,10 +5,12 @@ import {
 	getAllTags,
 	CachedMetadata,
 	Notice,
-    parseFrontMatterAliases
+	parseFrontMatterAliases,
+	LinkCache,
+	EmbedCache,
 } from 'obsidian';
-import type {Metadata, linkToPath, tagNumber} from './interfaces'
-import { writeFileSync } from 'fs';
+import type { Metadata, linkToPath, tagNumber, links } from './interfaces';
+import { link, writeFileSync } from 'fs';
 
 export default class Methods {
 	constructor(public plugin: BridgePlugin, public app: App) {}
@@ -128,7 +130,6 @@ export default class Methods {
 		}
 		let metadataCache: Metadata[] = [];
 
-
 		let fileMap: linkToPath = {};
 		//@ts-ignore
 		for (let [key, value] of Object.entries(this.app.vault.fileMap)) {
@@ -161,18 +162,12 @@ export default class Methods {
 					currentCache = this.app.metadataCache.getFileCache(tfile);
 				} else {
 					new Notice(
-						'Something with the accessing the cache went wrong!'
+						'Something with accessing the cache went wrong!'
 					);
 				}
 				let currentTags: string[];
 				let currentAliases: string[];
 				let currentHeadings: { heading: string; level: number }[] = [];
-				let currentLinks: {
-					link: string;
-					relativePath?: string;
-					cleanLink?: string;
-					displayText?: string;
-				}[] = [];
 
 				//@ts-expect-error
 				let metaObj: Metadata = {};
@@ -209,135 +204,15 @@ export default class Methods {
 					metaObj.headings = currentHeadings;
 				}
 
-				if (currentCache.links) {
-                    //TODO: embeds need to be implemented differently
-					//if (currentCache.embeds) {
-					//	console.log(currentCache.embeds);
-					//}
-					currentCache.links.map((links) => {
-						let fullLink = links.link;
-						let aliasText: string = '';
-						if (typeof links.displayText !== 'undefined') {
-							aliasText = links.displayText;
-						}
-						// account for relative links
-						if (fullLink.includes('/')) {
-							//@ts-ignore
-							fullLink = fullLink.split('/').last();
-						}
-						let path: string = '';
-						if (!fullLink.includes('#') && aliasText === fullLink) {
-							path = fileMap[fullLink];
-							// account for uncreated files
-							if (!path) {
-								currentLinks.push({
-									link: fullLink,
-								});
-							} else {
-								currentLinks.push({
-									link: fullLink,
-									relativePath: path,
-								});
-							}
-						}
-						// heading/block ref and alias, but not to the same file
-						else if (
-							fullLink.includes('#') &&
-							fullLink.charAt(0) !== '#' &&
-							(!aliasText.includes('#') ||
-								!aliasText.includes('>'))
-						) {
-							const alias = aliasText;
-							const cleanLink = fullLink.replace(/#.+/g, '');
-							path = fileMap[cleanLink];
-							// account for uncreated files
-							if (!path) {
-								currentLinks.push({
-									link: fullLink,
-									cleanLink: cleanLink,
-									displayText: alias,
-								});
-							} else {
-								currentLinks.push({
-									link: fullLink,
-									relativePath: path,
-									cleanLink: cleanLink,
-									displayText: alias,
-								});
-							}
-						}
-						// heading/block ref and no alias, but not to the same file
-						else if (
-							fullLink.includes('#') &&
-							fullLink.charAt(0) !== '#' &&
-							aliasText.includes('#')
-						) {
-							const cleanLink = fullLink.replace(/#.+/g, '');
-							path = fileMap[cleanLink];
-							// account for uncreated files
-							if (!path) {
-								currentLinks.push({
-									link: fullLink,
-									cleanLink: cleanLink,
-								});
-							} else {
-								currentLinks.push({
-									link: fullLink,
-									relativePath: path,
-									cleanLink: cleanLink,
-								});
-							}
-						} // link with alias but not headings
-						else if (
-							!fullLink.includes('#') &&
-							fullLink !== aliasText
-						) {
-							const alias = aliasText;
-							path = fileMap[fullLink];
-							// account for uncreated files
-							if (!path) {
-								currentLinks.push({
-									link: fullLink,
-									displayText: alias,
-								});
-							} else {
-								currentLinks.push({
-									link: fullLink,
-									relativePath: path,
-									displayText: alias,
-								});
-							}
-						}
-						// heading/block ref to same file and alias
-						else if (
-							fullLink.charAt(0) === '#' &&
-							fullLink !== aliasText
-						) {
-							const alias = aliasText;
-							path = relativeFilePath;
-							currentLinks.push({
-								link: fullLink,
-								relativePath: path,
-								cleanLink: displayName,
-								displayText: alias,
-							});
-						} // only block ref/heading to same file, no alias
-						else if (
-							fullLink.charAt(0) === '#' &&
-							fullLink === aliasText
-						) {
-							path = relativeFilePath;
-							// account for uncreated files
-							currentLinks.push({
-								link: fullLink,
-								relativePath: path,
-							});
-						}
-					});
-					if (currentLinks.length > 0) {
-						metaObj.links = currentLinks;
-					}
-				}
+				const linkMetaObj = calculateLinks(
+					currentCache,
+					metaObj,
+					fileMap,
+					relativeFilePath,
+					displayName
+				);
+				
+				Object.assign(metaObj, linkMetaObj);
 
 				if (Object.keys(metaObj).length > 0) {
 					metadataCache.push(metaObj);
@@ -345,7 +220,7 @@ export default class Methods {
 			});
 		})();
 		//backlinks
-        // TODO: should backlinks include more info, like heading/block reference/alias?
+		// TODO: should backlinks include more info, like heading/block reference/alias?
 		let backlinkObj: {
 			fileName: string;
 			relativePath: string;
@@ -410,4 +285,169 @@ export default class Methods {
 			window.clearInterval(this.plugin.intervalId2);
 		}
 	}
+}
+
+function calculateLinks(
+	currentCache1: CachedMetadata,
+	metaObj1: Metadata,
+	fileMap1: linkToPath,
+	relativeFilePath1: string,
+	displayName1: string
+): Metadata {
+	let currentLinks: links[] = [];
+	let currentCache = currentCache1
+	let fileMap = fileMap1
+	let metaObj = metaObj1
+	let relativeFilePath = relativeFilePath1
+	let displayName = displayName1
+
+	let bothLinks: LinkCache[] & EmbedCache[] = [];
+
+	linksAndOrEmbeds()
+
+	function linksAndOrEmbeds(): void {
+		let onlyLinks: LinkCache[] = [];
+		let onlyEmbeds: EmbedCache[] = [];
+		if (currentCache.links) {
+			onlyLinks = currentCache.links;
+		}
+		if (currentCache.embeds) {
+			onlyEmbeds = currentCache.embeds.filter(embed => {
+				let link = embed.link
+				if (link.includes('/')) {
+					//@ts-expect-error
+					link = link.split('/').last()
+					if (link.includes('#')) {
+						link = link.replace(/#.+/g, '')
+					}
+				}
+				if (link.includes('#')) {
+					link = link.replace(/#.+/g, '')
+				}
+				// only return markdown files, because only they are in the fileMap
+				if (fileMap[link]) {
+					return embed
+				}
+			});
+		}
+		bothLinks = onlyLinks.concat(onlyEmbeds);
+		getLinksAndEmbds(bothLinks)
+	}
+
+	function getLinksAndEmbds(bothlinks: LinkCache[] & EmbedCache[]) {
+		bothLinks.map((links) => {
+			let fullLink = links.link;
+			let aliasText: string = '';
+			if (typeof links.displayText !== 'undefined') {
+				aliasText = links.displayText;
+			}
+			// account for relative links
+			if (fullLink.includes('/')) {
+				//@ts-ignore
+				fullLink = fullLink.split('/').last();
+			}
+			let path: string = '';
+			if (!fullLink.includes('#') && aliasText === fullLink) {
+				path = fileMap[fullLink];
+				// account for uncreated files
+				if (!path) {
+					currentLinks.push({
+						link: fullLink,
+					});
+				} else {
+					currentLinks.push({
+						link: fullLink,
+						relativePath: path,
+					});
+				}
+			}
+			// heading/block ref and alias, but not to the same file
+			else if (
+				fullLink.includes('#') &&
+				fullLink.charAt(0) !== '#' &&
+				(!aliasText.includes('#') || !aliasText.includes('>'))
+			) {
+				const alias = aliasText;
+				const cleanLink = fullLink.replace(/#.+/g, '');
+				path = fileMap[cleanLink];
+				// account for uncreated files
+				if (!path) {
+					currentLinks.push({
+						link: fullLink,
+						cleanLink: cleanLink,
+						displayText: alias,
+					});
+				} else {
+					currentLinks.push({
+						link: fullLink,
+						relativePath: path,
+						cleanLink: cleanLink,
+						displayText: alias,
+					});
+				}
+			}
+			// heading/block ref and no alias, but not to the same file
+			else if (
+				fullLink.includes('#') &&
+				fullLink.charAt(0) !== '#' &&
+				aliasText.includes('#')
+			) {
+				const cleanLink = fullLink.replace(/#.+/g, '');
+				path = fileMap[cleanLink];
+				// account for uncreated files
+				if (!path) {
+					currentLinks.push({
+						link: fullLink,
+						cleanLink: cleanLink,
+					});
+				} else {
+					currentLinks.push({
+						link: fullLink,
+						relativePath: path,
+						cleanLink: cleanLink,
+					});
+				}
+			} // link with alias but not headings
+			else if (!fullLink.includes('#') && fullLink !== aliasText) {
+				const alias = aliasText;
+				path = fileMap[fullLink];
+				// account for uncreated files
+				if (!path) {
+					currentLinks.push({
+						link: fullLink,
+						displayText: alias,
+					});
+				} else {
+					currentLinks.push({
+						link: fullLink,
+						relativePath: path,
+						displayText: alias,
+					});
+				}
+			}
+			// heading/block ref to same file and alias
+			else if (fullLink.charAt(0) === '#' && fullLink !== aliasText) {
+				const alias = aliasText;
+				path = relativeFilePath;
+				currentLinks.push({
+					link: fullLink,
+					relativePath: path,
+					cleanLink: displayName,
+					displayText: alias,
+				});
+			} // only block ref/heading to same file, no alias
+			else if (fullLink.charAt(0) === '#' && fullLink === aliasText) {
+				path = relativeFilePath;
+				// account for uncreated files
+				currentLinks.push({
+					link: fullLink,
+					relativePath: path,
+				});
+			}
+		});
+		if (currentLinks.length > 0) {
+			metaObj.links = currentLinks;
+		}
+	}
+	return metaObj;
 }
