@@ -10,7 +10,7 @@ import {
 	EmbedCache,
 } from 'obsidian';
 import type { Metadata, linkToPath, tagNumber, links } from './interfaces';
-import { link, writeFileSync } from 'fs';
+import { writeFileSync } from 'fs';
 
 export default class Methods {
 	constructor(public plugin: BridgePlugin, public app: App) {}
@@ -211,7 +211,7 @@ export default class Methods {
 					relativeFilePath,
 					displayName
 				);
-				
+
 				Object.assign(metaObj, linkMetaObj);
 
 				if (Object.keys(metaObj).length > 0) {
@@ -295,15 +295,15 @@ function calculateLinks(
 	displayName1: string
 ): Metadata {
 	let currentLinks: links[] = [];
-	let currentCache = currentCache1
-	let fileMap = fileMap1
-	let metaObj = metaObj1
-	let relativeFilePath = relativeFilePath1
-	let displayName = displayName1
+	let currentCache = currentCache1;
+	let fileMap = fileMap1;
+	let metaObj = metaObj1;
+	let relativeFilePath = relativeFilePath1;
+	let displayName = displayName1;
 
 	let bothLinks: LinkCache[] & EmbedCache[] = [];
 
-	linksAndOrEmbeds()
+	linksAndOrEmbeds();
 
 	function linksAndOrEmbeds(): void {
 		let onlyLinks: LinkCache[] = [];
@@ -312,26 +312,26 @@ function calculateLinks(
 			onlyLinks = currentCache.links;
 		}
 		if (currentCache.embeds) {
-			onlyEmbeds = currentCache.embeds.filter(embed => {
-				let link = embed.link
+			onlyEmbeds = currentCache.embeds.filter((embed) => {
+				let link = embed.link;
 				if (link.includes('/')) {
 					//@ts-expect-error
-					link = link.split('/').last()
+					link = link.split('/').last();
 					if (link.includes('#')) {
-						link = link.replace(/#.+/g, '')
+						link = link.replace(/#.+/g, '');
 					}
 				}
 				if (link.includes('#')) {
-					link = link.replace(/#.+/g, '')
+					link = link.replace(/#.+/g, '');
 				}
 				// only return markdown files, because only they are in the fileMap
 				if (fileMap[link]) {
-					return embed
+					return embed;
 				}
 			});
 		}
 		bothLinks = onlyLinks.concat(onlyEmbeds);
-		getLinksAndEmbds(bothLinks)
+		getLinksAndEmbds(bothLinks);
 	}
 
 	function getLinksAndEmbds(bothlinks: LinkCache[] & EmbedCache[]) {
