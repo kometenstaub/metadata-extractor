@@ -8,6 +8,7 @@ import {
 	parseFrontMatterAliases,
 	CachedMetadata,
 	MetadataCache,
+	Notice,
 } from 'obsidian';
 import { link, writeFileSync } from 'fs';
 import { stringify } from 'querystring';
@@ -31,9 +32,9 @@ const DEFAULT_SETTINGS: BridgeSettings = {
 };
 
 export default class BridgePlugin extends Plugin {
-	settings: BridgeSettings;
-	intervalId1: number | null = null;
-	intervalId2: number | null = null;
+	settings!: BridgeSettings;
+	intervalId1: number | undefined = undefined;
+	intervalId2: number | undefined = undefined;
 
 	// https://github.com/tillahoffmann/obsidian-jupyter/blob/e1e28db25fd74cd16844b37d0fe2eda9c3f2b1ee/main.ts#L175
 	getAbsolutePath(fileName: string): string {
@@ -54,7 +55,11 @@ export default class BridgePlugin extends Plugin {
 	}
 
 	getUniqueTags(currentCache: CachedMetadata): string[] {
-		let currentTags = getAllTags(currentCache);
+		let currentTags : string[] = []
+		if (getAllTags(currentCache)) {
+			//@ts-ignore
+			currentTags = getAllTags(currentCache);
+		}
 		currentTags = currentTags.map((tag) => tag.slice(1).toLowerCase());
 		// remove duplicate tags in file
 		currentTags = Array.from(new Set(currentTags));
@@ -72,7 +77,11 @@ export default class BridgePlugin extends Plugin {
 
 		(async () => {
 			this.app.vault.getMarkdownFiles().map(async (tfile) => {
-				let currentCache = this.app.metadataCache.getFileCache(tfile);
+				let currentCache! : CachedMetadata;
+				if (this.app.metadataCache.getFileCache(tfile) !== null) {
+					//@ts-ignore
+					currentCache = this.app.metadataCache.getFileCache(tfile);
+				}
 				let relativePath: string = tfile.path;
 				//let displayName: string = this.app.metadataCache.fileToLinktext(tfile, tfile.path, false);
 				const currentTags: string[] = this.getUniqueTags(currentCache);
@@ -99,7 +108,7 @@ export default class BridgePlugin extends Plugin {
 			new Set(reducedAllTagsFromCache)
 		);
 
-		//@ts-ignore
+		//@ts-expect-error, private method
 		const numberOfNotesWithTag: {} = this.app.metadataCache.getTags();
 		// Obsidian doesn' consistently lower case the tags (it's a feature, it shows the most used version)
 		interface tagNumber {
@@ -144,8 +153,8 @@ export default class BridgePlugin extends Plugin {
 			path = this.getAbsolutePath(fileName);
 		}
 		interface Metadata {
-			fileName?: string;
-			relativePath?: string;
+			fileName: string;
+			relativePath: string;
 			tags?: string[];
 			headings?: { heading: string; level: number }[];
 			aliases?: string[];
@@ -171,8 +180,16 @@ export default class BridgePlugin extends Plugin {
 		//@ts-ignore
 		for (let [key, value] of Object.entries(this.app.vault.fileMap)) {
 			const newKey: string = key;
+			let link : string = ''
 			if (newKey.slice(-3) === '.md') {
-				let link: string = newKey.split('/').last();
+				if (newKey.includes('/')) {
+					let split = newKey.split('/').last()
+					let isString = typeof(split) === 'string'
+					if (isString) {
+						//@ts-ignore
+						link = split
+					}
+				}
 				link = link.slice(0, -3);
 				fileMap[link] = newKey;
 			}
@@ -182,7 +199,13 @@ export default class BridgePlugin extends Plugin {
 			this.app.vault.getMarkdownFiles().map(async (tfile) => {
 				const displayName = tfile.basename;
 				const relativeFilePath: string = tfile.path;
-				const currentCache = this.app.metadataCache.getFileCache(tfile);
+				let currentCache! : CachedMetadata;
+				if (typeof(this.app.metadataCache.getFileCache(tfile)) !== 'undefined') {
+					//@ts-ignore
+					currentCache = this.app.metadataCache.getFileCache(tfile)
+				} else {
+					new Notice('Something with the accessing the cache went wrong!')
+				}
 				let currentTags: string[];
 				let currentAliases: string[];
 				let currentHeadings: { heading: string; level: number }[] = [];
@@ -193,6 +216,7 @@ export default class BridgePlugin extends Plugin {
 					displayText?: string;
 				}[] = [];
 
+				//@ts-expect-error
 				let metaObj: Metadata = {};
 
 				metaObj.fileName = displayName;
@@ -206,6 +230,7 @@ export default class BridgePlugin extends Plugin {
 				}
 
 				if (currentCache.frontmatter) {
+					//@ts-expect-error
 					currentAliases = parseFrontMatterAliases(
 						currentCache.frontmatter
 					);
@@ -232,9 +257,13 @@ export default class BridgePlugin extends Plugin {
 					}
 					currentCache.links.map((links) => {
 						let fullLink = links.link;
-						const aliasText = links.displayText;
+						let aliasText : string = ''
+						if (typeof(links.displayText) !== 'undefined') {
+							aliasText = links.displayText;
+						}
 						// account for relative links
 						if (fullLink.includes('/')) {
+							//@ts-ignore
 							fullLink = fullLink.split('/').last();
 						}
 						let path: string = '';
@@ -397,7 +426,7 @@ export default class BridgePlugin extends Plugin {
 
 			// schedule for tagsToJSON
 			window.clearInterval(this.intervalId1);
-			this.intervalId1 = null;
+			this.intervalId1 = undefined;
 			this.intervalId1 = window.setInterval(
 				() => this.writeTagsToJSON(tagFileName),
 				milliseconds
@@ -407,7 +436,7 @@ export default class BridgePlugin extends Plugin {
 
 			// schedule for metadataCache to JSON
 			window.clearInterval(this.intervalId2);
-			this.intervalId2 = null;
+			this.intervalId2 = undefined;
 			this.intervalId2 = window.setInterval(
 				() => this.writeCacheToJSON(metadataFileName),
 				milliseconds
