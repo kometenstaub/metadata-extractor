@@ -7,7 +7,7 @@ import {
 	Notice,
     parseFrontMatterAliases
 } from 'obsidian';
-
+import type {Metadata, linkToPath, tagNumber} from './interfaces'
 import { writeFileSync } from 'fs';
 
 export default class Methods {
@@ -88,9 +88,6 @@ export default class Methods {
 		//@ts-expect-error, private method
 		const numberOfNotesWithTag: {} = this.app.metadataCache.getTags();
 		// Obsidian doesn' consistently lower case the tags (it's a feature, it shows the most used version)
-		interface tagNumber {
-			[key: string]: number;
-		}
 		let tagsWithCount: tagNumber = {};
 		for (let [key, value] of Object.entries(numberOfNotesWithTag)) {
 			const newKey: string = key.slice(1).toLowerCase();
@@ -129,29 +126,8 @@ export default class Methods {
 		if (!this.plugin.settings.metadataPath) {
 			path = this.getAbsolutePath(fileName);
 		}
-		interface Metadata {
-			fileName: string;
-			relativePath: string;
-			tags?: string[];
-			headings?: { heading: string; level: number }[];
-			aliases?: string[];
-			links?: {
-				link: string;
-				relativePath?: string;
-				cleanLink?: string;
-				displayText?: string;
-			}[];
-			backlinks?: {
-				fileName: string;
-				relativePath: string;
-			}[];
-		}
-
 		let metadataCache: Metadata[] = [];
 
-		interface linkToPath {
-			[key: string]: string;
-		}
 
 		let fileMap: linkToPath = {};
 		//@ts-ignore
