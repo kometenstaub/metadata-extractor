@@ -106,7 +106,7 @@ export default class Methods {
 		}
 	}
 
-	async writeTagsToJSON(fileName: string) {
+	writeTagsToJSON(fileName: string) {
 		let path = this.plugin.settings.tagPath;
 		// only set the path to the plugin folder if no other path is specified
 		if (!this.plugin.settings.tagPath) {
@@ -115,8 +115,8 @@ export default class Methods {
 
 		let tagsCache: { name: string; tags: string[] }[] = [];
 
-		(async () => {
-			this.app.vault.getMarkdownFiles().forEach(async (tfile) => {
+		(() => {
+			this.app.vault.getMarkdownFiles().forEach((tfile) => {
 				let currentCache!: CachedMetadata;
 				if (this.app.metadataCache.getFileCache(tfile) !== null) {
 					//@ts-ignore
@@ -182,7 +182,7 @@ export default class Methods {
 		console.log('Metadata Extractor plugin: wrote the tagToFile JSON file');
 	}
 
-	async writeCacheToJSON(fileName: string) {
+	writeCacheToJSON(fileName: string) {
 		let path = this.plugin.settings.metadataPath;
 		// only set the path to the plugin folder if no other path is specified
 		if (!this.plugin.settings.metadataPath) {
@@ -209,8 +209,8 @@ export default class Methods {
 			}
 		}
 
-		(async () => {
-			this.app.vault.getMarkdownFiles().forEach(async (tfile) => {
+		(() => {
+			this.app.vault.getMarkdownFiles().forEach((tfile) => {
 				const displayName = tfile.basename;
 				const relativeFilePath: string = tfile.path;
 				let currentCache!: CachedMetadata;
@@ -345,7 +345,7 @@ export default class Methods {
 		console.log('Metadata Extractor plugin: wrote the metadata JSON file');
 	}
 
-	async setWritingSchedule(
+	setWritingSchedule(
 		tagFileName: string,
 		metadataFileName: string,
 		allExceptMdFileName: string
