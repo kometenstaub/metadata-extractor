@@ -380,7 +380,7 @@ export default class Methods {
 			window.clearInterval(this.plugin.intervalId3);
 			this.plugin.intervalId3 = undefined;
 			this.plugin.intervalId3 = window.setInterval(
-				() => this.writeCacheToJSON(allExceptMdFileName),
+				() => this.writeAllExceptMd(allExceptMdFileName),
 				milliseconds
 			);
 			// API function to cancel interval when plugin unloads

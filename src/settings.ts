@@ -121,7 +121,7 @@ export class BridgeSettingTab extends PluginSettingTab {
 			);
 
 		new Setting(containerEl)
-			.setName('Configure frequency for writing both JSON files')
+			.setName('Configure frequency for writing the three JSON files')
 			.setDesc(
 				'The frequency has to be entered in minutes. Set it to 0 to disable the periodic writing.'
 			)
