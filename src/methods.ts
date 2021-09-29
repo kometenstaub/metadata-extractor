@@ -91,10 +91,6 @@ export default class Methods {
 			Object.assign(foldersAndFiles, {
 				folders: folders,
 			});
-		} else if (folders.length === 0 && otherFiles.length > 0) {
-			Object.assign(foldersAndFiles, {
-				nonMdFiles: otherFiles,
-			});
 		} else {
 			status = false;
 		}
