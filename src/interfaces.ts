@@ -13,16 +13,8 @@ export interface Metadata {
 	tags?: string[];
 	headings?: { heading: string; level: number }[];
 	aliases?: string[];
-	links?: {
-		link: string;
-		relativePath?: string;
-		cleanLink?: string;
-		displayText?: string;
-	}[];
-	backlinks?: {
-		fileName: string;
-		relativePath: string;
-	}[];
+	links?: links[];
+	backlinks?: backlinks[];
 }
 
 export interface linkToPath {
