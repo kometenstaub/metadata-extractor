@@ -13,8 +13,10 @@ export const DEFAULT_SETTINGS: BridgeSettings = {
 	writeFilesOnLaunch: false,
 };
 export class BridgeSettingTab extends PluginSettingTab {
-	constructor(app: App, public plugin: BridgePlugin) {
+	plugin: BridgePlugin;
+	constructor(app: App, plugin: BridgePlugin) {
 		super(app, plugin);
+		this.plugin = plugin;
 	}
 
 	display(): void {

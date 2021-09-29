@@ -24,7 +24,12 @@ import type {
 import { writeFileSync } from 'fs';
 
 export default class Methods {
-	constructor(public plugin: BridgePlugin, public app: App) {}
+	app: App;
+	plugin: BridgePlugin;
+	constructor(plugin: BridgePlugin, app: App) {
+		this.plugin = plugin;
+		this.app = app;
+	}
 
 	// https://github.com/tillahoffmann/obsidian-jupyter/blob/e1e28db25fd74cd16844b37d0fe2eda9c3f2b1ee/main.ts#L175
 	getAbsolutePath(fileName: string): string {
@@ -63,7 +68,7 @@ export default class Methods {
 			path = this.getAbsolutePath(fileName);
 		}
 		let folders: folder[] = [];
-		const allFiles = this.app.vault.getAllLoadedFiles()
+		const allFiles = this.app.vault.getAllLoadedFiles();
 		for (let TAFile of allFiles) {
 			if (TAFile instanceof TFolder) {
 				folders.push({ name: TAFile.name, relativePath: TAFile.path });
@@ -80,7 +85,7 @@ export default class Methods {
 			}
 		}
 		//@ts-expect-error
-		let foldersAndFiles: excectMd = {}
+		let foldersAndFiles: excectMd = {};
 		let status = true;
 		if (folders.length > 0 && otherFiles.length > 0) {
 			Object.assign(foldersAndFiles, {
