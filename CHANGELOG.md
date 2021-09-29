@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.1.14](https://github.com/kometenstaub/metadata-extractor/compare/0.1.13...0.1.14) (2021-09-29)
+
+
+### Bug Fixes
+
+* removed unnecessary condition ([5866326](https://github.com/kometenstaub/metadata-extractor/commit/58663264a488d335075cd7056a881cdf1e7312b5))
+
 ### [0.1.13](https://github.com/kometenstaub/metadata-extractor/compare/0.1.12...0.1.13) (2021-09-29)
 
 
