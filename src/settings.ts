@@ -5,8 +5,10 @@ import type { BridgeSettings } from './interfaces';
 export const DEFAULT_SETTINGS: BridgeSettings = {
 	tagPath: '',
 	metadataPath: '',
+	allExceptMdPath: '',
 	tagFile: 'tags.json',
 	metadataFile: 'metadata.json',
+	allExceptMdFile: 'allExceptMd.json',
 	writingFrequency: '0',
 	writeFilesOnLaunch: false,
 };
@@ -87,6 +89,38 @@ export class BridgeSettingTab extends PluginSettingTab {
 			);
 
 		new Setting(containerEl)
+			.setName('File-write path of allExceptMd JSON')
+			.setDesc(
+				"Where the allExceptMd JSON file will be saved. Requires the file name with extension. \
+			If this is filled in, the setting below won't have any effect."
+			)
+			.addText((text) =>
+				text
+					.setPlaceholder('/home/user/Downloads/allExceptMd.json')
+					.setValue(this.plugin.settings.allExceptMdPath)
+					.onChange(async (value) => {
+						this.plugin.settings.allExceptMdPath = value;
+						await this.plugin.saveSettings();
+					})
+			);
+
+		new Setting(containerEl)
+			.setName('File name of allExceptMd JSON')
+			.setDesc(
+				'Requires the .json extension; leave empty if setting above was changed. \
+			Only change this setting if you want to change the name of the saved json in the plugin folder.'
+			)
+			.addText((text) =>
+				text
+					.setPlaceholder('metadata.json')
+					.setValue(this.plugin.settings.allExceptMdFile)
+					.onChange(async (value) => {
+						this.plugin.settings.allExceptMdFile = value;
+						await this.plugin.saveSettings();
+					})
+			);
+
+		new Setting(containerEl)
 			.setName('Configure frequency for writing both JSON files')
 			.setDesc(
 				'The frequency has to be entered in minutes. Set it to 0 to disable the periodic writing.'
@@ -104,7 +138,8 @@ export class BridgeSettingTab extends PluginSettingTab {
 						await this.plugin.saveSettings();
 						this.plugin.methods.setWritingSchedule(
 							this.plugin.settings.tagFile,
-							this.plugin.settings.metadataFile
+							this.plugin.settings.metadataFile,
+							this.plugin.settings.allExceptMdFile
 						);
 					})
 			);

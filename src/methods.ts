@@ -8,8 +8,19 @@ import {
 	parseFrontMatterAliases,
 	LinkCache,
 	EmbedCache,
+	TFolder,
+	TFile,
 } from 'obsidian';
-import type { Metadata, linkToPath, tagNumber, links, backlinks } from './interfaces';
+import type {
+	Metadata,
+	linkToPath,
+	tagNumber,
+	links,
+	backlinks,
+	excectMd,
+	folder,
+	file,
+} from './interfaces';
 import { writeFileSync } from 'fs';
 
 export default class Methods {
@@ -43,6 +54,60 @@ export default class Methods {
 		// remove duplicate tags in file
 		currentTags = Array.from(new Set(currentTags));
 		return currentTags;
+	}
+
+	writeAllExceptMd(fileName: string) {
+		let path = this.plugin.settings.allExceptMdPath;
+		// only set the path to the plugin folder if no other path is specified
+		if (!this.plugin.settings.allExceptMdPath) {
+			path = this.getAbsolutePath(fileName);
+		}
+		let folders: folder[] = [];
+		const allFiles = this.app.vault.getAllLoadedFiles()
+		for (let TAFile of allFiles) {
+			if (TAFile instanceof TFolder) {
+				folders.push({ name: TAFile.name, relativePath: TAFile.path });
+			}
+		}
+		let otherFiles: file[] = [];
+		for (let TAFile of allFiles) {
+			if (TAFile instanceof TFile && TAFile.path.slice(-3) !== '.md') {
+				otherFiles.push({
+					name: TAFile.name,
+					basename: TAFile.basename,
+					relativePath: TAFile.path,
+				});
+			}
+		}
+		//@ts-expect-error
+		let foldersAndFiles: excectMd = {}
+		let status = true;
+		if (folders.length > 0 && otherFiles.length > 0) {
+			Object.assign(foldersAndFiles, {
+				folders: folders,
+				nonMdFiles: otherFiles,
+			});
+		} else if (folders.length > 0 && otherFiles.length === 0) {
+			Object.assign(foldersAndFiles, {
+				folders: folders,
+			});
+		} else if (folders.length === 0 && otherFiles.length > 0) {
+			Object.assign(foldersAndFiles, {
+				nonMdFiles: otherFiles,
+			});
+		} else {
+			status = false;
+		}
+		if (status) {
+			writeFileSync(path, JSON.stringify(foldersAndFiles, null, 2));
+			console.log(
+				'Metadata Extractor plugin: wrote the allExceptMd JSON file'
+			);
+		} else {
+			new Notice(
+				'There are neither folders nor non-Markdown files in your vault.'
+			);
+		}
 	}
 
 	async writeTagsToJSON(fileName: string) {
@@ -117,8 +182,7 @@ export default class Methods {
 			});
 		});
 
-		let content = tagToFile;
-		writeFileSync(path, JSON.stringify(content, null, 2));
+		writeFileSync(path, JSON.stringify(tagToFile, null, 2));
 		console.log('Metadata Extractor plugin: wrote the tagToFile JSON file');
 	}
 
@@ -238,7 +302,7 @@ export default class Methods {
 									backlinkObj.push({
 										fileName: otherFile.fileName,
 										link: links.link,
-										relativePath: links.relativePath,
+										relativePath: otherFile.relativePath,
 										cleanLink: links.cleanLink,
 										displayText: links.displayText,
 									});
@@ -249,7 +313,7 @@ export default class Methods {
 									backlinkObj.push({
 										fileName: otherFile.fileName,
 										link: links.link,
-										relativePath: links.relativePath,
+										relativePath: otherFile.relativePath,
 										cleanLink: links.cleanLink,
 									});
 								} else if (
@@ -259,14 +323,14 @@ export default class Methods {
 									backlinkObj.push({
 										fileName: otherFile.fileName,
 										link: links.link,
-										relativePath: links.relativePath,
+										relativePath: otherFile.relativePath,
 										displayText: links.displayText,
 									});
 								} else {
 									backlinkObj.push({
 										fileName: otherFile.fileName,
 										link: links.link,
-										relativePath: links.relativePath,
+										relativePath: otherFile.relativePath,
 									});
 								}
 							}
@@ -285,7 +349,11 @@ export default class Methods {
 		console.log('Metadata Extractor plugin: wrote the metadata JSON file');
 	}
 
-	async setWritingSchedule(tagFileName: string, metadataFileName: string) {
+	async setWritingSchedule(
+		tagFileName: string,
+		metadataFileName: string,
+		allExceptMdFileName: string
+	) {
 		if (this.plugin.settings.writingFrequency !== '0') {
 			const intervalInMinutes = parseInt(
 				this.plugin.settings.writingFrequency
@@ -311,9 +379,20 @@ export default class Methods {
 			);
 			// API function to cancel interval when plugin unloads
 			this.plugin.registerInterval(this.plugin.intervalId2);
+
+			// schedule for allExceptMd to JSON
+			window.clearInterval(this.plugin.intervalId3);
+			this.plugin.intervalId3 = undefined;
+			this.plugin.intervalId3 = window.setInterval(
+				() => this.writeCacheToJSON(allExceptMdFileName),
+				milliseconds
+			);
+			// API function to cancel interval when plugin unloads
+			this.plugin.registerInterval(this.plugin.intervalId3);
 		} else if (this.plugin.settings.writingFrequency === '0') {
 			window.clearInterval(this.plugin.intervalId1);
 			window.clearInterval(this.plugin.intervalId2);
+			window.clearInterval(this.plugin.intervalId3);
 		}
 	}
 }

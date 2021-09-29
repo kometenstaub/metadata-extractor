@@ -5,6 +5,8 @@ export interface BridgeSettings {
 	metadataPath: string;
 	tagFile: string;
 	metadataFile: string;
+	allExceptMdFile: string;
+	allExceptMdPath: string;
 }
 
 export interface Metadata {
@@ -41,4 +43,23 @@ export interface backlinks {
 	relativePath: string;
 	cleanLink?: string;
 	displayText?: string;
+}
+
+/**
+ * There is at least the root folder
+ */
+export interface excectMd {
+	folders: folder[];
+	nonMdFiles?: file[];
+}
+
+export interface folder {
+	name: string;
+	relativePath: string;
+}
+
+export interface file {
+	name: string;
+	basename: string;
+	relativePath: string;
 }
