@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.1.16](https://github.com/kometenstaub/metadata-extractor/compare/0.1.15...0.1.16) (2021-09-29)
+
+
+### Bug Fixes
+
+* :bug: fixed wrong method call for timer, corrected settings ([309b3fe](https://github.com/kometenstaub/metadata-extractor/commit/309b3fee04e218385471ccf61b5abbee8b7e2947))
+
 ### [0.1.15](https://github.com/kometenstaub/metadata-extractor/compare/0.1.14...0.1.15) (2021-09-29)
 
 
