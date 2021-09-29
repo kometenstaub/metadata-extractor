@@ -1,6 +1,4 @@
-import {
-	Plugin,
-} from 'obsidian';
+import { Plugin } from 'obsidian';
 
 import Methods from './methods';
 import { BridgeSettingTab, DEFAULT_SETTINGS } from './settings';
