@@ -9,7 +9,7 @@ import {
 	LinkCache,
 	EmbedCache,
 } from 'obsidian';
-import type { Metadata, linkToPath, tagNumber, links } from './interfaces';
+import type { Metadata, linkToPath, tagNumber, links, backlinks } from './interfaces';
 import { writeFileSync } from 'fs';
 
 export default class Methods {
@@ -55,7 +55,7 @@ export default class Methods {
 		let tagsCache: { name: string; tags: string[] }[] = [];
 
 		(async () => {
-			this.app.vault.getMarkdownFiles().map(async (tfile) => {
+			this.app.vault.getMarkdownFiles().forEach(async (tfile) => {
 				let currentCache!: CachedMetadata;
 				if (this.app.metadataCache.getFileCache(tfile) !== null) {
 					//@ts-ignore
@@ -104,7 +104,7 @@ export default class Methods {
 		}> = [];
 		uniqueAllTagsFromCache.forEach((tag) => {
 			const fileNameArray: string[] = [];
-			tagsCache.map((fileWithTag) => {
+			tagsCache.forEach((fileWithTag) => {
 				if (fileWithTag.tags.contains(tag)) {
 					fileNameArray.push(fileWithTag.name);
 				}
@@ -150,7 +150,7 @@ export default class Methods {
 		}
 
 		(async () => {
-			this.app.vault.getMarkdownFiles().map(async (tfile) => {
+			this.app.vault.getMarkdownFiles().forEach(async (tfile) => {
 				const displayName = tfile.basename;
 				const relativeFilePath: string = tfile.path;
 				let currentCache!: CachedMetadata;
@@ -195,7 +195,7 @@ export default class Methods {
 				}
 
 				if (currentCache.headings) {
-					currentCache.headings.map((headings) => {
+					currentCache.headings.forEach((headings) => {
 						currentHeadings.push({
 							heading: headings.heading,
 							level: headings.level,
@@ -220,33 +220,64 @@ export default class Methods {
 			});
 		})();
 		//backlinks
-		// TODO: should backlinks include more info, like heading/block reference/alias?
-		let backlinkObj: {
-			fileName: string;
-			relativePath: string;
-		}[] = [];
+		let backlinkObj: backlinks[] = [];
 		const newMetadataCache = metadataCache;
-		metadataCache.map((file) => {
+		metadataCache.forEach((file: Metadata) => {
 			const fileName = file.fileName;
 			const relativeFilePath = file.relativePath;
-			newMetadataCache.map((otherFile) => {
+			newMetadataCache.forEach((otherFile: Metadata) => {
+				// don't check the same file
 				if (fileName !== otherFile.fileName) {
 					if (otherFile.links) {
 						//something doesn't work here
 						//that is because embeds aren't part of the .links in the metadataCache, so when I map over my metadataCache, it doesn't have the link and therefore doesn't find it.
-						otherFile.links.map((links) => {
+						otherFile.links.forEach((links) => {
 							if (links.relativePath === relativeFilePath) {
 								// check if already present, only  push if not present
-								backlinkObj.push({
-									fileName: otherFile.fileName,
-									relativePath: links.relativePath,
-								});
+								if (links.cleanLink && links.displayText) {
+									backlinkObj.push({
+										fileName: otherFile.fileName,
+										link: links.link,
+										relativePath: links.relativePath,
+										cleanLink: links.cleanLink,
+										displayText: links.displayText,
+									});
+								} else if (
+									links.cleanLink &&
+									!links.displayText
+								) {
+									backlinkObj.push({
+										fileName: otherFile.fileName,
+										link: links.link,
+										relativePath: links.relativePath,
+										cleanLink: links.cleanLink,
+									});
+								} else if (
+									!links.cleanLink &&
+									links.displayText
+								) {
+									backlinkObj.push({
+										fileName: otherFile.fileName,
+										link: links.link,
+										relativePath: links.relativePath,
+										displayText: links.displayText,
+									});
+								} else {
+									backlinkObj.push({
+										fileName: otherFile.fileName,
+										link: links.link,
+										relativePath: links.relativePath,
+									});
+								}
 							}
 						});
 					}
 				}
 			});
-			file.backlinks = backlinkObj;
+			if (backlinkObj.length > 0) {
+				file.backlinks = backlinkObj;
+			}
+			// empty it, otherwise it would collect all of the links in the forEach loop
 			backlinkObj = [];
 		});
 
@@ -335,7 +366,7 @@ function calculateLinks(
 	}
 
 	function getLinksAndEmbds(bothlinks: LinkCache[] & EmbedCache[]) {
-		bothLinks.map((links) => {
+		bothLinks.forEach((links) => {
 			let fullLink = links.link;
 			let aliasText: string = '';
 			if (typeof links.displayText !== 'undefined') {

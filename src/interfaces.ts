@@ -39,3 +39,14 @@ export interface links {
 	cleanLink?: string;
 	displayText?: string;
 }
+
+/**
+ * a backlink always has a relative path because it needs to exist
+ */
+export interface backlinks {
+	fileName: string;
+	link: string;
+	relativePath: string;
+	cleanLink?: string;
+	displayText?: string;
+}
