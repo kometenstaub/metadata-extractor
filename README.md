@@ -68,17 +68,17 @@ The third writes a JSON file containing both all folders and non-Markdown files.
 /**
  * JSON export
  */
-export interface excectMd {
+interface excectMd {
 	folders: folder[];
 	nonMdFiles?: file[];
 }
 
-export interface folder {
+interface folder {
 	name: string;
 	relativePath: string;
 }
 
-export interface file {
+interface file {
 	name: string;
 	basename: string;
 	relativePath: string;
