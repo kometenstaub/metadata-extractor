@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.1.15](https://github.com/kometenstaub/metadata-extractor/compare/0.1.14...0.1.15) (2021-09-29)
+
+
+### Bug Fixes
+
+* remove async from synchronous functions which were previously async ([fda38be](https://github.com/kometenstaub/metadata-extractor/commit/fda38be05121220ac28ba58a196b55e24d8df14a))
+
 ### [0.1.14](https://github.com/kometenstaub/metadata-extractor/compare/0.1.13...0.1.14) (2021-09-29)
 
 
