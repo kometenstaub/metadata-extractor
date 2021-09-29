@@ -2,7 +2,7 @@
 
 This Obsidian plugin provides metadata export for third-party apps.
 
-## There are two JSON-exports
+## There are three JSON-exports
 
 They can be executed on a schedule.
 
@@ -30,9 +30,12 @@ Example:
 ]
 ```
 
-The other one writes a JSON file to disk with metadata for each file name. This is how the JSON structure is as a TypeScript interface.
+The second one writes a JSON file to disk with metadata for each file name. This is how the JSON structure is as a TypeScript interface.
 
 ```ts
+/**
+ * JSON export
+ */
 interface Metadata {
 	fileName: string;
 	relativePath: string;
@@ -56,6 +59,29 @@ interface backlinks {
 	relativePath: string;
 	cleanLink?: string;
 	displayText?: string;
+}
+```
+
+The third writes a JSON file containing both all folders and non-Markdown files. The structure is like this.
+
+```ts
+/**
+ * JSON export
+ */
+export interface excectMd {
+	folders: folder[];
+	nonMdFiles?: file[];
+}
+
+export interface folder {
+	name: string;
+	relativePath: string;
+}
+
+export interface file {
+	name: string;
+	basename: string;
+	relativePath: string;
 }
 ```
 
