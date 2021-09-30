@@ -1,6 +1,6 @@
 # Metadata Extractor Obsidian plugin
 
-This Obsidian plugin provides metadata export for third-party apps.
+This plugin allows you to write Obsidian vault metadata, which is only accessible via plugin, onto the hard drive. This enables Third-party apps to access Obsidian metadata which they normally wouldn't be able to access. Exemplary use cases are launcher apps (e.g. Alfred, Ulauncher) or graph analysis software.
 
 ## There are three JSON-exports
 
