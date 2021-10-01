@@ -294,8 +294,6 @@ export default class Methods {
 				// don't check the same file
 				if (fileName !== otherFile.fileName) {
 					if (otherFile.links) {
-						//something doesn't work here
-						//that is because embeds aren't part of the .links in the metadataCache, so when I map over my metadataCache, it doesn't have the link and therefore doesn't find it.
 						otherFile.links.forEach((links) => {
 							if (links.relativePath === relativeFilePath) {
 								// check if already present, only  push if not present
