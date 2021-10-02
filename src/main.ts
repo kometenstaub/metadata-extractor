@@ -50,7 +50,7 @@ export default class BridgePlugin extends Plugin {
 			});
 		}
 
-		await this.methods.setWritingSchedule(
+		this.methods.setWritingSchedule(
 			this.settings.tagFile,
 			this.settings.metadataFile,
 			this.settings.allExceptMdFile
