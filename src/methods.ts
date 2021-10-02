@@ -37,9 +37,7 @@ export default class Methods {
 		let relativePath;
 		// base path
 		if (this.app.vault.adapter instanceof FileSystemAdapter) {
-			basePath = (
-				this.app.vault.adapter as FileSystemAdapter
-			).getBasePath();
+			basePath = this.app.vault.adapter.getBasePath();
 		} else {
 			throw new Error('Cannot determine base path.');
 		}
