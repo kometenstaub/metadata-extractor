@@ -17,7 +17,7 @@ import type {
 	tagNumber,
 	links,
 	backlinks,
-	excectMd,
+	exceptMd,
 	folder,
 	file,
 } from './interfaces';
@@ -83,7 +83,7 @@ export default class Methods {
 			}
 		}
 		//@ts-expect-error
-		let foldersAndFiles: excectMd = {};
+		let foldersAndFiles: exceptMd = {};
 		let status = true;
 		if (folders.length > 0 && otherFiles.length > 0) {
 			Object.assign(foldersAndFiles, {

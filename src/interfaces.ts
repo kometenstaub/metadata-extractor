@@ -48,7 +48,7 @@ export interface backlinks {
 /**
  * There is at least the root folder
  */
-export interface excectMd {
+export interface exceptMd {
 	folders: folder[];
 	nonMdFiles?: file[];
 }
