@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.1.20](https://github.com/kometenstaub/metadata-extractor/compare/0.1.19...0.1.20) (2021-11-04)
+
+
+### Bug Fixes
+
+* :loud_sound: disable logs by default; fixes [#5](https://github.com/kometenstaub/metadata-extractor/issues/5) ([2dc5fb2](https://github.com/kometenstaub/metadata-extractor/commit/2dc5fb2b751993ba0be4d51ca65cee5015a02c21))
+
 ### [0.1.19](https://github.com/kometenstaub/metadata-extractor/compare/0.1.18...0.1.19) (2021-10-02)
 
 ### [0.1.18](https://github.com/kometenstaub/metadata-extractor/compare/0.1.17...0.1.18) (2021-10-02)
