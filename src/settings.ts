@@ -11,7 +11,9 @@ export const DEFAULT_SETTINGS: BridgeSettings = {
 	allExceptMdFile: 'allExceptMd.json',
 	writingFrequency: '0',
 	writeFilesOnLaunch: false,
+	consoleLog: false,
 };
+
 export class BridgeSettingTab extends PluginSettingTab {
 	plugin: BridgePlugin;
 	constructor(app: App, plugin: BridgePlugin) {
@@ -156,6 +158,18 @@ export class BridgeSettingTab extends PluginSettingTab {
 					.setValue(this.plugin.settings.writeFilesOnLaunch)
 					.onChange((state) => {
 						this.plugin.settings.writeFilesOnLaunch = state;
+						this.plugin.saveSettings();
+					});
+			});
+
+		new Setting(containerEl)
+			.setName('Show console logs')
+			.setDesc('Only enable this for debugging purposes.')
+			.addToggle((toggle) => {
+				toggle
+					.setValue(this.plugin.settings.consoleLog)
+					.onChange((state) => {
+						this.plugin.settings.consoleLog = state;
 						this.plugin.saveSettings();
 					});
 			});

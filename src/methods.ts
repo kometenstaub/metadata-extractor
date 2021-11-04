@@ -99,9 +99,11 @@ export default class Methods {
 		}
 		if (status) {
 			writeFileSync(path, JSON.stringify(foldersAndFiles, null, 2));
-			console.log(
-				'Metadata Extractor plugin: wrote the allExceptMd JSON file'
-			);
+			if (this.plugin.settings.consoleLog) {
+				console.log(
+					'Metadata Extractor plugin: wrote the allExceptMd JSON file'
+				);
+			}
 		} else {
 			new Notice(
 				'There are neither folders nor non-Markdown files in your vault.'
@@ -182,7 +184,11 @@ export default class Methods {
 		});
 
 		writeFileSync(path, JSON.stringify(tagToFile, null, 2));
-		console.log('Metadata Extractor plugin: wrote the tagToFile JSON file');
+		if (this.plugin.settings.consoleLog) {
+			console.log(
+				'Metadata Extractor plugin: wrote the tagToFile JSON file'
+			);
+		}
 	}
 
 	writeCacheToJSON(fileName: string) {
@@ -343,7 +349,11 @@ export default class Methods {
 		});
 
 		writeFileSync(path, JSON.stringify(metadataCache, null, 2));
-		console.log('Metadata Extractor plugin: wrote the metadata JSON file');
+		if (this.plugin.settings.consoleLog) {
+			console.log(
+				'Metadata Extractor plugin: wrote the metadata JSON file'
+			);
+		}
 	}
 
 	setWritingSchedule(

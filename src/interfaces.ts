@@ -7,6 +7,7 @@ export interface BridgeSettings {
 	metadataFile: string;
 	allExceptMdFile: string;
 	allExceptMdPath: string;
+	consoleLog: boolean;
 }
 
 export interface Metadata {
