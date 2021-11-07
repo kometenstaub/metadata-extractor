@@ -15,6 +15,11 @@
 				"type": "perf",
 				"hidden": false,
 				"section": "Performance"
+			},
+			{
+				"type": "refactor",
+				"hidden": false,
+				"section": "Refactoring"
 			}
 		]
 	},
