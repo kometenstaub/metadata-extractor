@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [0.2.0](https://github.com/kometenstaub/metadata-extractor/compare/0.1.20...0.2.0) (2021-11-07)
+
+
+### Performance
+
+* :zap: use worker for backlinks calculation ([f35f200](https://github.com/kometenstaub/metadata-extractor/commit/f35f200b2646bdfeef5cc5fb5740ae88a98472ea))
+
 ### [0.1.20](https://github.com/kometenstaub/metadata-extractor/compare/0.1.19...0.1.20) (2021-11-04)
 
 
