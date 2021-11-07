@@ -9,7 +9,14 @@
 		"release": "standard-version"
 	},
 	"standard-version": {
-		"t": ""
+		"t": "",
+		"types": [
+			{
+				"type": "perf", 
+				"hidden": false,
+				"section": "Performance"
+			}
+		]
 	},
 	"keywords": [],
 	"author": "kometenstaub",
