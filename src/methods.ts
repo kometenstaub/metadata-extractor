@@ -22,6 +22,8 @@ import type {
 	file,
 } from './interfaces';
 import { writeFileSync } from 'fs';
+//@ts-ignore
+import Worker from './workers/metadata.worker';
 
 export default class Methods {
 	app: App;
@@ -244,6 +246,7 @@ export default class Methods {
 				metaObj.fileName = displayName;
 				metaObj.relativePath = relativeFilePath;
 
+
 				currentTags = this.getUniqueTags(currentCache);
 				if (currentTags !== null) {
 					if (currentTags.length > 0) {
@@ -291,68 +294,21 @@ export default class Methods {
 		//backlinks
 		let backlinkObj: backlinks[] = [];
 		const newMetadataCache = metadataCache;
-		metadataCache.forEach((file: Metadata) => {
-			const fileName = file.fileName;
-			const relativeFilePath = file.relativePath;
-			newMetadataCache.forEach((otherFile: Metadata) => {
-				// don't check the same file
-				if (fileName !== otherFile.fileName) {
-					if (otherFile.links) {
-						otherFile.links.forEach((links) => {
-							if (links.relativePath === relativeFilePath) {
-								// check if already present, only  push if not present
-								if (links.cleanLink && links.displayText) {
-									backlinkObj.push({
-										fileName: otherFile.fileName,
-										link: links.link,
-										relativePath: otherFile.relativePath,
-										cleanLink: links.cleanLink,
-										displayText: links.displayText,
-									});
-								} else if (
-									links.cleanLink &&
-									!links.displayText
-								) {
-									backlinkObj.push({
-										fileName: otherFile.fileName,
-										link: links.link,
-										relativePath: otherFile.relativePath,
-										cleanLink: links.cleanLink,
-									});
-								} else if (
-									!links.cleanLink &&
-									links.displayText
-								) {
-									backlinkObj.push({
-										fileName: otherFile.fileName,
-										link: links.link,
-										relativePath: otherFile.relativePath,
-										displayText: links.displayText,
-									});
-								} else {
-									backlinkObj.push({
-										fileName: otherFile.fileName,
-										link: links.link,
-										relativePath: otherFile.relativePath,
-									});
-								}
-							}
-						});
-					}
-				}
-			});
-			if (backlinkObj.length > 0) {
-				file.backlinks = backlinkObj;
-			}
-			// empty it, otherwise it would collect all of the links in the forEach loop
-			backlinkObj = [];
-		});
 
-		writeFileSync(path, JSON.stringify(metadataCache, null, 2));
-		if (this.plugin.settings.consoleLog) {
-			console.log(
-				'Metadata Extractor plugin: wrote the metadata JSON file'
-			);
+		let worker = Worker()
+
+		worker.postMessage([metadataCache, backlinkObj, newMetadataCache])
+		worker.onerror = (event: any) => {
+			new Notice('Something went wrong with the backlinks calculation.')
+		}
+		worker.onmessage = (event: any) => {
+			metadataCache = event.data
+			writeFileSync(path, JSON.stringify(metadataCache, null, 2));
+			if (this.plugin.settings.consoleLog) {
+				console.log(
+					'Metadata Extractor plugin: wrote the metadata JSON file'
+				);
+			}
 		}
 	}
 
