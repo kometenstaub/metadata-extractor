@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.2.1](https://github.com/kometenstaub/metadata-extractor/compare/0.2.0...0.2.1) (2021-11-14)
+
+
+### Performance
+
+* :zap: pass less data to worker ([38e19a4](https://github.com/kometenstaub/metadata-extractor/commit/38e19a45824a6b1403d360141e11d56ac0a5ef28))
+
 ## [0.2.0](https://github.com/kometenstaub/metadata-extractor/compare/0.1.20...0.2.0) (2021-11-07)
 
 
