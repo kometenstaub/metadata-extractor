@@ -293,7 +293,6 @@ export default class Methods {
 		})();
 		//backlinks
 		let backlinkObj: backlinks[] = [];
-		const newMetadataCache = metadataCache;
 
 		let worker = Worker()
 
