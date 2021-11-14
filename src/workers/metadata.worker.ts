@@ -3,7 +3,7 @@ import type { Metadata, backlinks } from 'src/interfaces';
 self.onmessage = function(e) {
 	let metadataCache: Metadata[] = e.data[0]
 	let backlinkObj: backlinks[] = e.data[1]
-	let newMetadataCache: Metadata[] = e.data[2]
+	const newMetadataCache: Metadata[] = metadataCache
 	
 	metadataCache.forEach((file: Metadata) => {
 		const fileName = file.fileName;

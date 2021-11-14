@@ -297,7 +297,7 @@ export default class Methods {
 
 		let worker = Worker()
 
-		worker.postMessage([metadataCache, backlinkObj, newMetadataCache])
+		worker.postMessage([metadataCache, backlinkObj])
 		worker.onerror = (event: any) => {
 			new Notice('Something went wrong with the backlinks calculation.')
 		}
