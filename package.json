@@ -1,6 +1,6 @@
 {
 	"name": "metadata-extractor",
-	"version": "0.2.1",
+	"version": "0.2.2",
 	"description": "Plugin that extracts metadata and saves it in JSON format",
 	"main": "src/main.ts",
 	"scripts": {
