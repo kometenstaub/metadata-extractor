@@ -3,6 +3,10 @@ import esbuild from 'esbuild';
 import inlineWorkerPlugin from 'esbuild-plugin-inline-worker';
 import fs from 'fs';
 
+// https://github.com/obsidianmd/obsidian-sample-plugin/blob/master/esbuild.config.mjs
+// TODO: look into using builtins instead of specifying platform: node
+
+
 /**
  * The `./build` directory must be created before building the plugin
  */
@@ -45,7 +49,7 @@ const isProd = process.env.BUILD === 'production';
 			logLevel: 'info',
 			plugins: [
 				copyManifest,
-				inlineWorkerPlugin({ external: ['obsidian'] }),
+				inlineWorkerPlugin(),
 			],
 		});
 	} catch (err) {

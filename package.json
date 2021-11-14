@@ -15,6 +15,16 @@
 				"type": "perf",
 				"hidden": false,
 				"section": "Performance"
+			},
+			{
+				"type": "feat",
+				"hidden": false,
+				"section": "Features"
+			},
+			{
+				"type": "fix",
+				"hidden": false,
+				"section": "Bug Fixes"
 			}
 		]
 	},
