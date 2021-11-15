@@ -246,7 +246,6 @@ export default class Methods {
 				metaObj.fileName = displayName;
 				metaObj.relativePath = relativeFilePath;
 
-
 				currentTags = this.getUniqueTags(currentCache);
 				if (currentTags !== null) {
 					if (currentTags.length > 0) {
@@ -294,21 +293,22 @@ export default class Methods {
 		//backlinks
 		let backlinkObj: backlinks[] = [];
 
-		let worker = Worker()
+		let worker = Worker();
 
-		worker.postMessage([metadataCache, backlinkObj])
+		worker.postMessage([metadataCache, backlinkObj]);
 		worker.onerror = (event: any) => {
-			new Notice('Something went wrong with the backlinks calculation.')
-		}
+			new Notice('Something went wrong with the backlinks calculation.');
+		};
 		worker.onmessage = (event: any) => {
-			metadataCache = event.data
+			metadataCache = event.data;
 			writeFileSync(path, JSON.stringify(metadataCache, null, 2));
 			if (this.plugin.settings.consoleLog) {
 				console.log(
 					'Metadata Extractor plugin: wrote the metadata JSON file'
 				);
 			}
-		}
+			worker.terminate();
+		};
 	}
 
 	setWritingSchedule(
