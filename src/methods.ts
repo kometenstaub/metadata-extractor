@@ -237,8 +237,9 @@ export default class Methods {
 						//@ts-ignore
 						link = split;
 					}
+				} else {
+					link = link.slice(0, -3);
 				}
-				link = link.slice(0, -3);
 				fileMap[link] = newKey;
 			}
 		}

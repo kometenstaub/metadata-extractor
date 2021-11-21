@@ -13,6 +13,9 @@ export interface BridgeSettings {
 	consoleLog: boolean;
 }
 
+/**
+ * the metadata that will be written to disk as an array of {@link Metadata}
+ */
 export interface Metadata {
 	fileName: string;
 	relativePath: string;
