@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.2.4](https://github.com/kometenstaub/metadata-extractor/compare/0.2.3...0.2.4) (2021-11-21)
+
+
+### Bug Fixes
+
+* :bug: backlinks are now correct ([3c93705](https://github.com/kometenstaub/metadata-extractor/commit/3c937050bfbe277ed9bf432de307da62671f8eba))
+* :bug: better error handling if there are no tags ([f3699ec](https://github.com/kometenstaub/metadata-extractor/commit/f3699ecbad5c3c73e1a13097dd76455a027478cf))
+* :bug: lower case fileMap key ([b22896d](https://github.com/kometenstaub/metadata-extractor/commit/b22896df820740c65fdd4e67425801765042119b))
+* :bug: revert wrong refactoring ([6677694](https://github.com/kometenstaub/metadata-extractor/commit/66776943a455390cfd17cff93cfa605c7786b8f4))
+
 ### [0.2.3](https://github.com/kometenstaub/metadata-extractor/compare/0.2.2...0.2.3) (2021-11-15)
 
 
