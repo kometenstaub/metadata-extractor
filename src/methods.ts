@@ -427,6 +427,8 @@ function calculateLinks(
 		for (let links of bothLinks) {
 			let fullLink = links.link;
 			let aliasText: string = '';
+			//@ts-expect-error
+			let currentLinkObject: links = {};
 			if (typeof links.displayText !== 'undefined') {
 				aliasText = links.displayText;
 			}
@@ -436,104 +438,48 @@ function calculateLinks(
 				fullLink = fullLink.split('/').last();
 			}
 			let path: string = '';
-			if (!fullLink.includes('#') && aliasText === fullLink) {
+
+			if (!fullLink.includes('#')) {
 				path = fileMap[fullLink];
+				currentLinkObject.link = fullLink;
 				// account for uncreated files
-				if (!path) {
-					currentLinks.push({
-						link: fullLink,
-					});
-				} else {
-					currentLinks.push({
-						link: fullLink,
-						relativePath: path,
-					});
+				if (path) {
+					currentLinkObject.relativePath = path;
+				}
+				// account for alias
+				if (aliasText !== fullLink) {
+					currentLinkObject.displayText = aliasText;
 				}
 			}
-			// heading/block ref and alias, but not to the same file
-			else if (
-				fullLink.includes('#') &&
-				fullLink.charAt(0) !== '#' &&
-				(!aliasText.includes('#') || !aliasText.includes('>'))
-			) {
+			// heading/block ref and maybe an alias, but not to the same file
+			else if (fullLink.includes('#') && fullLink.charAt(0) !== '#') {
 				const alias = aliasText;
 				const cleanLink = fullLink.replace(/#.+/g, '');
 				path = fileMap[cleanLink];
+				currentLinkObject.link = fullLink;
+				currentLinkObject.cleanLink = cleanLink;
+				// it has an alias
+				if (!aliasText.includes('#') || !aliasText.includes('>')) {
+					currentLinkObject.displayText = alias;
+				}
 				// account for uncreated files
-				if (!path) {
-					currentLinks.push({
-						link: fullLink,
-						cleanLink: cleanLink,
-						displayText: alias,
-					});
-				} else {
-					currentLinks.push({
-						link: fullLink,
-						relativePath: path,
-						cleanLink: cleanLink,
-						displayText: alias,
-					});
+				if (path) {
+					currentLinkObject.relativePath = path;
 				}
 			}
-			// heading/block ref and no alias, but not to the same file
-			else if (
-				fullLink.includes('#') &&
-				fullLink.charAt(0) !== '#' &&
-				aliasText.includes('#')
-			) {
-				const cleanLink = fullLink.replace(/#.+/g, '');
-				path = fileMap[cleanLink];
-				// account for uncreated files
-				if (!path) {
-					currentLinks.push({
-						link: fullLink,
-						cleanLink: cleanLink,
-					});
-				} else {
-					currentLinks.push({
-						link: fullLink,
-						relativePath: path,
-						cleanLink: cleanLink,
-					});
-				}
-			} // link with alias but not headings
-			else if (!fullLink.includes('#') && fullLink !== aliasText) {
-				const alias = aliasText;
-				path = fileMap[fullLink];
-				// account for uncreated files
-				if (!path) {
-					currentLinks.push({
-						link: fullLink,
-						displayText: alias,
-					});
-				} else {
-					currentLinks.push({
-						link: fullLink,
-						relativePath: path,
-						displayText: alias,
-					});
-				}
-			}
-			// heading/block ref to same file and alias
-			else if (fullLink.charAt(0) === '#' && fullLink !== aliasText) {
-				const alias = aliasText;
+			// heading/block ref to same file and maybe alias
+			else if (fullLink.charAt(0) === '#') {
 				path = relativeFilePath;
-				currentLinks.push({
-					link: fullLink,
-					relativePath: path,
-					cleanLink: displayName,
-					displayText: alias,
-				});
-			} // only block ref/heading to same file, no alias
-			else if (fullLink.charAt(0) === '#' && fullLink === aliasText) {
-				path = relativeFilePath;
-				// account for uncreated files
-				currentLinks.push({
-					link: fullLink,
-					relativePath: path,
-				});
+				currentLinkObject.link = fullLink;
+				currentLinkObject.relativePath = path;
+				currentLinkObject.cleanLink = displayName;
+				// account for alias
+				if (fullLink !== aliasText) {
+					currentLinkObject.displayText = aliasText;
+				}
 			}
-		};
+			currentLinks.push(currentLinkObject);
+		}
 		if (currentLinks.length > 0) {
 			metaObj.links = currentLinks;
 		}
