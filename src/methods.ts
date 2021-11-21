@@ -119,7 +119,6 @@ export default class Methods {
 	 * If another path is set (tagPath) in the settings, then it will use that path
 	 */
 	writeTagsToJSON(fileName: string): void {
-
 		// if there are no tags in the vault, exit
 		const tags = (
 			this.app.metadataCache as extendedMetadataCache
@@ -127,10 +126,10 @@ export default class Methods {
 		if (Object.keys(tags).length === 0) {
 			const error = 'There are no tags in your vault.';
 			if (this.plugin.settings.consoleLog) {
-				console.log(error)
-				return
+				console.log(error);
+				return;
 			} else {
-				return
+				return;
 			}
 		}
 
@@ -142,24 +141,22 @@ export default class Methods {
 
 		let tagsCache: tagCache[] = [];
 
-		(() => {
-			this.app.vault.getMarkdownFiles().forEach((tfile) => {
-				let currentCache!: CachedMetadata;
-				if (this.app.metadataCache.getFileCache(tfile) !== null) {
-					//@ts-ignore
-					currentCache = this.app.metadataCache.getFileCache(tfile);
-				}
-				let relativePath: string = tfile.path;
-				//let displayName: string = this.app.metadataCache.fileToLinktext(tfile, tfile.path, false);
-				const currentTags: string[] = this.getUniqueTags(currentCache);
-				if (currentTags.length !== 0) {
-					tagsCache.push({
-						name: relativePath,
-						tags: currentTags,
-					});
-				}
-			});
-		})();
+		for (let tfile of this.app.vault.getMarkdownFiles()) {
+			let currentCache!: CachedMetadata;
+			if (this.app.metadataCache.getFileCache(tfile) !== null) {
+				//@ts-ignore
+				currentCache = this.app.metadataCache.getFileCache(tfile);
+			}
+			let relativePath: string = tfile.path;
+			//let displayName: string = this.app.metadataCache.fileToLinktext(tfile, tfile.path, false);
+			const currentTags: string[] = this.getUniqueTags(currentCache);
+			if (currentTags.length !== 0) {
+				tagsCache.push({
+					name: relativePath,
+					tags: currentTags,
+				});
+			}
+		}
 
 		// own version of this.app.metadataCache.getTags()
 		// it doesn't include subtags if there is only one tag/subtag/subsubtag
@@ -176,7 +173,9 @@ export default class Methods {
 		);
 
 		//private method
-		const numberOfNotesWithTag: {} = (this.app.metadataCache as extendedMetadataCache).getTags();
+		const numberOfNotesWithTag: {} = (
+			this.app.metadataCache as extendedMetadataCache
+		).getTags();
 		// Obsidian doesn' consistently lower case the tags (it's a feature, it shows the most used version)
 		let tagsWithCount: tagNumber = {};
 		for (let [key, value] of Object.entries(numberOfNotesWithTag)) {
