@@ -38,7 +38,6 @@ export default class Methods {
 	// https://github.com/tillahoffmann/obsidian-jupyter/blob/e1e28db25fd74cd16844b37d0fe2eda9c3f2b1ee/main.ts#L175
 	getAbsolutePath(fileName: string): string {
 		let basePath;
-		let relativePath;
 		// base path
 		if (this.app.vault.adapter instanceof FileSystemAdapter) {
 			basePath = this.app.vault.adapter.getBasePath();
@@ -46,7 +45,7 @@ export default class Methods {
 			throw new Error('Cannot determine base path.');
 		}
 		// relative path
-		relativePath = `${this.app.vault.configDir}/plugins/metadata-extractor/${fileName}`;
+		const relativePath = `${this.app.vault.configDir}/plugins/metadata-extractor/${fileName}`;
 		// absolute path
 		return `${basePath}/${relativePath}`;
 	}
@@ -74,15 +73,15 @@ export default class Methods {
 		if (!this.plugin.settings.allExceptMdPath) {
 			path = this.getAbsolutePath(fileName);
 		}
-		let folders: folder[] = [];
+		const folders: folder[] = [];
 		const allFiles = this.app.vault.getAllLoadedFiles();
-		for (let TAFile of allFiles) {
+		for (const TAFile of allFiles) {
 			if (TAFile instanceof TFolder) {
 				folders.push({ name: TAFile.name, relativePath: TAFile.path });
 			}
 		}
-		let otherFiles: file[] = [];
-		for (let TAFile of allFiles) {
+		const otherFiles: file[] = [];
+		for (const TAFile of allFiles) {
 			// The basename is the name without the extension
 			if (TAFile instanceof TFile && TAFile.path.slice(-3) !== '.md') {
 				otherFiles.push({
@@ -92,8 +91,9 @@ export default class Methods {
 				});
 			}
 		}
-		//@ts-expect-error
-		let foldersAndFiles: exceptMd = {};
+		//@ts-expect-error, it requires to be initialized, but values will only be added later,
+		// but they are required by TS
+		const foldersAndFiles: exceptMd = {};
 		// there is always one folder, the root (/) folder
 		if (folders.length > 0 && otherFiles.length > 0) {
 			Object.assign(foldersAndFiles, {
@@ -139,15 +139,15 @@ export default class Methods {
 			path = this.getAbsolutePath(fileName);
 		}
 
-		let tagsCache: tagCache[] = [];
+		const tagsCache: tagCache[] = [];
 
-		for (let tfile of this.app.vault.getMarkdownFiles()) {
+		for (const tfile of this.app.vault.getMarkdownFiles()) {
 			let currentCache!: CachedMetadata;
 			if (this.app.metadataCache.getFileCache(tfile) !== null) {
 				//@ts-ignore
 				currentCache = this.app.metadataCache.getFileCache(tfile);
 			}
-			let relativePath: string = tfile.path;
+			const relativePath: string = tfile.path;
 			//let displayName: string = this.app.metadataCache.fileToLinktext(tfile, tfile.path, false);
 			const currentTags: string[] = this.getUniqueTags(currentCache);
 			if (currentTags.length !== 0) {
@@ -179,23 +179,23 @@ export default class Methods {
 		).getTags();
 		// Obsidian doesn't consistently lower case the tags (it's a feature, it shows the most used version)
 		// used to get a tag count; cleaning up is necessary for matching to own cleaned up version
-		let tagsWithCount: tagNumber = {};
-		for (let [key, value] of Object.entries(numberOfNotesWithTag)) {
+		const tagsWithCount: tagNumber = {};
+		for (const [key, value] of Object.entries(numberOfNotesWithTag)) {
 			const newKey: string = key.slice(1).toLowerCase();
 			const newValue: number = value;
 			tagsWithCount[newKey] = newValue;
 		}
 
 		// what will be written to disk
-		let tagToFile: {
+		const tagToFile: {
 			tag: string;
 			tagCount: number;
 			relativePaths: string[] | string;
 		}[] = [];
-		for (let tag of uniqueAllTagsFromCache) {
+		for (const tag of uniqueAllTagsFromCache) {
 			const fileNameArray: string[] = [];
 			// see which files contain the current tag
-			for (let file of tagsCache) {
+			for (const file of tagsCache) {
 				if (file.tags.contains(tag)) {
 					fileNameArray.push(file.name);
 				}
@@ -224,15 +224,15 @@ export default class Methods {
 		}
 		let metadataCache: Metadata[] = [];
 
-		let fileMap: linkToPath = {};
+		const fileMap: linkToPath = {};
 		//@ts-ignore
-		for (let [key, value] of Object.entries(this.app.vault.fileMap)) {
+		for (const [key, value] of Object.entries(this.app.vault.fileMap)) {
 			const newKey: string = key;
-			let link: string = '';
+			let link = '';
 			if (newKey.slice(-3) === '.md') {
 				if (newKey.includes('/')) {
-					let split = newKey.split('/').last();
-					let isString = typeof split === 'string';
+					const split = newKey.split('/').last();
+					const isString = typeof split === 'string';
 					if (isString) {
 						//@ts-ignore
 						link = split;
@@ -243,7 +243,7 @@ export default class Methods {
 			}
 		}
 
-		for (let tfile of this.app.vault.getMarkdownFiles()) {
+		for (const tfile of this.app.vault.getMarkdownFiles()) {
 			const displayName = tfile.basename;
 			const relativeFilePath: string = tfile.path;
 			let currentCache!: CachedMetadata;
@@ -257,17 +257,16 @@ export default class Methods {
 				new Notice('Something with accessing the cache went wrong!');
 				return;
 			}
-			let currentTags: string[];
 			let currentAliases: string[];
-			let currentHeadings: { heading: string; level: number }[] = [];
+			const currentHeadings: { heading: string; level: number }[] = [];
 
-			//@ts-expect-error
-			let metaObj: Metadata = {};
+			//@ts-expect-error, object needs to be initialized, but values will only be known later
+			const metaObj: Metadata = {};
 
 			metaObj.fileName = displayName;
 			metaObj.relativePath = relativeFilePath;
 
-			currentTags = this.getUniqueTags(currentCache);
+			const currentTags = this.getUniqueTags(currentCache);
 			if (currentTags !== null) {
 				if (currentTags.length > 0) {
 					metaObj.tags = currentTags;
@@ -275,7 +274,8 @@ export default class Methods {
 			}
 
 			if (currentCache.frontmatter) {
-				//@ts-expect-error
+				//@ts-expect-error, could return null so can't be assigned to current aliases,
+				// check for null is done later
 				currentAliases = parseFrontMatterAliases(
 					currentCache.frontmatter
 				);
@@ -312,9 +312,9 @@ export default class Methods {
 		}
 
 		//backlinks
-		let backlinkObj: backlinks[] = [];
+		const backlinkObj: backlinks[] = [];
 
-		let worker = Worker();
+		const worker = Worker();
 
 		worker.postMessage([metadataCache, backlinkObj]);
 		worker.onerror = (event: any) => {
@@ -341,7 +341,7 @@ export default class Methods {
 			const intervalInMinutes = parseInt(
 				this.plugin.settings.writingFrequency
 			);
-			let milliseconds = intervalInMinutes * 60000;
+			const milliseconds = intervalInMinutes * 60000;
 
 			// schedule for tagsToJSON
 			window.clearInterval(this.plugin.intervalId1);
@@ -387,7 +387,7 @@ function calculateLinks(
 	relativeFilePath: string,
 	displayName: string
 ): Metadata {
-	let currentLinks: links[] = [];
+	const currentLinks: links[] = [];
 	let bothLinks: LinkCache[] & EmbedCache[] = [];
 
 	linksAndOrEmbeds();
@@ -402,7 +402,7 @@ function calculateLinks(
 			onlyEmbeds = currentCache.embeds.filter((embed) => {
 				let link = embed.link;
 				if (link.includes('/')) {
-					//@ts-expect-error
+					//@ts-expect-error, if it has a slash, it will have a last part
 					link = link.split('/').last();
 					// remove heading/block ref from link
 					if (link.includes('#')) {
@@ -423,11 +423,12 @@ function calculateLinks(
 	}
 
 	function getLinksAndEmbeds() {
-		for (let links of bothLinks) {
+		for (const links of bothLinks) {
 			let fullLink = links.link;
-			let aliasText: string = '';
-			//@ts-expect-error
-			let currentLinkObject: links = {};
+			let aliasText = '';
+			//@ts-expect-error, must be initialized for adding keys, but 
+			// TS interface requires certain keys, which will be added later
+			const currentLinkObject: links = {};
 			if (typeof links.displayText !== 'undefined') {
 				aliasText = links.displayText;
 			}
@@ -436,7 +437,7 @@ function calculateLinks(
 				//@ts-ignore
 				fullLink = fullLink.split('/').last();
 			}
-			let path: string = '';
+			let path = '';
 
 			if (!fullLink.includes('#')) {
 				path = fileMap[fullLink.toLowerCase()];

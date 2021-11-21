@@ -1,7 +1,7 @@
 import type { Metadata, backlinks } from 'src/interfaces';
 
 self.onmessage = function (e) {
-	let metadataCache: Metadata[] = e.data[0];
+	const metadataCache: Metadata[] = e.data[0];
 	let backlinkObj: backlinks[] = e.data[1];
 	const newMetadataCache: Metadata[] = metadataCache;
 
@@ -13,8 +13,9 @@ self.onmessage = function (e) {
 			if (fileName !== otherFile.fileName) {
 				if (otherFile.links) {
 					otherFile.links.forEach((links) => {
-						//@ts-expect-error
-						let currentBacklinkObject: backlinks = {};
+						//@ts-expect-error, must be initialized for adding keys,
+						// but TS interface requires certain keys, that will be added later
+						const currentBacklinkObject: backlinks = {};
 						// check if already present, only  push if not present
 						if (links.relativePath === relativeFilePath) {
 							currentBacklinkObject.fileName = otherFile.fileName;
