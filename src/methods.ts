@@ -244,8 +244,7 @@ export default class Methods {
 			}
 		}
 
-		(() => {
-			this.app.vault.getMarkdownFiles().forEach((tfile) => {
+		for (let tfile of this.app.vault.getMarkdownFiles()) {
 				const displayName = tfile.basename;
 				const relativeFilePath: string = tfile.path;
 				let currentCache!: CachedMetadata;
@@ -312,8 +311,8 @@ export default class Methods {
 				if (Object.keys(metaObj).length > 0) {
 					metadataCache.push(metaObj);
 				}
-			});
-		})();
+			};
+
 		//backlinks
 		let backlinkObj: backlinks[] = [];
 
