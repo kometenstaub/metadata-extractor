@@ -26,6 +26,9 @@ export interface Metadata {
 	backlinks?: backlinks[];
 }
 
+/**
+ * the key is lower cased
+ */
 export interface linkToPath {
 	[key: string]: string;
 }

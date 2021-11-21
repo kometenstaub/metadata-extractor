@@ -238,7 +238,7 @@ export default class Methods {
 						link = split;
 					}
 				} 
-				link = link.slice(0, -3);
+				link = link.slice(0, -3).toLowerCase();
 				fileMap[link] = newKey;
 			}
 		}
@@ -413,7 +413,7 @@ function calculateLinks(
 					link = link.replace(/#.+/g, '');
 				}
 				// only return markdown files, because only they are in the fileMap
-				if (fileMap[link]) {
+				if (fileMap[link.toLowerCase()]) {
 					return embed;
 				}
 			});
@@ -439,7 +439,7 @@ function calculateLinks(
 			let path: string = '';
 
 			if (!fullLink.includes('#')) {
-				path = fileMap[fullLink];
+				path = fileMap[fullLink.toLowerCase()];
 				currentLinkObject.link = fullLink;
 				// account for uncreated files
 				if (path) {
@@ -454,8 +454,7 @@ function calculateLinks(
 			else if (fullLink.includes('#') && fullLink.charAt(0) !== '#') {
 				const alias = aliasText;
 				const cleanLink = fullLink.replace(/#.+/g, '');
-				console.log(fileMap)
-				path = fileMap[cleanLink];
+				path = fileMap[cleanLink.toLowerCase()];
 				currentLinkObject.link = fullLink;
 				currentLinkObject.cleanLink = cleanLink;
 				// it has an alias
@@ -463,8 +462,6 @@ function calculateLinks(
 					currentLinkObject.displayText = alias;
 				}
 				// account for uncreated files
-				console.log(path)
-				console.log(currentLinkObject)
 				if (path) {
 					currentLinkObject.relativePath = path;
 				}
