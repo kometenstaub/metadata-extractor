@@ -174,10 +174,11 @@ export default class Methods {
 		);
 
 		//private method
-		const numberOfNotesWithTag: {} = (
+		const numberOfNotesWithTag = (
 			this.app.metadataCache as extendedMetadataCache
 		).getTags();
 		// Obsidian doesn't consistently lower case the tags (it's a feature, it shows the most used version)
+		// used to get a tag count; cleaning up is necessary for matching to own cleaned up version
 		let tagsWithCount: tagNumber = {};
 		for (let [key, value] of Object.entries(numberOfNotesWithTag)) {
 			const newKey: string = key.slice(1).toLowerCase();
@@ -185,25 +186,27 @@ export default class Methods {
 			tagsWithCount[newKey] = newValue;
 		}
 
-		let tagToFile: Array<{
+		// what will be written to disk
+		let tagToFile: {
 			tag: string;
 			tagCount: number;
 			relativePaths: string[] | string;
-		}> = [];
-		uniqueAllTagsFromCache.forEach((tag) => {
+		}[] = [];
+		for (let tag of uniqueAllTagsFromCache) {
 			const fileNameArray: string[] = [];
-			tagsCache.forEach((fileWithTag) => {
-				if (fileWithTag.tags.contains(tag)) {
-					fileNameArray.push(fileWithTag.name);
+			// see which files contain the current tag
+			for (let file of tagsCache) {
+				if (file.tags.contains(tag)) {
+					fileNameArray.push(file.name);
 				}
-			});
+			}
 			const numberOfNotes: number = tagsWithCount[tag];
 			tagToFile.push({
 				tag: tag,
 				tagCount: numberOfNotes,
 				relativePaths: fileNameArray,
 			});
-		});
+		}
 
 		writeFileSync(path, JSON.stringify(tagToFile, null, 2));
 		if (this.plugin.settings.consoleLog) {

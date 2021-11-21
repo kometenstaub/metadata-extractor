@@ -27,6 +27,9 @@ export interface linkToPath {
 	[key: string]: string;
 }
 
+/**
+ * the lower cased version plus removal of # from .getTags()
+ */
 export interface tagNumber {
 	[key: string]: number;
 }
