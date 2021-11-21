@@ -405,6 +405,7 @@ function calculateLinks(
 				if (link.includes('/')) {
 					//@ts-expect-error
 					link = link.split('/').last();
+					// remove heading/block ref from link
 					if (link.includes('#')) {
 						link = link.replace(/#.+/g, '');
 					}
@@ -419,11 +420,11 @@ function calculateLinks(
 			});
 		}
 		bothLinks = onlyLinks.concat(onlyEmbeds);
-		getLinksAndEmbds(bothLinks);
+		getLinksAndEmbeds(bothLinks);
 	}
 
-	function getLinksAndEmbds(bothlinks: LinkCache[] & EmbedCache[]) {
-		bothLinks.forEach((links) => {
+	function getLinksAndEmbeds(bothlinks: LinkCache[] & EmbedCache[]) {
+		for (let links of bothLinks) {
 			let fullLink = links.link;
 			let aliasText: string = '';
 			if (typeof links.displayText !== 'undefined') {
@@ -532,7 +533,7 @@ function calculateLinks(
 					relativePath: path,
 				});
 			}
-		});
+		};
 		if (currentLinks.length > 0) {
 			metaObj.links = currentLinks;
 		}
