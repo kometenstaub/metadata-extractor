@@ -420,10 +420,10 @@ function calculateLinks(
 			});
 		}
 		bothLinks = onlyLinks.concat(onlyEmbeds);
-		getLinksAndEmbeds(bothLinks);
+		getLinksAndEmbeds();
 	}
 
-	function getLinksAndEmbeds(bothlinks: LinkCache[] & EmbedCache[]) {
+	function getLinksAndEmbeds() {
 		for (let links of bothLinks) {
 			let fullLink = links.link;
 			let aliasText: string = '';
