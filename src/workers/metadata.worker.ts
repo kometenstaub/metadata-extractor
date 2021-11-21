@@ -9,12 +9,12 @@ self.onmessage = function (e) {
 		const fileName = file.fileName;
 		const relativeFilePath = file.relativePath;
 		newMetadataCache.forEach((otherFile: Metadata) => {
-			//@ts-expect-error
-			let currentBacklinkObject: backlinks = {};
 			// don't check the same file
 			if (fileName !== otherFile.fileName) {
 				if (otherFile.links) {
 					otherFile.links.forEach((links) => {
+						//@ts-expect-error
+						let currentBacklinkObject: backlinks = {};
 						// check if already present, only  push if not present
 						if (links.relativePath === relativeFilePath) {
 							currentBacklinkObject.fileName = otherFile.fileName;
