@@ -160,6 +160,7 @@ export default class Methods {
 
 		// own version of this.app.metadataCache.getTags()
 		// it doesn't include subtags if there is only one tag/subtag/subsubtag
+		// (Obsidian would return tag, tag/subtag, tag/subtag/subtag for .getTags())
 		const allTagsFromCache: string[][] = tagsCache.map((element) => {
 			return element.tags;
 		});
@@ -176,7 +177,7 @@ export default class Methods {
 		const numberOfNotesWithTag: {} = (
 			this.app.metadataCache as extendedMetadataCache
 		).getTags();
-		// Obsidian doesn' consistently lower case the tags (it's a feature, it shows the most used version)
+		// Obsidian doesn't consistently lower case the tags (it's a feature, it shows the most used version)
 		let tagsWithCount: tagNumber = {};
 		for (let [key, value] of Object.entries(numberOfNotesWithTag)) {
 			const newKey: string = key.slice(1).toLowerCase();

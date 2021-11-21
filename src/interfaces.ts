@@ -1,4 +1,5 @@
 import type { MetadataCache } from 'obsidian';
+import type Methods from './methods'
 
 export interface BridgeSettings {
 	writeFilesOnLaunch: boolean;
@@ -30,9 +31,13 @@ export interface tagNumber {
 	[key: string]: number;
 }
 
+/**
+ * name - relative path to the file containing the tags
+ * tags - cleaned up tags for the file from {@link Methods.getUniqueTags}
+ */
 export interface tagCache {
 	name: string;
-	tags: string[];
+	tags: string[]; 
 }
 
 export interface links {
