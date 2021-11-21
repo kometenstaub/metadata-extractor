@@ -245,73 +245,71 @@ export default class Methods {
 		}
 
 		for (let tfile of this.app.vault.getMarkdownFiles()) {
-				const displayName = tfile.basename;
-				const relativeFilePath: string = tfile.path;
-				let currentCache!: CachedMetadata;
-				if (
-					typeof this.app.metadataCache.getFileCache(tfile) !==
-					'undefined'
-				) {
-					//@ts-ignore
-					currentCache = this.app.metadataCache.getFileCache(tfile);
-				} else {
-					new Notice(
-						'Something with accessing the cache went wrong!'
-					);
-				}
-				let currentTags: string[];
-				let currentAliases: string[];
-				let currentHeadings: { heading: string; level: number }[] = [];
+			const displayName = tfile.basename;
+			const relativeFilePath: string = tfile.path;
+			let currentCache!: CachedMetadata;
+			if (
+				typeof this.app.metadataCache.getFileCache(tfile) !==
+				'undefined'
+			) {
+				//@ts-ignore
+				currentCache = this.app.metadataCache.getFileCache(tfile);
+			} else {
+				new Notice('Something with accessing the cache went wrong!');
+			}
+			let currentTags: string[];
+			let currentAliases: string[];
+			let currentHeadings: { heading: string; level: number }[] = [];
 
+			//@ts-expect-error
+			let metaObj: Metadata = {};
+
+			metaObj.fileName = displayName;
+			metaObj.relativePath = relativeFilePath;
+
+			currentTags = this.getUniqueTags(currentCache);
+			if (currentTags !== null) {
+				if (currentTags.length > 0) {
+					metaObj.tags = currentTags;
+				}
+			}
+
+			if (currentCache.frontmatter) {
 				//@ts-expect-error
-				let metaObj: Metadata = {};
-
-				metaObj.fileName = displayName;
-				metaObj.relativePath = relativeFilePath;
-
-				currentTags = this.getUniqueTags(currentCache);
-				if (currentTags !== null) {
-					if (currentTags.length > 0) {
-						metaObj.tags = currentTags;
-					}
-				}
-
-				if (currentCache.frontmatter) {
-					//@ts-expect-error
-					currentAliases = parseFrontMatterAliases(
-						currentCache.frontmatter
-					);
-					if (currentAliases !== null) {
-						if (currentAliases.length > 0) {
-							metaObj.aliases = currentAliases;
-						}
-					}
-				}
-
-				if (currentCache.headings) {
-					currentCache.headings.forEach((headings) => {
-						currentHeadings.push({
-							heading: headings.heading,
-							level: headings.level,
-						});
-					});
-					metaObj.headings = currentHeadings;
-				}
-
-				const linkMetaObj = calculateLinks(
-					currentCache,
-					metaObj,
-					fileMap,
-					relativeFilePath,
-					displayName
+				currentAliases = parseFrontMatterAliases(
+					currentCache.frontmatter
 				);
-
-				Object.assign(metaObj, linkMetaObj);
-
-				if (Object.keys(metaObj).length > 0) {
-					metadataCache.push(metaObj);
+				if (currentAliases !== null) {
+					if (currentAliases.length > 0) {
+						metaObj.aliases = currentAliases;
+					}
 				}
-			};
+			}
+
+			if (currentCache.headings) {
+				currentCache.headings.forEach((headings) => {
+					currentHeadings.push({
+						heading: headings.heading,
+						level: headings.level,
+					});
+				});
+				metaObj.headings = currentHeadings;
+			}
+
+			const linkMetaObj = calculateLinks(
+				currentCache,
+				metaObj,
+				fileMap,
+				relativeFilePath,
+				displayName
+			);
+
+			Object.assign(metaObj, linkMetaObj);
+
+			if (Object.keys(metaObj).length > 0) {
+				metadataCache.push(metaObj);
+			}
+		}
 
 		//backlinks
 		let backlinkObj: backlinks[] = [];
