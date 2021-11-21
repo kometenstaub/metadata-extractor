@@ -237,9 +237,8 @@ export default class Methods {
 						//@ts-ignore
 						link = split;
 					}
-				} else {
-					link = link.slice(0, -3);
-				}
+				} 
+				link = link.slice(0, -3);
 				fileMap[link] = newKey;
 			}
 		}
@@ -455,6 +454,7 @@ function calculateLinks(
 			else if (fullLink.includes('#') && fullLink.charAt(0) !== '#') {
 				const alias = aliasText;
 				const cleanLink = fullLink.replace(/#.+/g, '');
+				console.log(fileMap)
 				path = fileMap[cleanLink];
 				currentLinkObject.link = fullLink;
 				currentLinkObject.cleanLink = cleanLink;
@@ -463,6 +463,8 @@ function calculateLinks(
 					currentLinkObject.displayText = alias;
 				}
 				// account for uncreated files
+				console.log(path)
+				console.log(currentLinkObject)
 				if (path) {
 					currentLinkObject.relativePath = path;
 				}
