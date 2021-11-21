@@ -1,3 +1,5 @@
+import type { MetadataCache } from 'obsidian';
+
 export interface BridgeSettings {
 	writeFilesOnLaunch: boolean;
 	writingFrequency: string;
@@ -26,6 +28,11 @@ export interface linkToPath {
 
 export interface tagNumber {
 	[key: string]: number;
+}
+
+export interface tagCache {
+	name: string;
+	tags: string[];
 }
 
 export interface links {
@@ -63,4 +70,10 @@ export interface file {
 	name: string;
 	basename: string;
 	relativePath: string;
+}
+
+export interface extendedMetadataCache extends MetadataCache {
+	getTags(): {
+		string?: number;
+	};
 }

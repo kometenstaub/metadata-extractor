@@ -20,6 +20,8 @@ import type {
 	exceptMd,
 	folder,
 	file,
+	tagCache,
+	extendedMetadataCache,
 } from './interfaces';
 import { writeFileSync } from 'fs';
 //@ts-ignore
@@ -111,14 +113,34 @@ export default class Methods {
 		}
 	}
 
-	writeTagsToJSON(fileName: string) {
+	/**
+	 *
+	 * @param fileName - the filename for the file
+	 * If another path is set (tagPath) in the settings, then it will use that path
+	 */
+	writeTagsToJSON(fileName: string): void {
+
+		// if there are no tags in the vault, exit
+		const tags = (
+			this.app.metadataCache as extendedMetadataCache
+		).getTags();
+		if (Object.keys(tags).length === 0) {
+			const error = 'There are no tags in your vault.';
+			if (this.plugin.settings.consoleLog) {
+				console.log(error)
+				return
+			} else {
+				return
+			}
+		}
+
 		let path = this.plugin.settings.tagPath;
 		// only set the path to the plugin folder if no other path is specified
 		if (!this.plugin.settings.tagPath) {
 			path = this.getAbsolutePath(fileName);
 		}
 
-		let tagsCache: { name: string; tags: string[] }[] = [];
+		let tagsCache: tagCache[] = [];
 
 		(() => {
 			this.app.vault.getMarkdownFiles().forEach((tfile) => {
@@ -153,8 +175,8 @@ export default class Methods {
 			new Set(reducedAllTagsFromCache)
 		);
 
-		//@ts-expect-error, private method
-		const numberOfNotesWithTag: {} = this.app.metadataCache.getTags();
+		//private method
+		const numberOfNotesWithTag: {} = (this.app.metadataCache as extendedMetadataCache).getTags();
 		// Obsidian doesn' consistently lower case the tags (it's a feature, it shows the most used version)
 		let tagsWithCount: tagNumber = {};
 		for (let [key, value] of Object.entries(numberOfNotesWithTag)) {
