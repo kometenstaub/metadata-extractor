@@ -256,6 +256,7 @@ export default class Methods {
 				currentCache = this.app.metadataCache.getFileCache(tfile);
 			} else {
 				new Notice('Something with accessing the cache went wrong!');
+				return;
 			}
 			let currentTags: string[];
 			let currentAliases: string[];
@@ -381,19 +382,13 @@ export default class Methods {
 }
 
 function calculateLinks(
-	currentCache1: CachedMetadata,
-	metaObj1: Metadata,
-	fileMap1: linkToPath,
-	relativeFilePath1: string,
-	displayName1: string
+	currentCache: CachedMetadata,
+	metaObj: Metadata,
+	fileMap: linkToPath,
+	relativeFilePath: string,
+	displayName: string
 ): Metadata {
 	let currentLinks: links[] = [];
-	let currentCache = currentCache1;
-	let fileMap = fileMap1;
-	let metaObj = metaObj1;
-	let relativeFilePath = relativeFilePath1;
-	let displayName = displayName1;
-
 	let bothLinks: LinkCache[] & EmbedCache[] = [];
 
 	linksAndOrEmbeds();
