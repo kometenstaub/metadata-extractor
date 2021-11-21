@@ -49,6 +49,11 @@ export default class Methods {
 		return `${basePath}/${relativePath}`;
 	}
 
+	/**
+	 *
+	 * @param currentCache - the object from Obsidian that contains all the metadata for the current file
+	 * @returns - lower cased tags, duplicates are removed, stripped the #
+	 */
 	getUniqueTags(currentCache: CachedMetadata): string[] {
 		let currentTags: string[] = [];
 		if (getAllTags(currentCache)) {
@@ -63,7 +68,7 @@ export default class Methods {
 
 	writeAllExceptMd(fileName: string) {
 		let path = this.plugin.settings.allExceptMdPath;
-		// only set the path to the plugin folder if no other path is specified
+		// only change path not to be the plugin folder if the user entered a custom path
 		if (!this.plugin.settings.allExceptMdPath) {
 			path = this.getAbsolutePath(fileName);
 		}
@@ -76,6 +81,7 @@ export default class Methods {
 		}
 		let otherFiles: file[] = [];
 		for (let TAFile of allFiles) {
+			// The basename is the name without the extension
 			if (TAFile instanceof TFile && TAFile.path.slice(-3) !== '.md') {
 				otherFiles.push({
 					name: TAFile.name,
@@ -86,29 +92,21 @@ export default class Methods {
 		}
 		//@ts-expect-error
 		let foldersAndFiles: exceptMd = {};
-		let status = true;
+		// there is always one folder, the root (/) folder
 		if (folders.length > 0 && otherFiles.length > 0) {
 			Object.assign(foldersAndFiles, {
 				folders: folders,
 				nonMdFiles: otherFiles,
 			});
-		} else if (folders.length > 0 && otherFiles.length === 0) {
+		} else {
 			Object.assign(foldersAndFiles, {
 				folders: folders,
 			});
-		} else {
-			status = false;
 		}
-		if (status) {
-			writeFileSync(path, JSON.stringify(foldersAndFiles, null, 2));
-			if (this.plugin.settings.consoleLog) {
-				console.log(
-					'Metadata Extractor plugin: wrote the allExceptMd JSON file'
-				);
-			}
-		} else {
-			new Notice(
-				'There are neither folders nor non-Markdown files in your vault.'
+		writeFileSync(path, JSON.stringify(foldersAndFiles, null, 2));
+		if (this.plugin.settings.consoleLog) {
+			console.log(
+				'Metadata Extractor plugin: wrote the allExceptMd JSON file'
 			);
 		}
 	}
