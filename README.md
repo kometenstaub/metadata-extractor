@@ -78,11 +78,11 @@ If a file has tags, the object has a `tags` property that contains an array of t
 
 #### `links` interface
 
-The `links` contain both links to existing and non-existing files. If a file doesn't exist, the ``links` won't have a `relativePath`.
+The `links` contain both links to existing and non-existing files. If a file doesn't exist, the `links` won't have a `relativePath`.
 
 `link` is the full link, exluding anything after the `|`, so if no alias is set, it also contains `#` or `#^` if there are headings or block references. If that is the case, there is also the `cleanLink` property which provides just the filename for the link (omitting the `.md` extension).
 
-`displayText` is what is displayed by Obsidian in preview mode. It can be the alias, but also the file name if there is a heading or block reference. If it is a heading link or block reference to the same file, it excludes the `#`, just like Obsidian das in preview mode.
+`displayText` is what is displayed by Obsidian in preview mode. It can be the alias, but also the file name if there is a heading or block reference. If it is a heading link or block reference to the same file, it excludes the `#`, just like Obsidian does in preview mode.
 
 `cleanLink` and `displayText` don't exist if it is a normal link.
 
