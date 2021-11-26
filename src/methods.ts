@@ -23,9 +23,10 @@ import type {
 	tagCache,
 	extendedMetadataCache,
 } from './interfaces';
-import { writeFileSync } from 'fs';
+import { writeFile, writeFileSync } from 'fs';
 //@ts-ignore
 import Worker from './workers/metadata.worker';
+import { makeFolderAndFileObject } from './utils';
 
 export default class Methods {
 	app: App;
@@ -91,27 +92,16 @@ export default class Methods {
 				});
 			}
 		}
-		//@ts-expect-error, it requires to be initialized, but values will only be added later,
-		// but they are required by TS
-		const foldersAndFiles: exceptMd = {};
-		// there is always one folder, the root (/) folder
-		if (folders.length > 0 && otherFiles.length > 0) {
-			Object.assign(foldersAndFiles, {
-				folders: folders,
-				nonMdFiles: otherFiles,
-			});
-		} else {
-			Object.assign(foldersAndFiles, {
-				folders: folders,
-			});
-		}
+		const foldersAndFiles = makeFolderAndFileObject(folders, otherFiles);
 		writeFileSync(path, JSON.stringify(foldersAndFiles, null, 2));
+
 		if (this.plugin.settings.consoleLog) {
 			console.log(
 				'Metadata Extractor plugin: wrote the allExceptMd JSON file'
 			);
 		}
 	}
+
 
 	/**
 	 *
@@ -328,6 +318,7 @@ export default class Methods {
 					'Metadata Extractor plugin: wrote the metadata JSON file'
 				);
 			}
+			// writeFileSync(path + 'cache.json', JSON.stringify(Object.entries(this.app.vault.getMarkdownFiles())))
 			worker.terminate();
 		};
 	}
