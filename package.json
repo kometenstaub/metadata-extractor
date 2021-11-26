@@ -6,7 +6,8 @@
 	"scripts": {
 		"dev": "cross-env BUILD=dev node esbuild.mjs",
 		"build": "cross-env BUILD=production node esbuild.mjs",
-		"release": "standard-version"
+		"release": "standard-version",
+		"test": "jest"
 	},
 	"standard-version": {
 		"t": "",
@@ -35,6 +36,7 @@
 		"@rollup/plugin-commonjs": "^18.0.0",
 		"@rollup/plugin-node-resolve": "^11.2.1",
 		"@rollup/plugin-typescript": "^8.2.1",
+		"@types/jest": "^27.0.3",
 		"@types/node": "^14.14.37",
 		"@typescript-eslint/eslint-plugin": "^5.4.0",
 		"@typescript-eslint/parser": "^5.4.0",
@@ -42,10 +44,12 @@
 		"esbuild": "^0.13.2",
 		"esbuild-plugin-inline-worker": "^0.1.1",
 		"eslint": "^8.3.0",
+		"jest": "^27.3.1",
 		"obsidian": "^0.12.15",
 		"rollup": "^2.32.1",
 		"standard-version": "^9.3.1",
+		"ts-jest": "^27.0.7",
 		"tslib": "^2.2.0",
-		"typescript": "^4.2.4"
+		"typescript": "^4.5.2"
 	}
 }
