@@ -16,3 +16,5 @@ data.json
 .hotreload
 .vscode/
 build/
+
+*.log
