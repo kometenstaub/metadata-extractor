@@ -1,0 +1,98 @@
+[
+    {
+        "basename": "File with alias",
+        "deleted": false,
+        "extension": "md",
+        "name": "File with alias.md",
+        "parent": null,
+        "path": "File with alias.md",
+        "saving": false,
+        "stat": {
+            "ctime": 1638213871578,
+            "mtime": 1638213889875,
+            "size": 33
+        },
+        "unsafeCachedData": "---\naliases: \"I am an alias\"\n---\n",
+        "vault": null
+    },
+    {
+        "basename": "file inside a folder",
+        "deleted": false,
+        "extension": "md",
+        "name": "file inside a folder.md",
+        "parent": null,
+        "path": "folder/file inside a folder.md",
+        "saving": false,
+        "stat": {
+            "ctime": 1638213842515,
+            "mtime": 1638213852052,
+            "size": 6
+        },
+        "unsafeCachedData": "#tag1 ",
+        "vault": null
+    },
+    {
+        "basename": "Heading file",
+        "deleted": false,
+        "extension": "md",
+        "name": "Heading file.md",
+        "parent": null,
+        "path": "Heading file.md",
+        "saving": false,
+        "stat": {
+            "ctime": 1638213519665,
+            "mtime": 1638213554298,
+            "size": 117
+        },
+        "unsafeCachedData": "# first heading\n\n## second heading\n\n### third heading\n\n#### fourth heading\n\n##### fifth heading\n\n###### sixth heading",
+        "vault": null
+    },
+    {
+        "basename": "File with tags",
+        "deleted": false,
+        "extension": "md",
+        "name": "File with tags.md",
+        "parent": null,
+        "path": "File with tags.md",
+        "saving": false,
+        "stat": {
+            "ctime": 1638213020698,
+            "mtime": 1638213859498,
+            "size": 120
+        },
+        "unsafeCachedData": "## More help is on the way\n\nThis is a block. ^2d19b3\n\n#tag2 \n\n#tag1 \n\n`tag2` should have a total count of 2, `tag1` of 4",
+        "vault": null
+    },
+    {
+        "basename": "Another file",
+        "deleted": false,
+        "extension": "md",
+        "name": "Another file.md",
+        "parent": null,
+        "path": "Another file.md",
+        "saving": false,
+        "stat": {
+            "ctime": 1638213029702,
+            "mtime": 1638213245212,
+            "size": 121
+        },
+        "unsafeCachedData": "## this heading can be linked\n\n\nThis file contains two times the same tag and another tag. ^b573d2\n\n#tag1\n\n#tag1\n\n#tag2\n\n",
+        "vault": null
+    },
+    {
+        "basename": "File with links",
+        "deleted": false,
+        "extension": "md",
+        "name": "File with links.md",
+        "parent": null,
+        "path": "File with links.md",
+        "saving": false,
+        "stat": {
+            "ctime": 1638213009478,
+            "mtime": 1638213587082,
+            "size": 788
+        },
+        "unsafeCachedData": "## Help can be found here\n\nThis is a paragraph which we can reference. ^ac6709\n\n\nLink to heading in the same file\n[[#Help can be found here]]\n\nLink to heading in the same file with alias\n[[#Help can be found here|with alias]]\n\nLink to block in the same file\n[[#^ac6709]]\n\nLink to block in the same file with alias\n[[#^ac6709|with alias]]\n\n\nLink to heading in another file\n[[Another file#this heading can be linked]]\n\nLink to block in another file\n[[Another file#^b573d2]]\n\n\n\nNormal link to a file\n[[File with tags]]\n\nNormal link with alias\n[[File with tags|that's the display name]]\n\nLink to heading in another file with alias\n[[File with tags#More help is on the way|that's is a different display text]]\n\nLink to a block in another file with alias\n[[File with tags#^2d19b3|with alias]]\n\n",
+        "vault": null
+    }
+]

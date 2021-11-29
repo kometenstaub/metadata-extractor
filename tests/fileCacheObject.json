@@ -1,0 +1,965 @@
+{
+    "File with alias.md": {
+        "sections": [
+            {
+                "type": "yaml",
+                "position": {
+                    "start": {
+                        "line": 0,
+                        "col": 0,
+                        "offset": 0
+                    },
+                    "end": {
+                        "line": 2,
+                        "col": 3,
+                        "offset": 32
+                    }
+                }
+            }
+        ],
+        "frontmatter": {
+            "aliases": "I am an alias",
+            "position": {
+                "start": {
+                    "line": 0,
+                    "col": 0,
+                    "offset": 0
+                },
+                "end": {
+                    "line": 2,
+                    "col": 3,
+                    "offset": 32
+                }
+            }
+        }
+    },
+    "folder/file inside a folder.md": {
+        "tags": [
+            {
+                "position": {
+                    "start": {
+                        "line": 0,
+                        "col": 0,
+                        "offset": 0
+                    },
+                    "end": {
+                        "line": 0,
+                        "col": 5,
+                        "offset": 5
+                    }
+                },
+                "tag": "#tag1"
+            }
+        ],
+        "sections": [
+            {
+                "type": "paragraph",
+                "position": {
+                    "start": {
+                        "line": 0,
+                        "col": 0,
+                        "offset": 0
+                    },
+                    "end": {
+                        "line": 0,
+                        "col": 6,
+                        "offset": 6
+                    }
+                }
+            }
+        ]
+    },
+    "Heading file.md": {
+        "headings": [
+            {
+                "position": {
+                    "start": {
+                        "line": 0,
+                        "col": 0,
+                        "offset": 0
+                    },
+                    "end": {
+                        "line": 0,
+                        "col": 15,
+                        "offset": 15
+                    }
+                },
+                "heading": "first heading",
+                "level": 1
+            },
+            {
+                "position": {
+                    "start": {
+                        "line": 2,
+                        "col": 0,
+                        "offset": 17
+                    },
+                    "end": {
+                        "line": 2,
+                        "col": 17,
+                        "offset": 34
+                    }
+                },
+                "heading": "second heading",
+                "level": 2
+            },
+            {
+                "position": {
+                    "start": {
+                        "line": 4,
+                        "col": 0,
+                        "offset": 36
+                    },
+                    "end": {
+                        "line": 4,
+                        "col": 17,
+                        "offset": 53
+                    }
+                },
+                "heading": "third heading",
+                "level": 3
+            },
+            {
+                "position": {
+                    "start": {
+                        "line": 6,
+                        "col": 0,
+                        "offset": 55
+                    },
+                    "end": {
+                        "line": 6,
+                        "col": 19,
+                        "offset": 74
+                    }
+                },
+                "heading": "fourth heading",
+                "level": 4
+            },
+            {
+                "position": {
+                    "start": {
+                        "line": 8,
+                        "col": 0,
+                        "offset": 76
+                    },
+                    "end": {
+                        "line": 8,
+                        "col": 19,
+                        "offset": 95
+                    }
+                },
+                "heading": "fifth heading",
+                "level": 5
+            },
+            {
+                "position": {
+                    "start": {
+                        "line": 10,
+                        "col": 0,
+                        "offset": 97
+                    },
+                    "end": {
+                        "line": 10,
+                        "col": 20,
+                        "offset": 117
+                    }
+                },
+                "heading": "sixth heading",
+                "level": 6
+            }
+        ],
+        "sections": [
+            {
+                "type": "heading",
+                "position": {
+                    "start": {
+                        "line": 0,
+                        "col": 0,
+                        "offset": 0
+                    },
+                    "end": {
+                        "line": 0,
+                        "col": 15,
+                        "offset": 15
+                    }
+                }
+            },
+            {
+                "type": "heading",
+                "position": {
+                    "start": {
+                        "line": 2,
+                        "col": 0,
+                        "offset": 17
+                    },
+                    "end": {
+                        "line": 2,
+                        "col": 17,
+                        "offset": 34
+                    }
+                }
+            },
+            {
+                "type": "heading",
+                "position": {
+                    "start": {
+                        "line": 4,
+                        "col": 0,
+                        "offset": 36
+                    },
+                    "end": {
+                        "line": 4,
+                        "col": 17,
+                        "offset": 53
+                    }
+                }
+            },
+            {
+                "type": "heading",
+                "position": {
+                    "start": {
+                        "line": 6,
+                        "col": 0,
+                        "offset": 55
+                    },
+                    "end": {
+                        "line": 6,
+                        "col": 19,
+                        "offset": 74
+                    }
+                }
+            },
+            {
+                "type": "heading",
+                "position": {
+                    "start": {
+                        "line": 8,
+                        "col": 0,
+                        "offset": 76
+                    },
+                    "end": {
+                        "line": 8,
+                        "col": 19,
+                        "offset": 95
+                    }
+                }
+            },
+            {
+                "type": "heading",
+                "position": {
+                    "start": {
+                        "line": 10,
+                        "col": 0,
+                        "offset": 97
+                    },
+                    "end": {
+                        "line": 10,
+                        "col": 20,
+                        "offset": 117
+                    }
+                }
+            }
+        ]
+    },
+    "File with tags.md": {
+        "tags": [
+            {
+                "position": {
+                    "start": {
+                        "line": 4,
+                        "col": 0,
+                        "offset": 54
+                    },
+                    "end": {
+                        "line": 4,
+                        "col": 5,
+                        "offset": 59
+                    }
+                },
+                "tag": "#tag2"
+            },
+            {
+                "position": {
+                    "start": {
+                        "line": 6,
+                        "col": 0,
+                        "offset": 62
+                    },
+                    "end": {
+                        "line": 6,
+                        "col": 5,
+                        "offset": 67
+                    }
+                },
+                "tag": "#tag1"
+            }
+        ],
+        "headings": [
+            {
+                "position": {
+                    "start": {
+                        "line": 0,
+                        "col": 0,
+                        "offset": 0
+                    },
+                    "end": {
+                        "line": 0,
+                        "col": 26,
+                        "offset": 26
+                    }
+                },
+                "heading": "More help is on the way",
+                "level": 2
+            }
+        ],
+        "sections": [
+            {
+                "type": "heading",
+                "position": {
+                    "start": {
+                        "line": 0,
+                        "col": 0,
+                        "offset": 0
+                    },
+                    "end": {
+                        "line": 0,
+                        "col": 26,
+                        "offset": 26
+                    }
+                }
+            },
+            {
+                "type": "paragraph",
+                "position": {
+                    "start": {
+                        "line": 2,
+                        "col": 0,
+                        "offset": 28
+                    },
+                    "end": {
+                        "line": 2,
+                        "col": 24,
+                        "offset": 52
+                    }
+                },
+                "id": "2d19b3"
+            },
+            {
+                "type": "paragraph",
+                "position": {
+                    "start": {
+                        "line": 4,
+                        "col": 0,
+                        "offset": 54
+                    },
+                    "end": {
+                        "line": 4,
+                        "col": 6,
+                        "offset": 60
+                    }
+                }
+            },
+            {
+                "type": "paragraph",
+                "position": {
+                    "start": {
+                        "line": 6,
+                        "col": 0,
+                        "offset": 62
+                    },
+                    "end": {
+                        "line": 6,
+                        "col": 6,
+                        "offset": 68
+                    }
+                }
+            },
+            {
+                "type": "paragraph",
+                "position": {
+                    "start": {
+                        "line": 8,
+                        "col": 0,
+                        "offset": 70
+                    },
+                    "end": {
+                        "line": 8,
+                        "col": 50,
+                        "offset": 120
+                    }
+                }
+            }
+        ],
+        "blocks": {
+            "2d19b3": {
+                "position": {
+                    "start": {
+                        "line": 2,
+                        "col": 0,
+                        "offset": 28
+                    },
+                    "end": {
+                        "line": 2,
+                        "col": 24,
+                        "offset": 52
+                    }
+                },
+                "id": "2d19b3"
+            }
+        }
+    },
+    "Another file.md": {
+        "tags": [
+            {
+                "position": {
+                    "start": {
+                        "line": 5,
+                        "col": 0,
+                        "offset": 100
+                    },
+                    "end": {
+                        "line": 5,
+                        "col": 5,
+                        "offset": 105
+                    }
+                },
+                "tag": "#tag1"
+            },
+            {
+                "position": {
+                    "start": {
+                        "line": 7,
+                        "col": 0,
+                        "offset": 107
+                    },
+                    "end": {
+                        "line": 7,
+                        "col": 5,
+                        "offset": 112
+                    }
+                },
+                "tag": "#tag1"
+            },
+            {
+                "position": {
+                    "start": {
+                        "line": 9,
+                        "col": 0,
+                        "offset": 114
+                    },
+                    "end": {
+                        "line": 9,
+                        "col": 5,
+                        "offset": 119
+                    }
+                },
+                "tag": "#tag2"
+            }
+        ],
+        "headings": [
+            {
+                "position": {
+                    "start": {
+                        "line": 0,
+                        "col": 0,
+                        "offset": 0
+                    },
+                    "end": {
+                        "line": 0,
+                        "col": 29,
+                        "offset": 29
+                    }
+                },
+                "heading": "this heading can be linked",
+                "level": 2
+            }
+        ],
+        "sections": [
+            {
+                "type": "heading",
+                "position": {
+                    "start": {
+                        "line": 0,
+                        "col": 0,
+                        "offset": 0
+                    },
+                    "end": {
+                        "line": 0,
+                        "col": 29,
+                        "offset": 29
+                    }
+                }
+            },
+            {
+                "type": "paragraph",
+                "position": {
+                    "start": {
+                        "line": 3,
+                        "col": 0,
+                        "offset": 32
+                    },
+                    "end": {
+                        "line": 3,
+                        "col": 66,
+                        "offset": 98
+                    }
+                },
+                "id": "b573d2"
+            },
+            {
+                "type": "paragraph",
+                "position": {
+                    "start": {
+                        "line": 5,
+                        "col": 0,
+                        "offset": 100
+                    },
+                    "end": {
+                        "line": 5,
+                        "col": 5,
+                        "offset": 105
+                    }
+                }
+            },
+            {
+                "type": "paragraph",
+                "position": {
+                    "start": {
+                        "line": 7,
+                        "col": 0,
+                        "offset": 107
+                    },
+                    "end": {
+                        "line": 7,
+                        "col": 5,
+                        "offset": 112
+                    }
+                }
+            },
+            {
+                "type": "paragraph",
+                "position": {
+                    "start": {
+                        "line": 9,
+                        "col": 0,
+                        "offset": 114
+                    },
+                    "end": {
+                        "line": 9,
+                        "col": 5,
+                        "offset": 119
+                    }
+                }
+            }
+        ],
+        "blocks": {
+            "b573d2": {
+                "position": {
+                    "start": {
+                        "line": 3,
+                        "col": 0,
+                        "offset": 32
+                    },
+                    "end": {
+                        "line": 3,
+                        "col": 66,
+                        "offset": 98
+                    }
+                },
+                "id": "b573d2"
+            }
+        }
+    },
+    "File with links.md": {
+        "links": [
+            {
+                "position": {
+                    "start": {
+                        "line": 6,
+                        "col": 0,
+                        "offset": 114
+                    },
+                    "end": {
+                        "line": 6,
+                        "col": 27,
+                        "offset": 141
+                    }
+                },
+                "link": "#Help can be found here",
+                "original": "[[#Help can be found here]]",
+                "displayText": "Help can be found here"
+            },
+            {
+                "position": {
+                    "start": {
+                        "line": 9,
+                        "col": 0,
+                        "offset": 187
+                    },
+                    "end": {
+                        "line": 9,
+                        "col": 38,
+                        "offset": 225
+                    }
+                },
+                "link": "#Help can be found here",
+                "original": "[[#Help can be found here|with alias]]",
+                "displayText": "with alias"
+            },
+            {
+                "position": {
+                    "start": {
+                        "line": 12,
+                        "col": 0,
+                        "offset": 258
+                    },
+                    "end": {
+                        "line": 12,
+                        "col": 12,
+                        "offset": 270
+                    }
+                },
+                "link": "#^ac6709",
+                "original": "[[#^ac6709]]",
+                "displayText": "^ac6709"
+            },
+            {
+                "position": {
+                    "start": {
+                        "line": 15,
+                        "col": 0,
+                        "offset": 314
+                    },
+                    "end": {
+                        "line": 15,
+                        "col": 23,
+                        "offset": 337
+                    }
+                },
+                "link": "#^ac6709",
+                "original": "[[#^ac6709|with alias]]",
+                "displayText": "with alias"
+            },
+            {
+                "position": {
+                    "start": {
+                        "line": 19,
+                        "col": 0,
+                        "offset": 372
+                    },
+                    "end": {
+                        "line": 19,
+                        "col": 43,
+                        "offset": 415
+                    }
+                },
+                "link": "Another file#this heading can be linked",
+                "original": "[[Another file#this heading can be linked]]",
+                "displayText": "Another file > this heading can be linked"
+            },
+            {
+                "position": {
+                    "start": {
+                        "line": 22,
+                        "col": 0,
+                        "offset": 447
+                    },
+                    "end": {
+                        "line": 22,
+                        "col": 24,
+                        "offset": 471
+                    }
+                },
+                "link": "Another file#^b573d2",
+                "original": "[[Another file#^b573d2]]",
+                "displayText": "Another file > ^b573d2"
+            },
+            {
+                "position": {
+                    "start": {
+                        "line": 27,
+                        "col": 0,
+                        "offset": 497
+                    },
+                    "end": {
+                        "line": 27,
+                        "col": 18,
+                        "offset": 515
+                    }
+                },
+                "link": "File with tags",
+                "original": "[[File with tags]]",
+                "displayText": "File with tags"
+            },
+            {
+                "position": {
+                    "start": {
+                        "line": 30,
+                        "col": 0,
+                        "offset": 540
+                    },
+                    "end": {
+                        "line": 30,
+                        "col": 42,
+                        "offset": 582
+                    }
+                },
+                "link": "File with tags",
+                "original": "[[File with tags|that's the display name]]",
+                "displayText": "that's the display name"
+            },
+            {
+                "position": {
+                    "start": {
+                        "line": 33,
+                        "col": 0,
+                        "offset": 627
+                    },
+                    "end": {
+                        "line": 33,
+                        "col": 77,
+                        "offset": 704
+                    }
+                },
+                "link": "File with tags#More help is on the way",
+                "original": "[[File with tags#More help is on the way|that's is a different display text]]",
+                "displayText": "that's is a different display text"
+            },
+            {
+                "position": {
+                    "start": {
+                        "line": 36,
+                        "col": 0,
+                        "offset": 749
+                    },
+                    "end": {
+                        "line": 36,
+                        "col": 37,
+                        "offset": 786
+                    }
+                },
+                "link": "File with tags#^2d19b3",
+                "original": "[[File with tags#^2d19b3|with alias]]",
+                "displayText": "with alias"
+            }
+        ],
+        "headings": [
+            {
+                "position": {
+                    "start": {
+                        "line": 0,
+                        "col": 0,
+                        "offset": 0
+                    },
+                    "end": {
+                        "line": 0,
+                        "col": 25,
+                        "offset": 25
+                    }
+                },
+                "heading": "Help can be found here",
+                "level": 2
+            }
+        ],
+        "sections": [
+            {
+                "type": "heading",
+                "position": {
+                    "start": {
+                        "line": 0,
+                        "col": 0,
+                        "offset": 0
+                    },
+                    "end": {
+                        "line": 0,
+                        "col": 25,
+                        "offset": 25
+                    }
+                }
+            },
+            {
+                "type": "paragraph",
+                "position": {
+                    "start": {
+                        "line": 2,
+                        "col": 0,
+                        "offset": 27
+                    },
+                    "end": {
+                        "line": 2,
+                        "col": 51,
+                        "offset": 78
+                    }
+                },
+                "id": "ac6709"
+            },
+            {
+                "type": "paragraph",
+                "position": {
+                    "start": {
+                        "line": 5,
+                        "col": 0,
+                        "offset": 81
+                    },
+                    "end": {
+                        "line": 6,
+                        "col": 27,
+                        "offset": 141
+                    }
+                }
+            },
+            {
+                "type": "paragraph",
+                "position": {
+                    "start": {
+                        "line": 8,
+                        "col": 0,
+                        "offset": 143
+                    },
+                    "end": {
+                        "line": 9,
+                        "col": 38,
+                        "offset": 225
+                    }
+                }
+            },
+            {
+                "type": "paragraph",
+                "position": {
+                    "start": {
+                        "line": 11,
+                        "col": 0,
+                        "offset": 227
+                    },
+                    "end": {
+                        "line": 12,
+                        "col": 12,
+                        "offset": 270
+                    }
+                }
+            },
+            {
+                "type": "paragraph",
+                "position": {
+                    "start": {
+                        "line": 14,
+                        "col": 0,
+                        "offset": 272
+                    },
+                    "end": {
+                        "line": 15,
+                        "col": 23,
+                        "offset": 337
+                    }
+                }
+            },
+            {
+                "type": "paragraph",
+                "position": {
+                    "start": {
+                        "line": 18,
+                        "col": 0,
+                        "offset": 340
+                    },
+                    "end": {
+                        "line": 19,
+                        "col": 43,
+                        "offset": 415
+                    }
+                }
+            },
+            {
+                "type": "paragraph",
+                "position": {
+                    "start": {
+                        "line": 21,
+                        "col": 0,
+                        "offset": 417
+                    },
+                    "end": {
+                        "line": 22,
+                        "col": 24,
+                        "offset": 471
+                    }
+                }
+            },
+            {
+                "type": "paragraph",
+                "position": {
+                    "start": {
+                        "line": 26,
+                        "col": 0,
+                        "offset": 475
+                    },
+                    "end": {
+                        "line": 27,
+                        "col": 18,
+                        "offset": 515
+                    }
+                }
+            },
+            {
+                "type": "paragraph",
+                "position": {
+                    "start": {
+                        "line": 29,
+                        "col": 0,
+                        "offset": 517
+                    },
+                    "end": {
+                        "line": 30,
+                        "col": 42,
+                        "offset": 582
+                    }
+                }
+            },
+            {
+                "type": "paragraph",
+                "position": {
+                    "start": {
+                        "line": 32,
+                        "col": 0,
+                        "offset": 584
+                    },
+                    "end": {
+                        "line": 33,
+                        "col": 77,
+                        "offset": 704
+                    }
+                }
+            },
+            {
+                "type": "paragraph",
+                "position": {
+                    "start": {
+                        "line": 35,
+                        "col": 0,
+                        "offset": 706
+                    },
+                    "end": {
+                        "line": 36,
+                        "col": 37,
+                        "offset": 786
+                    }
+                }
+            }
+        ],
+        "blocks": {
+            "ac6709": {
+                "position": {
+                    "start": {
+                        "line": 2,
+                        "col": 0,
+                        "offset": 27
+                    },
+                    "end": {
+                        "line": 2,
+                        "col": 51,
+                        "offset": 78
+                    }
+                },
+                "id": "ac6709"
+            }
+        }
+    }
+}
