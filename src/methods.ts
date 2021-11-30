@@ -47,7 +47,7 @@ function getAll(allFiles: TAbstractFile[]) {
 	return {folders, files};
 }
 
-function getAllExceptMd2(allFolders: folder[], allFiles: file[]) {
+function getAllExceptMd(allFolders: folder[], allFiles: file[]) {
 	const otherFiles: file[] = [];
 	for (const TAFile of allFiles) {
 		// The basename is the name without the extension
@@ -107,7 +107,7 @@ export default class Methods {
 		}
 		const allFiles = this.app.vault.getAllLoadedFiles();
 		const {folders, files} = getAll(allFiles);
-		const foldersAndFiles = getAllExceptMd2(folders, files);
+		const foldersAndFiles = getAllExceptMd(folders, files);
 		writeFileSync(path, JSON.stringify(foldersAndFiles, null, 2));
 
 		if (this.plugin.settings.consoleLog) {
