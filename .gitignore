@@ -18,3 +18,4 @@ data.json
 build/
 
 *.log
+tests/Dev-Metadata-Extractor/.obsidian/plugins/metadata-extractor/
