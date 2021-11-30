@@ -1,0 +1,23 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`that we can create a list of TFile and TFolder 1`] = `
+"{
+  \\"folders\\": [
+    {
+      \\"name\\": \\"\\",
+      \\"relativePath\\": \\"/\\"
+    },
+    {
+      \\"name\\": \\"folder\\",
+      \\"relativePath\\": \\"folder\\"
+    }
+  ],
+  \\"nonMdFiles\\": [
+    {
+      \\"name\\": \\"Image.png\\",
+      \\"basename\\": \\"Image\\",
+      \\"relativePath\\": \\"Image.png\\"
+    }
+  ]
+}"
+`;
