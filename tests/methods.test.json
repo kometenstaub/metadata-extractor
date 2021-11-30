@@ -1,0 +1,47 @@
+[
+  {
+    "name": "",
+    "path": "/",
+    "children": true
+  },
+  {
+    "name": "Another file.md",
+    "basename": "Another file",
+    "path": "Another file.md"
+  },
+  {
+    "name": "File with alias.md",
+    "basename": "File with alias",
+    "path": "File with alias.md"
+  },
+  {
+    "name": "File with links.md",
+    "basename": "File with links",
+    "path": "File with links.md"
+  },
+  {
+    "name": "File with tags.md",
+    "basename": "File with tags",
+    "path": "File with tags.md"
+  },
+  {
+    "name": "Heading file.md",
+    "basename": "Heading file",
+    "path": "Heading file.md"
+  },
+  {
+    "name": "folder",
+    "path": "folder",
+    "children": true
+  },
+  {
+    "name": "file inside a folder.md",
+    "basename": "file inside a folder",
+    "path": "folder/file inside a folder.md"
+  },
+  {
+    "name": "Image.png",
+    "basename": "Image",
+    "path": "Image.png"
+  }
+]
