@@ -10,6 +10,7 @@ import {
 	EmbedCache,
 	TFolder,
 	TFile,
+	TAbstractFile,
 } from 'obsidian';
 import type {
 	Metadata,
@@ -27,6 +28,28 @@ import { writeFile, writeFileSync } from 'fs';
 //@ts-ignore
 import Worker from './workers/metadata.worker';
 import { makeFolderAndFileObject } from './utils';
+
+function getAllExceptMd(allFiles: TAbstractFile[]) {
+	const folders: folder[] = [];
+	for (const TAFile of allFiles) {
+		if (TAFile instanceof TFolder) {
+			folders.push({name: TAFile.name, relativePath: TAFile.path});
+		}
+	}
+	const otherFiles: file[] = [];
+	for (const TAFile of allFiles) {
+		// The basename is the name without the extension
+		if (TAFile instanceof TFile && TAFile.path.slice(-3) !== '.md') {
+			otherFiles.push({
+				name: TAFile.name,
+				basename: TAFile.basename,
+				relativePath: TAFile.path,
+			});
+		}
+	}
+	const foldersAndFiles = makeFolderAndFileObject(folders, otherFiles);
+	return foldersAndFiles;
+}
 
 export default class Methods {
 	app: App;
@@ -74,25 +97,8 @@ export default class Methods {
 		if (!this.plugin.settings.allExceptMdPath) {
 			path = this.getAbsolutePath(fileName);
 		}
-		const folders: folder[] = [];
 		const allFiles = this.app.vault.getAllLoadedFiles();
-		for (const TAFile of allFiles) {
-			if (TAFile instanceof TFolder) {
-				folders.push({ name: TAFile.name, relativePath: TAFile.path });
-			}
-		}
-		const otherFiles: file[] = [];
-		for (const TAFile of allFiles) {
-			// The basename is the name without the extension
-			if (TAFile instanceof TFile && TAFile.path.slice(-3) !== '.md') {
-				otherFiles.push({
-					name: TAFile.name,
-					basename: TAFile.basename,
-					relativePath: TAFile.path,
-				});
-			}
-		}
-		const foldersAndFiles = makeFolderAndFileObject(folders, otherFiles);
+		const foldersAndFiles = getAllExceptMd(allFiles);
 		writeFileSync(path, JSON.stringify(foldersAndFiles, null, 2));
 
 		if (this.plugin.settings.consoleLog) {
@@ -227,7 +233,7 @@ export default class Methods {
 						//@ts-ignore
 						link = split;
 					}
-				} 
+				}
 				link = link.slice(0, -3).toLowerCase();
 				fileMap[link] = newKey;
 			}
@@ -417,7 +423,7 @@ function calculateLinks(
 		for (const links of bothLinks) {
 			let fullLink = links.link;
 			let aliasText = '';
-			//@ts-expect-error, must be initialized for adding keys, but 
+			//@ts-expect-error, must be initialized for adding keys, but
 			// TS interface requires certain keys, which will be added later
 			const currentLinkObject: links = {};
 			if (typeof links.displayText !== 'undefined') {
@@ -477,3 +483,5 @@ function calculateLinks(
 	}
 	return metaObj;
 }
+
+export { getAllExceptMd };
