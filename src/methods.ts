@@ -31,23 +31,31 @@ import { makeFolderAndFileObject } from './utils';
 
 function getAllExceptMd(allFiles: TAbstractFile[]) {
 	const folders: folder[] = [];
+	const files: file[] = [];
+
 	for (const TAFile of allFiles) {
 		if (TAFile instanceof TFolder) {
 			folders.push({name: TAFile.name, relativePath: TAFile.path});
-		}
-	}
-	const otherFiles: file[] = [];
-	for (const TAFile of allFiles) {
-		// The basename is the name without the extension
-		if (TAFile instanceof TFile && TAFile.path.slice(-3) !== '.md') {
-			otherFiles.push({
+		} else if (TAFile instanceof TFile) {
+			files.push({
 				name: TAFile.name,
 				basename: TAFile.basename,
 				relativePath: TAFile.path,
 			});
 		}
 	}
-	const foldersAndFiles = makeFolderAndFileObject(folders, otherFiles);
+	return getAllExceptMd2(folders, files);
+}
+
+function getAllExceptMd2(allFolders: folder[], allFiles: file[]) {
+	const otherFiles: file[] = [];
+	for (const TAFile of allFiles) {
+		// The basename is the name without the extension
+		if (TAFile.name.slice(-3) !== '.md') {
+			otherFiles.push(TAFile);
+		}
+	}
+	const foldersAndFiles = makeFolderAndFileObject(allFolders, otherFiles);
 	return foldersAndFiles;
 }
 
