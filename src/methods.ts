@@ -27,7 +27,7 @@ import type {
 import { writeFile, writeFileSync } from 'fs';
 //@ts-ignore
 import Worker from './workers/metadata.worker';
-import { makeFolderAndFileObject } from './utils';
+import { getAllExceptMd } from './utils';
 
 function getAll(allFiles: TAbstractFile[]) {
 	const folders: folder[] = [];
@@ -45,18 +45,6 @@ function getAll(allFiles: TAbstractFile[]) {
 		}
 	}
 	return {folders, files};
-}
-
-function getAllExceptMd(allFolders: folder[], allFiles: file[]) {
-	const otherFiles: file[] = [];
-	for (const TAFile of allFiles) {
-		// The basename is the name without the extension
-		if (TAFile.name.slice(-3) !== '.md') {
-			otherFiles.push(TAFile);
-		}
-	}
-	const foldersAndFiles = makeFolderAndFileObject(allFolders, otherFiles);
-	return foldersAndFiles;
 }
 
 export default class Methods {
@@ -492,5 +480,3 @@ function calculateLinks(
 	}
 	return metaObj;
 }
-
-export { getAllExceptMd };
