@@ -67,3 +67,10 @@ for (let el of Object.keys(app.vault.fileMap)) { const obj = {[el]: null} ; fmAr
 console.log(fmArray)
 ```
 Then right-click on the object and click copy object.
+
+## getAllLoadedFiles
+
+```javascript
+let allFiles = []
+for (let el of app.vault.getAllLoadedFiles()) { if (el.children) {allFiles.push({name: el.name, path: el.path, children: true})} else { allFiles.push({name: el.name, basename: el.basename, path: el.path})}}
+```
