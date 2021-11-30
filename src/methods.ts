@@ -29,7 +29,7 @@ import { writeFile, writeFileSync } from 'fs';
 import Worker from './workers/metadata.worker';
 import { makeFolderAndFileObject } from './utils';
 
-function getAllExceptMd(allFiles: TAbstractFile[]) {
+function getAll(allFiles: TAbstractFile[]) {
 	const folders: folder[] = [];
 	const files: file[] = [];
 
@@ -44,6 +44,11 @@ function getAllExceptMd(allFiles: TAbstractFile[]) {
 			});
 		}
 	}
+	return {folders, files};
+}
+
+function getAllExceptMd(allFiles: TAbstractFile[]) {
+	const {folders, files} = getAll(allFiles);
 	return getAllExceptMd2(folders, files);
 }
 
