@@ -17,17 +17,21 @@ If you want to view the source, visit the plugins’ github repository.
 */
 `;
 
+const isProd = process.env.BUILD === 'production';
+
+let outputDirectory = 'build';
+if (!isProd){
+	outputDirectory = 'tests/Dev-Metadata-Extractor/.obsidian/plugins/metadata-extractor';
+}
 
 const copyManifest = {
 	name: 'copy-manifest',
 	setup: (build) => {
 		build.onEnd(() => {
-			fs.copyFileSync('manifest.json', 'build/manifest.json');
+			fs.copyFileSync('manifest.json', `${outputDirectory}/manifest.json`);
 		});
 	},
 };
-
-const isProd = process.env.BUILD === 'production';
 
 (async () => {
 	try {
@@ -45,7 +49,7 @@ const isProd = process.env.BUILD === 'production';
 			define: {
 				'process.env.NODE_ENV': JSON.stringify(process.env.BUILD),
 			},
-			outfile: 'build/main.js',
+			outfile: `${outputDirectory}/main.js`,
 			logLevel: 'info',
 			plugins: [
 				copyManifest,
