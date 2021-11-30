@@ -1,0 +1,98 @@
+{
+  "main": {
+    "id": "f98a5af41fe6a3ca",
+    "type": "split",
+    "children": [
+      {
+        "id": "e7a4f5f7ddf6ed34",
+        "type": "leaf",
+        "state": {
+          "type": "markdown",
+          "state": {
+            "file": "File with alias.md",
+            "mode": "source"
+          }
+        }
+      }
+    ],
+    "direction": "vertical"
+  },
+  "left": {
+    "id": "7c8323738c4c37a4",
+    "type": "split",
+    "children": [
+      {
+        "id": "368fc703e3cc475e",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "264998750d9fe084",
+            "type": "leaf",
+            "state": {
+              "type": "file-explorer",
+              "state": {}
+            }
+          },
+          {
+            "id": "449addb2a6c8d857",
+            "type": "leaf",
+            "state": {
+              "type": "search",
+              "state": {
+                "query": "",
+                "matchingCase": false,
+                "explainSearch": false,
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical"
+              }
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 300
+  },
+  "right": {
+    "id": "d14d8ae62d19a1c9",
+    "type": "split",
+    "children": [
+      {
+        "id": "95a34f18a8ea9b3f",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "2a2163e04b3a3864",
+            "type": "leaf",
+            "state": {
+              "type": "backlink",
+              "state": {
+                "file": "File with alias.md",
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical",
+                "showSearch": false,
+                "searchQuery": "",
+                "backlinkCollapsed": false,
+                "unlinkedCollapsed": true
+              }
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 300,
+    "collapsed": true
+  },
+  "active": "e7a4f5f7ddf6ed34",
+  "lastOpenFiles": [
+    "File with alias.md",
+    "folder/file inside a folder.md",
+    "Heading file.md",
+    "File with tags.md",
+    "File with links.md",
+    "Another file.md"
+  ]
+}

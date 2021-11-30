@@ -1,0 +1,11 @@
+{
+  "markdown:toggle-preview": [
+    {
+      "modifiers": [
+        "Mod"
+      ],
+      "key": "D"
+    }
+  ],
+  "editor:delete-paragraph": []
+}
