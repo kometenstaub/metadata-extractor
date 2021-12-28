@@ -43,6 +43,7 @@ The second one writes a JSON file to disk with metadata for each file name. This
  * JSON export: Metadata[]
  */
 interface Metadata {
+	frontmatter: any; 
 	fileName: string;
 	relativePath: string;
 	tags?: string[];
@@ -72,7 +73,7 @@ The exported array contains a JSON array with `Metadata` objects, one object for
 
 All objects have a `fileName` and a `relativePath`. `fileName` doesn't contain the `.md` extension, `relativePath` is the path from your vault root. 
 
-If a file has tags, the object has a `tags` property that contains an array of tags. Tags are all lower-cased and if a tag appears more than one time in a file, it will only appear one time in `tags`.
+If a file has tags, the object has a `tags` property that contains an array of tags. Tags are all lower-cased and if a tag appears more than one time in a file, it will only appear one time in `tags`. If a file has any frontmatter it is included in `frontmatter`. The structure of the object depends on your frontmatter.
 
 `aliases`, `links` and `backlinks` also only exist if there are any of the in a file.
 
