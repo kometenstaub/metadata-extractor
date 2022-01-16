@@ -17,7 +17,7 @@ export interface BridgeSettings {
  * the metadata that will be written to disk as an array of {@link Metadata}
  */
 export interface Metadata {
-	frontmatter: any;
+	frontmatter?: any;
 	fileName: string;
 	relativePath: string;
 	tags?: string[];
