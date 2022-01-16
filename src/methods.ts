@@ -11,6 +11,7 @@ import {
 	TFolder,
 	TFile,
 	TAbstractFile,
+	FrontMatterCache,
 } from 'obsidian';
 import type {
 	Metadata,
@@ -103,6 +104,13 @@ export default class Methods {
 				'Metadata Extractor plugin: wrote the allExceptMd JSON file'
 			);
 		}
+	}
+
+
+	createCleanFrontmatter(frontmatter: FrontMatterCache) {
+		delete frontmatter.aliases;  
+		delete frontmatter.tags;
+		return frontmatter;
 	}
 
 
@@ -267,7 +275,7 @@ export default class Methods {
 			}
 
 			if (currentCache.frontmatter) {
-				metaObj.frontmatter = currentCache.frontmatter;
+				metaObj.frontmatter = this.createCleanFrontmatter(currentCache.frontmatter);
 				//@ts-expect-error, could return null so can't be assigned to current aliases,
 				// check for null is done later
 				currentAliases = parseFrontMatterAliases(
