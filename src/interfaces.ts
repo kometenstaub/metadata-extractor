@@ -1,4 +1,4 @@
-import type { MetadataCache } from 'obsidian';
+import type { MetadataCache, FrontMatterCache } from 'obsidian';
 import type Methods from './methods'
 
 export interface BridgeSettings {
@@ -91,4 +91,11 @@ export interface extendedMetadataCache extends MetadataCache {
 	getTags(): {
 		string?: number;
 	};
+}
+
+export interface extendedFrontMatterCache extends FrontMatterCache {
+	tags?: string[];
+	aliases?: string[];
+	cssclass?: string;
+	publish?: boolean;
 }

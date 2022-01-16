@@ -11,7 +11,7 @@ import {
 	TFolder,
 	TFile,
 	TAbstractFile,
-	FrontMatterCache,
+	,
 } from 'obsidian';
 import type {
 	Metadata,
@@ -24,6 +24,7 @@ import type {
 	file,
 	tagCache,
 	extendedMetadataCache,
+	extendedFrontMatterCache
 } from './interfaces';
 import { writeFile, writeFileSync } from 'fs';
 //@ts-ignore
@@ -107,8 +108,8 @@ export default class Methods {
 	}
 
 
-	createCleanFrontmatter(frontmatter: FrontMatterCache) {
-		delete frontmatter.aliases;  
+	createCleanFrontmatter(frontmatter: extendedFrontMatterCache) {
+		delete frontmatter.aliases; 
 		delete frontmatter.tags;
 		return frontmatter;
 	}
