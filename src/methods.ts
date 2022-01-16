@@ -267,9 +267,9 @@ export default class Methods {
 			}
 
 			if (currentCache.frontmatter) {
+				metaObj.frontmatter = currentCache.frontmatter;
 				//@ts-expect-error, could return null so can't be assigned to current aliases,
 				// check for null is done later
-				metaObj.frontmatter = currentCache.frontmatter;
 				currentAliases = parseFrontMatterAliases(
 					currentCache.frontmatter
 				);
