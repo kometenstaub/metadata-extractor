@@ -23,12 +23,12 @@ import type {
 	linkToPath,
 	Metadata,
 	tagCache,
-	tagNumber
+	tagNumber,
 } from './interfaces';
-import {writeFileSync} from 'fs';
+import { writeFileSync } from 'fs';
 //@ts-expect-error, there is no export, but this is how the esbuild inline plugin works
 import Worker from './workers/metadata.worker';
-import {getAllExceptMd} from './utils';
+import { getAllExceptMd } from './utils';
 
 function getAll(allFiles: TAbstractFile[]) {
 	const folders: folder[] = [];
@@ -36,7 +36,7 @@ function getAll(allFiles: TAbstractFile[]) {
 
 	for (const TAFile of allFiles) {
 		if (TAFile instanceof TFolder) {
-			folders.push({name: TAFile.name, relativePath: TAFile.path});
+			folders.push({ name: TAFile.name, relativePath: TAFile.path });
 		} else if (TAFile instanceof TFile) {
 			files.push({
 				name: TAFile.name,
@@ -45,7 +45,7 @@ function getAll(allFiles: TAbstractFile[]) {
 			});
 		}
 	}
-	return {folders, files};
+	return { folders, files };
 }
 
 export default class Methods {
@@ -78,9 +78,9 @@ export default class Methods {
 	 */
 	getUniqueTags(currentCache: CachedMetadata): string[] {
 		let currentTags: string[] = [];
-		const tags = getAllTags(currentCache)
+		const tags = getAllTags(currentCache);
 		if (tags !== null) {
-			currentTags = tags
+			currentTags = tags;
 		}
 		currentTags = currentTags.map((tag) => tag.slice(1).toLowerCase());
 		// remove duplicate tags in file
@@ -95,7 +95,7 @@ export default class Methods {
 			path = this.getAbsolutePath(fileName);
 		}
 		const allFiles = this.app.vault.getAllLoadedFiles();
-		const {folders, files} = getAll(allFiles);
+		const { folders, files } = getAll(allFiles);
 		const foldersAndFiles = getAllExceptMd(folders, files);
 		writeFileSync(path, JSON.stringify(foldersAndFiles, null, 2));
 
@@ -106,20 +106,20 @@ export default class Methods {
 		}
 	}
 
-
-	createCleanFrontmatter(frontmatter: FrontMatterCache): extendedFrontMatterCache {
-		delete frontmatter.aliases; 
+	createCleanFrontmatter(
+		frontmatter: FrontMatterCache
+	): extendedFrontMatterCache {
+		delete frontmatter.aliases;
 		delete frontmatter.tags;
-		const {position} = frontmatter;
+		const { position } = frontmatter;
 		//@ts-expect-error, we delete a key that is not optional
 		delete frontmatter.position;
 		frontmatter.pos = {
 			offset: position.end.offset,
 			end: position.end.line,
-		}
+		};
 		return <extendedFrontMatterCache>frontmatter;
 	}
-
 
 	/**
 	 *
@@ -151,9 +151,9 @@ export default class Methods {
 
 		for (const tfile of this.app.vault.getMarkdownFiles()) {
 			let currentCache!: CachedMetadata;
-			const cache = this.app.metadataCache.getFileCache(tfile)
+			const cache = this.app.metadataCache.getFileCache(tfile);
 			if (cache !== null) {
-				currentCache = cache
+				currentCache = cache;
 			}
 			const relativePath: string = tfile.path;
 			//let displayName: string = this.app.metadataCache.fileToLinktext(tfile, tfile.path, false);
@@ -190,7 +190,7 @@ export default class Methods {
 		const tagsWithCount: tagNumber = {};
 		for (const [key, value] of Object.entries(numberOfNotesWithTag)) {
 			const newKey: string = key.slice(1).toLowerCase();
-			tagsWithCount[newKey] = (value as number);
+			tagsWithCount[newKey] = value as number;
 		}
 
 		// what will be written to disk
@@ -253,11 +253,9 @@ export default class Methods {
 			const displayName = tfile.basename;
 			const relativeFilePath: string = tfile.path;
 			let currentCache!: CachedMetadata;
-			const cache = this.app.metadataCache.getFileCache(tfile)
-			if (
-				cache !== null
-			) {
-				currentCache = cache
+			const cache = this.app.metadataCache.getFileCache(tfile);
+			if (cache !== null) {
+				currentCache = cache;
 			} else {
 				new Notice('Something with accessing the cache went wrong!');
 				return;
@@ -279,7 +277,9 @@ export default class Methods {
 			}
 
 			if (currentCache.frontmatter) {
-				metaObj.frontmatter = this.createCleanFrontmatter(currentCache.frontmatter);
+				metaObj.frontmatter = this.createCleanFrontmatter(
+					currentCache.frontmatter
+				);
 				//@ts-expect-error, could return null so can't be assigned to current aliases,
 				// check for null is done later
 				currentAliases = parseFrontMatterAliases(

@@ -1,5 +1,5 @@
 import type { MetadataCache, FrontMatterCache } from 'obsidian';
-import type Methods from './methods'
+import type Methods from './methods';
 
 export interface BridgeSettings {
 	writeFilesOnLaunch: boolean;
@@ -47,7 +47,7 @@ export interface tagNumber {
  */
 export interface tagCache {
 	name: string;
-	tags: string[]; 
+	tags: string[];
 }
 
 export interface links {
@@ -101,6 +101,5 @@ export interface extendedFrontMatterCache extends FrontMatterCache {
 	pos: {
 		offset: number; // After that number of characters, the normal text starts; it is one line more than `end`
 		end: number; // the last line (the second ---); the first line is 0
-	}
+	};
 }
-
