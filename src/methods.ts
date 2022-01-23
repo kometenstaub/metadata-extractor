@@ -11,7 +11,6 @@ import {
 	TFolder,
 	TFile,
 	TAbstractFile,
-	,
 } from 'obsidian';
 import type {
 	Metadata,
