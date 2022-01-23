@@ -67,7 +67,6 @@ interface Metadata {
 	aliases?: string[];
 	links?: links[];
 	backlinks?: backlinks[];
-	frontmatter?: { [key: string]: any; pos: position };
 }
 
 interface links {
@@ -84,11 +83,6 @@ interface backlinks {
 	cleanLink?: string;
 	displayText?: string;
 }
-
-interface position {
-	offset: number; // After that number of characters, the normal text starts; it is one line more than `end`
-	end: number; // the last line (the second ---); the first line is 0
-}
 ```
 
 
@@ -96,7 +90,7 @@ The exported array contains a JSON array with `Metadata` objects, one object for
 
 All objects have a `fileName` and a `relativePath`. `fileName` doesn't contain the `.md` extension, `relativePath` is the path from your vault root. 
 
-If a file has tags, the object has a `tags` property that contains an array of tags. Tags are all lower-cased and if a tag appears more than one time in a file, it will only appear one time in `tags`. If a file has any frontmatter it is included in `frontmatter`. The structure of the object depends on your frontmatter.
+If a file has tags, the object has a `tags` property that contains an array of tags. Tags are all lower-cased and if a tag appears more than one time in a file, it will only appear one time in `tags`. 
 
 `aliases`, `links` and `backlinks` also only exist if there are any of the in a file.
 
