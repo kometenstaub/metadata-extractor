@@ -1,33 +1,34 @@
 import type BridgePlugin from './main';
 import {
 	App,
-	FileSystemAdapter,
-	getAllTags,
 	CachedMetadata,
+	EmbedCache,
+	FileSystemAdapter,
+	FrontMatterCache,
+	getAllTags,
+	LinkCache,
 	Notice,
 	parseFrontMatterAliases,
-	LinkCache,
-	EmbedCache,
-	TFolder,
+	TAbstractFile,
 	TFile,
-	TAbstractFile, FrontMatterCache,
+	TFolder,
 } from 'obsidian';
 import type {
-	Metadata,
-	linkToPath,
-	tagNumber,
-	links,
 	backlinks,
-	folder,
-	file,
-	tagCache,
+	extendedFrontMatterCache,
 	extendedMetadataCache,
-	extendedFrontMatterCache
+	file,
+	folder,
+	links,
+	linkToPath,
+	Metadata,
+	tagCache,
+	tagNumber
 } from './interfaces';
-import { writeFile, writeFileSync } from 'fs';
-//@ts-ignore
+import {writeFileSync} from 'fs';
+//@ts-expect-error, there is no export, but this is how the esbuild inline plugin works
 import Worker from './workers/metadata.worker';
-import { getAllExceptMd } from './utils';
+import {getAllExceptMd} from './utils';
 
 function getAll(allFiles: TAbstractFile[]) {
 	const folders: folder[] = [];
@@ -77,9 +78,9 @@ export default class Methods {
 	 */
 	getUniqueTags(currentCache: CachedMetadata): string[] {
 		let currentTags: string[] = [];
-		if (getAllTags(currentCache)) {
-			//@ts-ignore
-			currentTags = getAllTags(currentCache);
+		const tags = getAllTags(currentCache)
+		if (tags !== null) {
+			currentTags = tags
 		}
 		currentTags = currentTags.map((tag) => tag.slice(1).toLowerCase());
 		// remove duplicate tags in file
@@ -150,9 +151,9 @@ export default class Methods {
 
 		for (const tfile of this.app.vault.getMarkdownFiles()) {
 			let currentCache!: CachedMetadata;
-			if (this.app.metadataCache.getFileCache(tfile) !== null) {
-				//@ts-ignore
-				currentCache = this.app.metadataCache.getFileCache(tfile);
+			const cache = this.app.metadataCache.getFileCache(tfile)
+			if (cache !== null) {
+				currentCache = cache
 			}
 			const relativePath: string = tfile.path;
 			//let displayName: string = this.app.metadataCache.fileToLinktext(tfile, tfile.path, false);
@@ -189,8 +190,7 @@ export default class Methods {
 		const tagsWithCount: tagNumber = {};
 		for (const [key, value] of Object.entries(numberOfNotesWithTag)) {
 			const newKey: string = key.slice(1).toLowerCase();
-			const newValue: number = value;
-			tagsWithCount[newKey] = newValue;
+			tagsWithCount[newKey] = (value as number);
 		}
 
 		// what will be written to disk
@@ -232,7 +232,7 @@ export default class Methods {
 		let metadataCache: Metadata[] = [];
 
 		const fileMap: linkToPath = {};
-		//@ts-ignore
+		//@ts-expect-error, fileMap is a private API
 		for (const [key, value] of Object.entries(this.app.vault.fileMap)) {
 			const newKey: string = key;
 			let link = '';
@@ -241,7 +241,6 @@ export default class Methods {
 					const split = newKey.split('/').last();
 					const isString = typeof split === 'string';
 					if (isString) {
-						//@ts-ignore
 						link = split;
 					}
 				}
@@ -254,12 +253,11 @@ export default class Methods {
 			const displayName = tfile.basename;
 			const relativeFilePath: string = tfile.path;
 			let currentCache!: CachedMetadata;
+			const cache = this.app.metadataCache.getFileCache(tfile)
 			if (
-				typeof this.app.metadataCache.getFileCache(tfile) !==
-				'undefined'
+				cache !== null
 			) {
-				//@ts-ignore
-				currentCache = this.app.metadataCache.getFileCache(tfile);
+				currentCache = cache
 			} else {
 				new Notice('Something with accessing the cache went wrong!');
 				return;
@@ -443,7 +441,7 @@ function calculateLinks(
 			}
 			// account for relative links
 			if (fullLink.includes('/')) {
-				//@ts-ignore
+				//@ts-expect-error, it only takes the last element if it includes a slash
 				fullLink = fullLink.split('/').last();
 			}
 			let path = '';

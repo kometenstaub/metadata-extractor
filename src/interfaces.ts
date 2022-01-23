@@ -103,3 +103,4 @@ export interface extendedFrontMatterCache extends FrontMatterCache {
 		end: number; // the last line (the second ---); the first line is 0
 	}
 }
+
