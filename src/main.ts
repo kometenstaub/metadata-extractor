@@ -46,7 +46,7 @@ export default class BridgePlugin extends Plugin {
 			this.app.workspace.onLayoutReady(() => {
 				this.methods.writeTagsToJSON(this.settings.tagFile);
 				this.methods.writeCacheToJSON(this.settings.metadataFile);
-				this.methods.writeAllExceptMd(this.settings.allExceptMdFile)
+				this.methods.writeAllExceptMd(this.settings.allExceptMdFile);
 			});
 		}
 
