@@ -60,7 +60,6 @@ The second one writes a JSON file to disk with metadata for each file name. This
  * JSON export: Metadata[]
  */
 interface Metadata {
-	frontmatter: any; 
 	fileName: string;
 	relativePath: string;
 	tags?: string[];
@@ -68,6 +67,7 @@ interface Metadata {
 	aliases?: string[];
 	links?: links[];
 	backlinks?: backlinks[];
+	frontmatter?: { [key: string]: any };
 }
 
 interface links {
