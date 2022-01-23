@@ -28,7 +28,8 @@
 				"hidden": false,
 				"section": "Bug Fixes"
 			}
-		]
+		],
+	  "releaseCommitMessageFormat": "Metadata Extractor: {{currentTag}}"
 	},
 	"keywords": [],
 	"author": "kometenstaub",
