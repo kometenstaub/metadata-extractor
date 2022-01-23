@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.3.1](https://github.com/kometenstaub/metadata-extractor/compare/0.3.0...0.3.1) (2022-01-23)
+
+
+### Bug Fixes
+
+* don't add frontmatter ([4c10379](https://github.com/kometenstaub/metadata-extractor/commit/4c10379a7fc81a4f328fcb61771d2eb9d6d8a9bc))
+
 ## [0.3.0](https://github.com/kometenstaub/metadata-extractor/compare/0.2.4...0.3.0) (2022-01-23)
 
 

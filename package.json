@@ -1,6 +1,6 @@
 {
 	"name": "metadata-extractor",
-	"version": "0.3.0",
+	"version": "0.3.1",
 	"description": "Plugin that extracts metadata and saves it in JSON format",
 	"main": "src/main.ts",
 	"scripts": {
@@ -29,7 +29,7 @@
 				"section": "Bug Fixes"
 			}
 		],
-	  "releaseCommitMessageFormat": "Metadata Extractor: {{currentTag}}"
+		"releaseCommitMessageFormat": "Metadata Extractor: {{currentTag}}"
 	},
 	"keywords": [],
 	"author": "kometenstaub",
