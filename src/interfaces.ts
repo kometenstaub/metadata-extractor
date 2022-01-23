@@ -103,5 +103,6 @@ export interface extendedFrontMatterCache extends FrontMatterCache {
 
 interface position {
 	offset: number; // After that number of characters, the normal text starts; it is one line more than `end`
-	end: number; // the last line (the second ---); the first line is 0
+	start: number; // it doesn't need to start at line 0, there can be blank lines before it
+	end: number; // the last line (the second ---)
 }

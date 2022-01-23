@@ -109,16 +109,19 @@ export default class Methods {
 	createCleanFrontmatter(
 		frontmatter: FrontMatterCache
 	): extendedFrontMatterCache {
-		delete frontmatter.aliases;
-		delete frontmatter.tags;
+		// new variable, otherwise Obsidian's cache would be mutated
+		const newFrontmatter = frontmatter
+		delete newFrontmatter.aliases;
+		delete newFrontmatter.tags;
 		const { position } = frontmatter;
 		//@ts-expect-error, we delete a key that is not optional
-		delete frontmatter.position;
-		frontmatter.pos = {
+		delete newFrontmatter.position;
+		newFrontmatter.pos = {
 			offset: position.end.offset,
+			start: position.start.line,
 			end: position.end.line,
 		};
-		return <extendedFrontMatterCache>frontmatter;
+		return <extendedFrontMatterCache>newFrontmatter;
 	}
 
 	/**
@@ -277,9 +280,10 @@ export default class Methods {
 			}
 
 			if (currentCache.frontmatter) {
-				//metaObj.frontmatter = this.createCleanFrontmatter(
-				//	currentCache.frontmatter
-				//);
+				const newFrontmatter = currentCache.frontmatter
+				metaObj.frontmatter = this.createCleanFrontmatter(
+					newFrontmatter
+				);
 				//@ts-expect-error, could return null so can't be assigned to current aliases,
 				// check for null is done later
 				currentAliases = parseFrontMatterAliases(
