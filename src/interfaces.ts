@@ -98,4 +98,8 @@ export interface extendedFrontMatterCache extends FrontMatterCache {
 	aliases?: string[];
 	cssclass?: string;
 	publish?: boolean;
+	pos: {
+		offset: number; // After that number of characters, the normal text starts; it is one line more than `end`
+		end: number; // the last line (the second ---); the first line is 0
+	}
 }

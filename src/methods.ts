@@ -110,6 +110,13 @@ export default class Methods {
 	createCleanFrontmatter(frontmatter: extendedFrontMatterCache) {
 		delete frontmatter.aliases; 
 		delete frontmatter.tags;
+		const {position} = frontmatter;
+		//@ts-expect-error, we delete a key that is not optional
+		delete frontmatter.position;
+		frontmatter.pos = {
+			offset: position.end.offset,
+			end: position.end.line,
+		}
 		return frontmatter;
 	}
 
