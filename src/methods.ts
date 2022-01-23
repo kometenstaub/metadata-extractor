@@ -18,7 +18,6 @@ import type {
 	tagNumber,
 	links,
 	backlinks,
-	exceptMd,
 	folder,
 	file,
 	tagCache,
