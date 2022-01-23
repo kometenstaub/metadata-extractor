@@ -10,7 +10,7 @@ import {
 	EmbedCache,
 	TFolder,
 	TFile,
-	TAbstractFile,
+	TAbstractFile, FrontMatterCache,
 } from 'obsidian';
 import type {
 	Metadata,
@@ -107,7 +107,7 @@ export default class Methods {
 	}
 
 
-	createCleanFrontmatter(frontmatter: extendedFrontMatterCache) {
+	createCleanFrontmatter(frontmatter: FrontMatterCache): extendedFrontMatterCache {
 		delete frontmatter.aliases; 
 		delete frontmatter.tags;
 		const {position} = frontmatter;
@@ -117,7 +117,7 @@ export default class Methods {
 			offset: position.end.offset,
 			end: position.end.line,
 		}
-		return frontmatter;
+		return <extendedFrontMatterCache>frontmatter;
 	}
 
 
