@@ -67,7 +67,7 @@ interface Metadata {
 	aliases?: string[];
 	links?: links[];
 	backlinks?: backlinks[];
-	frontmatter?: { [key: string]: any };
+	frontmatter?: { [key: string]: any; pos: position };
 }
 
 interface links {
@@ -84,7 +84,13 @@ interface backlinks {
 	cleanLink?: string;
 	displayText?: string;
 }
+
+interface position {
+	offset: number; // After that number of characters, the normal text starts; it is one line more than `end`
+	end: number; // the last line (the second ---); the first line is 0
+}
 ```
+
 
 The exported array contains a JSON array with `Metadata` objects, one object for each Markdown file in your vault.
 
