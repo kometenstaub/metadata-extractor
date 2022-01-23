@@ -18,20 +18,37 @@ Example:
 [
 	{
 		"tag": "css-themes",
+		"tagCount": 5,
 		"relativePaths": ["Advanced topics/Contributing to Obsidian.md"]
 	},
 	{
 		"tag": "insider-build",
+		"tagCount": 3,
 		"relativePaths": ["Advanced topics/Insider builds.md"]
 	},
 	{
 		"tag": "anothertag",
+		"tagCount": 2,
 		"relativePaths": [
 			"Plugins/Zettelkasten prefixer.md",
 			"Advanced topics/Using obsidian URI.md"
 		]
 	}
 ]
+```
+
+
+TypeScript interface:
+
+```ts
+/**
+ * JSON export: tagToFile[]
+ */
+interface tagToFile: {
+	tag: string;
+	tagCount: number;
+	relativePaths: string[] | string;
+};
 ```
 
 ### Markdown notes metadata export
