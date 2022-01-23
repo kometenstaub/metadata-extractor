@@ -2,6 +2,22 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [0.3.0](https://github.com/kometenstaub/metadata-extractor/compare/0.2.4...0.3.0) (2022-01-23)
+
+
+### Features
+
+* add natively supported types to frontmatter interface ([42dbb2e](https://github.com/kometenstaub/metadata-extractor/commit/42dbb2ee36ca0c0e717a7010bf62807014d935ca))
+* include frontmater in metadata ([f3ae5c3](https://github.com/kometenstaub/metadata-extractor/commit/f3ae5c3f29445796882f340d6ded5349d722c5a2))
+* remove duplicate props from frontmatter ([a79c85d](https://github.com/kometenstaub/metadata-extractor/commit/a79c85d56f6cd354877887d0951bb03945d9863a))
+* remove position, add pos ([463cc70](https://github.com/kometenstaub/metadata-extractor/commit/463cc70b7d95764400eb4cef1ff8ea35b808b4d7))
+
+
+### Bug Fixes
+
+* remove comma ([5a8123b](https://github.com/kometenstaub/metadata-extractor/commit/5a8123b67af68292aa52b3759c36aeb33afd6cdb))
+* typing ([dd02d52](https://github.com/kometenstaub/metadata-extractor/commit/dd02d521aff0d6491b6f14c8d5d19881598a0078))
+
 ### [0.2.4](https://github.com/kometenstaub/metadata-extractor/compare/0.2.3...0.2.4) (2021-11-21)
 
 
