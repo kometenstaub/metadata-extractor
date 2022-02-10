@@ -166,8 +166,3 @@ If you don't touch any settings, the files will be saved to the plugin folder. Y
 You can however also specify absolute paths for each file. They need to include the file name and extension in this case. The setting above won't have any effect then.
 
 You can also set the frequency for writing the JSON files in minutes (default setting is 0, so it is not enabled) and whether the JSON files should be written on launch (default setting is false).
-
-
-## Known limitations
-
-If you have two or more files with the same name, there could be problems because there is no logic implemented for them. Should you want to change that, please feel free to make a PR.
