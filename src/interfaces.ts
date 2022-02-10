@@ -1,5 +1,4 @@
-import type { MetadataCache, FrontMatterCache } from 'obsidian';
-import type Methods from './methods';
+import type {MetadataCache, FrontMatterCache, Pos} from 'obsidian';
 
 export interface BridgeSettings {
 	writeFilesOnLaunch: boolean;
@@ -24,7 +23,7 @@ export interface Metadata {
 	aliases?: string[];
 	links?: links[];
 	backlinks?: backlinks[];
-	frontmatter?: { [key: string]: any; pos: position };
+	frontmatter?: extendedFrontMatterCache;
 }
 
 /**
@@ -98,11 +97,7 @@ export interface extendedFrontMatterCache extends FrontMatterCache {
 	aliases?: string[];
 	cssclass?: string;
 	publish?: boolean;
-	pos: position;
+	position: Pos;
+	[key: string]: any;
 }
 
-interface position {
-	offset: number; // After that number of characters, the normal text starts; it is one line more than `end`
-	start: number; // it doesn't need to start at line 0, there can be blank lines before it
-	end: number; // the last line (the second ---)
-}
