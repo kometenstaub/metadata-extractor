@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.0.0](https://github.com/kometenstaub/metadata-extractor/compare/0.3.2...1.0.0) (2022-02-10)
+
+
+### Features
+
+* calculate links for duplicate file names ([09b6c67](https://github.com/kometenstaub/metadata-extractor/commit/09b6c6755f628f0e7d33d378af7422aada16709c))
+
+
+### Bug Fixes
+
+* get relative path before truncating it ([baae491](https://github.com/kometenstaub/metadata-extractor/commit/baae4915ac56e295f908e9290a0ff6bc02b47e62))
+
 ### [0.3.2](https://github.com/kometenstaub/metadata-extractor/compare/0.3.1...0.3.2) (2022-02-10)
 
 
