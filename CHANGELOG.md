@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.3.2](https://github.com/kometenstaub/metadata-extractor/compare/0.3.1...0.3.2) (2022-02-10)
+
+
+### Features
+
+* update pos with start ([a593cd0](https://github.com/kometenstaub/metadata-extractor/commit/a593cd08d5dce0e6364aa9d5f74d69f442e3c3a2))
+
+
+### Bug Fixes
+
+* implement frontmatter export correctly ([e1cc3f5](https://github.com/kometenstaub/metadata-extractor/commit/e1cc3f5519fb2a08785ccbee378ad27c46dee11a))
+
 ### [0.3.1](https://github.com/kometenstaub/metadata-extractor/compare/0.3.0...0.3.1) (2022-01-23)
 
 
