@@ -225,23 +225,6 @@ export default class Methods {
 		}
 		let metadataCache: Metadata[] = [];
 
-		const fileMap: linkToPath = {};
-		//@ts-expect-error, fileMap is a private API
-		for (const [key, value] of Object.entries(this.app.vault.fileMap)) {
-			const newKey: string = key;
-			let link = '';
-			if (newKey.slice(-3) === '.md') {
-				if (newKey.includes('/')) {
-					const split = newKey.split('/').last();
-					const isString = typeof split === 'string';
-					if (isString) {
-						link = split;
-					}
-				}
-				link = link.slice(0, -3).toLowerCase();
-				fileMap[link] = newKey;
-			}
-		}
 
 		for (const tfile of this.app.vault.getMarkdownFiles()) {
 			const displayName = tfile.basename;
@@ -299,7 +282,6 @@ export default class Methods {
 			const linkMetaObj = calculateLinks(
 				currentCache,
 				metaObj,
-				fileMap,
 				relativeFilePath,
 				displayName,
 				this.app,
@@ -386,7 +368,6 @@ export default class Methods {
 function calculateLinks(
 	currentCache: CachedMetadata,
 	metaObj: Metadata,
-	fileMap: linkToPath,
 	relativeFilePath: string,
 	displayName: string,
 	app: App,
