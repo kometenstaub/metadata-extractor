@@ -1,4 +1,4 @@
-import type {MetadataCache, FrontMatterCache, Pos} from 'obsidian';
+import type { MetadataCache, FrontMatterCache, Pos } from 'obsidian';
 
 export interface BridgeSettings {
 	writeFilesOnLaunch: boolean;
@@ -98,4 +98,3 @@ export interface extendedFrontMatterCache extends FrontMatterCache {
 	position: Pos;
 	[key: string]: any;
 }
-

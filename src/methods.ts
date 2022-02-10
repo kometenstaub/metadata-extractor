@@ -5,7 +5,8 @@ import {
 	EmbedCache,
 	FileSystemAdapter,
 	FrontMatterCache,
-	getAllTags, getLinkpath,
+	getAllTags,
+	getLinkpath,
 	LinkCache,
 	Notice,
 	parseFrontMatterAliases,
@@ -109,10 +110,10 @@ export default class Methods {
 	createCleanFrontmatter(
 		frontmatter: FrontMatterCache
 	): extendedFrontMatterCache {
-		const newFrontmatter = Object.assign({},frontmatter);
+		const newFrontmatter = Object.assign({}, frontmatter);
 		delete newFrontmatter.aliases;
 		delete newFrontmatter.tags;
-		return (newFrontmatter as extendedFrontMatterCache);
+		return newFrontmatter as extendedFrontMatterCache;
 	}
 
 	/**
@@ -224,7 +225,6 @@ export default class Methods {
 			path = this.getAbsolutePath(fileName);
 		}
 		let metadataCache: Metadata[] = [];
-
 
 		for (const tfile of this.app.vault.getMarkdownFiles()) {
 			const displayName = tfile.basename;
@@ -371,7 +371,7 @@ function calculateLinks(
 	relativeFilePath: string,
 	displayName: string,
 	app: App,
-	tfile: TFile,
+	tfile: TFile
 ): Metadata {
 	const currentLinks: links[] = [];
 	let bothLinks: LinkCache[] & EmbedCache[] = [];
@@ -387,10 +387,13 @@ function calculateLinks(
 		if (currentCache.embeds) {
 			onlyEmbeds = currentCache.embeds.filter((embed) => {
 				const link = embed.link;
-				const rawLink = getLinkpath(link)
-				const dest = app.metadataCache.getFirstLinkpathDest(rawLink, tfile.path)
+				const rawLink = getLinkpath(link);
+				const dest = app.metadataCache.getFirstLinkpathDest(
+					rawLink,
+					tfile.path
+				);
 				if (dest !== null) {
-					return embed
+					return embed;
 				}
 			});
 		}
@@ -409,11 +412,14 @@ function calculateLinks(
 				aliasText = links.displayText;
 			}
 			// calculate relative path before truncating it
-			const relPath = app.metadataCache.getFirstLinkpathDest(getLinkpath(fullLink), tfile.path)
+			const relPath = app.metadataCache.getFirstLinkpathDest(
+				getLinkpath(fullLink),
+				tfile.path
+			);
 			if (relPath !== null) {
 				// only include md links
 				if (relPath.path.slice(-3).toLowerCase() !== '.md') {
-					continue
+					continue;
 				}
 			}
 
@@ -437,7 +443,7 @@ function calculateLinks(
 			// heading/block ref and maybe an alias, but not to the same file
 			else if (fullLink.includes('#') && fullLink.charAt(0) !== '#') {
 				const alias = aliasText;
-				const cleanLink = getLinkpath(fullLink)
+				const cleanLink = getLinkpath(fullLink);
 				currentLinkObject.link = fullLink;
 				currentLinkObject.cleanLink = cleanLink;
 				// it has an alias
