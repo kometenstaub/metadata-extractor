@@ -88,8 +88,6 @@ interface backlinks {
 }
 
 interface extendedFrontMatterCache {
-	tags?: string[];
-	aliases?: string[];
 	cssclass?: string;
 	publish?: boolean;
 	position: Pos; // Pos is from the Obsidian API
