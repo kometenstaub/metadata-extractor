@@ -44,7 +44,7 @@ TypeScript interface:
 /**
  * JSON export: tagToFile[]
  */
-interface tagToFile: {
+interface tagToFile {
 	tag: string;
 	tagCount: number;
 	relativePaths: string[] | string;
@@ -59,6 +59,8 @@ The second one writes a JSON file to disk with metadata for each file name. This
 /**
  * JSON export: Metadata[]
  */
+import {extendedFrontMatterCache} from "./interfaces";
+
 interface Metadata {
 	fileName: string;
 	relativePath: string;
@@ -67,7 +69,7 @@ interface Metadata {
 	aliases?: string[];
 	links?: links[];
 	backlinks?: backlinks[];
-	frontmatter?: { [key: string]: any; pos: position };
+	frontmatter?: extendedFrontMatterCache;
 }
 
 interface links {
@@ -85,9 +87,13 @@ interface backlinks {
 	displayText?: string;
 }
 
-interface position {
-	offset: number; // After that number of characters, the normal text starts; it is one line more than `end`
-	end: number; // the last line (the second ---); the first line is 0
+interface extendedFrontMatterCache {
+	tags?: string[];
+	aliases?: string[];
+	cssclass?: string;
+	publish?: boolean;
+	position: Pos; // Pos is from the Obsidian API
+	[key: string]: any;
 }
 ```
 
