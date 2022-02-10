@@ -410,6 +410,13 @@ function calculateLinks(
 			}
 			// calculate relative path before truncating it
 			const relPath = app.metadataCache.getFirstLinkpathDest(getLinkpath(fullLink), tfile.path)
+			if (relPath !== null) {
+				// only include md links
+				if (relPath.path.slice(-3).toLowerCase() !== '.md') {
+					continue
+				}
+			}
+
 			// account for relative links
 			if (fullLink.includes('/')) {
 				//@ts-expect-error, it only takes the last element if it includes a slash
