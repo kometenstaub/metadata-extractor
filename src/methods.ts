@@ -5,7 +5,7 @@ import {
 	EmbedCache,
 	FileSystemAdapter,
 	FrontMatterCache,
-	getAllTags,
+	getAllTags, getLinkpath,
 	LinkCache,
 	Notice,
 	parseFrontMatterAliases,
@@ -301,7 +301,9 @@ export default class Methods {
 				metaObj,
 				fileMap,
 				relativeFilePath,
-				displayName
+				displayName,
+				this.app,
+				tfile
 			);
 
 			Object.assign(metaObj, linkMetaObj);
@@ -386,7 +388,9 @@ function calculateLinks(
 	metaObj: Metadata,
 	fileMap: linkToPath,
 	relativeFilePath: string,
-	displayName: string
+	displayName: string,
+	app: App,
+	tfile: TFile,
 ): Metadata {
 	const currentLinks: links[] = [];
 	let bothLinks: LinkCache[] & EmbedCache[] = [];
@@ -401,21 +405,11 @@ function calculateLinks(
 		}
 		if (currentCache.embeds) {
 			onlyEmbeds = currentCache.embeds.filter((embed) => {
-				let link = embed.link;
-				if (link.includes('/')) {
-					//@ts-expect-error, if it has a slash, it will have a last part
-					link = link.split('/').last();
-					// remove heading/block ref from link
-					if (link.includes('#')) {
-						link = link.replace(/#.+/g, '');
-					}
-				}
-				if (link.includes('#')) {
-					link = link.replace(/#.+/g, '');
-				}
-				// only return markdown files, because only they are in the fileMap
-				if (fileMap[link.toLowerCase()]) {
-					return embed;
+				const link = embed.link;
+				const rawLink = getLinkpath(link)
+				const dest = app.metadataCache.getFirstLinkpathDest(rawLink, tfile.path)
+				if (dest !== null) {
+					return embed
 				}
 			});
 		}
