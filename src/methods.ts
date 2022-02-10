@@ -432,25 +432,23 @@ function calculateLinks(
 				//@ts-expect-error, it only takes the last element if it includes a slash
 				fullLink = fullLink.split('/').last();
 			}
-			let path = '';
+			const relPath = app.metadataCache.getFirstLinkpathDest(getLinkpath(fullLink), tfile.path)
 
 			if (!fullLink.includes('#')) {
-				path = fileMap[fullLink.toLowerCase()];
 				currentLinkObject.link = fullLink;
-				// account for uncreated files
-				if (path) {
-					currentLinkObject.relativePath = path;
-				}
 				// account for alias
 				if (aliasText !== fullLink) {
 					currentLinkObject.displayText = aliasText;
+				}
+				// account for uncreated files
+				if (relPath !== null) {
+					currentLinkObject.relativePath = relPath.path;
 				}
 			}
 			// heading/block ref and maybe an alias, but not to the same file
 			else if (fullLink.includes('#') && fullLink.charAt(0) !== '#') {
 				const alias = aliasText;
-				const cleanLink = fullLink.replace(/#.+/g, '');
-				path = fileMap[cleanLink.toLowerCase()];
+				const cleanLink = getLinkpath(fullLink)
 				currentLinkObject.link = fullLink;
 				currentLinkObject.cleanLink = cleanLink;
 				// it has an alias
@@ -458,15 +456,14 @@ function calculateLinks(
 					currentLinkObject.displayText = alias;
 				}
 				// account for uncreated files
-				if (path) {
-					currentLinkObject.relativePath = path;
+				if (relPath !== null) {
+					currentLinkObject.relativePath = relPath.path;
 				}
 			}
 			// heading/block ref to same file and maybe alias
 			else if (fullLink.charAt(0) === '#') {
-				path = relativeFilePath;
 				currentLinkObject.link = fullLink;
-				currentLinkObject.relativePath = path;
+				currentLinkObject.relativePath = relativeFilePath;
 				currentLinkObject.cleanLink = displayName;
 				// account for alias
 				if (fullLink !== aliasText) {
