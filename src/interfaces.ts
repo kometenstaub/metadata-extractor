@@ -93,8 +93,6 @@ export interface extendedMetadataCache extends MetadataCache {
 }
 
 export interface extendedFrontMatterCache extends FrontMatterCache {
-	tags?: string[];
-	aliases?: string[];
 	cssclass?: string;
 	publish?: boolean;
 	position: Pos;
