@@ -408,12 +408,13 @@ function calculateLinks(
 			if (typeof links.displayText !== 'undefined') {
 				aliasText = links.displayText;
 			}
+			// calculate relative path before truncating it
+			const relPath = app.metadataCache.getFirstLinkpathDest(getLinkpath(fullLink), tfile.path)
 			// account for relative links
 			if (fullLink.includes('/')) {
 				//@ts-expect-error, it only takes the last element if it includes a slash
 				fullLink = fullLink.split('/').last();
 			}
-			const relPath = app.metadataCache.getFirstLinkpathDest(getLinkpath(fullLink), tfile.path)
 
 			if (!fullLink.includes('#')) {
 				currentLinkObject.link = fullLink;
