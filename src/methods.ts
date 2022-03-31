@@ -21,7 +21,6 @@ import type {
 	file,
 	folder,
 	links,
-	linkToPath,
 	Metadata,
 	tagCache,
 	tagNumber,
@@ -80,7 +79,7 @@ export default class Methods {
 	getUniqueTags(currentCache: CachedMetadata): string[] {
 		let currentTags: string[] = [];
 		const tags = getAllTags(currentCache);
-		if (tags !== null) {
+		if (tags) {
 			currentTags = tags;
 		}
 		currentTags = currentTags.map((tag) => tag.slice(1).toLowerCase());
@@ -111,8 +110,12 @@ export default class Methods {
 		frontmatter: FrontMatterCache
 	): extendedFrontMatterCache {
 		const newFrontmatter = Object.assign({}, frontmatter);
-		delete newFrontmatter.aliases;
-		delete newFrontmatter.tags;
+		if (newFrontmatter.aliases) {
+			delete newFrontmatter.aliases;
+		}
+		if (newFrontmatter.tags) {
+			delete newFrontmatter.tags;
+		}
 		return newFrontmatter as extendedFrontMatterCache;
 	}
 
@@ -147,7 +150,7 @@ export default class Methods {
 		for (const tfile of this.app.vault.getMarkdownFiles()) {
 			let currentCache!: CachedMetadata;
 			const cache = this.app.metadataCache.getFileCache(tfile);
-			if (cache !== null) {
+			if (cache) {
 				currentCache = cache;
 			}
 			const relativePath: string = tfile.path;
@@ -231,11 +234,13 @@ export default class Methods {
 			const relativeFilePath: string = tfile.path;
 			let currentCache!: CachedMetadata;
 			const cache = this.app.metadataCache.getFileCache(tfile);
-			if (cache !== null) {
+			if (cache) {
 				currentCache = cache;
 			} else {
-				new Notice('Something with accessing the cache went wrong!');
-				return;
+				if (this.plugin.settings.consoleLog) {
+					console.log(`No cache for file: ${tfile.path}`);
+				}
+				continue;
 			}
 			let currentAliases: string[];
 			const currentHeadings: { heading: string; level: number }[] = [];
@@ -247,7 +252,7 @@ export default class Methods {
 			metaObj.relativePath = relativeFilePath;
 
 			const currentTags = this.getUniqueTags(currentCache);
-			if (currentTags !== null) {
+			if (currentTags) {
 				if (currentTags.length > 0) {
 					metaObj.tags = currentTags;
 				}
@@ -262,7 +267,7 @@ export default class Methods {
 				currentAliases = parseFrontMatterAliases(
 					currentCache.frontmatter
 				);
-				if (currentAliases !== null) {
+				if (currentAliases) {
 					if (currentAliases.length > 0) {
 						metaObj.aliases = currentAliases;
 					}
@@ -392,7 +397,7 @@ function calculateLinks(
 					rawLink,
 					tfile.path
 				);
-				if (dest !== null) {
+				if (dest) {
 					return embed;
 				}
 			});
@@ -416,7 +421,7 @@ function calculateLinks(
 				getLinkpath(fullLink),
 				tfile.path
 			);
-			if (relPath !== null) {
+			if (relPath) {
 				// only include md links
 				if (relPath.path.slice(-3).toLowerCase() !== '.md') {
 					continue;
@@ -436,7 +441,7 @@ function calculateLinks(
 					currentLinkObject.displayText = aliasText;
 				}
 				// account for uncreated files
-				if (relPath !== null) {
+				if (relPath) {
 					currentLinkObject.relativePath = relPath.path;
 				}
 			}
@@ -451,7 +456,7 @@ function calculateLinks(
 					currentLinkObject.displayText = alias;
 				}
 				// account for uncreated files
-				if (relPath !== null) {
+				if (relPath) {
 					currentLinkObject.relativePath = relPath.path;
 				}
 			}
