@@ -64,6 +64,7 @@ const copyManifest = {
 		await esbuild.build({
 			entryPoints: ['src/main.ts'],
 			bundle: true,
+            target: "es2018",
 			watch: !isProd,
 			platform: 'node',
 			external: ['obsidian'],

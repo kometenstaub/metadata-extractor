@@ -4,7 +4,7 @@
     "inlineSourceMap": true,
     "inlineSources": true,
     "module": "ESNext",
-    "target": "es6",
+    "target": "es2018",
     "allowJs": true,
     "noImplicitAny": true,
     "moduleResolution": "node",
@@ -14,10 +14,8 @@
     "strict": true,
     "lib": [
       "dom",
-      "es5",
       "scripthost",
-      "es6",
-      "es7",
+      "es2018",
       "WebWorker"
     ]
   },
