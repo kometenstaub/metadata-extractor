@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.0.2](https://github.com/kometenstaub/metadata-extractor/compare/1.0.0...1.0.2) (2022-07-13)
+
+
+### Bug Fixes
+
+* handle undefined file cache ([678700d](https://github.com/kometenstaub/metadata-extractor/commit/678700dadfeab5a4c4f8c8b80db97d8663e17cc2)), closes [#17](https://github.com/kometenstaub/metadata-extractor/issues/17)
+
 ### [1.0.1](https://github.com/kometenstaub/metadata-extractor/compare/1.0.0...1.0.1) (2022-03-31)
 
 
