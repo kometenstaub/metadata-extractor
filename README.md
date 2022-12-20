@@ -4,7 +4,7 @@ This plugin allows you to write Obsidian vault metadata, which is only accessibl
 
 See [this guide](https://github.com/kometenstaub/metadata-extractor/blob/main/docs/Guide%20-%20Controlling%20Obsidian%20via%20Third-Party-App.md) for more information on Controlling Obsidian via a Third-party App.
 
-## There are three JSON-exports
+## There are four JSON-exports
 
 They can be executed on a schedule.
 
@@ -155,6 +155,26 @@ interface file {
 
 The `name` is the file name including the extension, `basename` excludes it. `relativePath` is the path from the vault root.
 
+
+### Canvas metadata export
+
+The fourth export writes a JSON file containing `name`, `basename` and `relativePath` of canvas files as object in an array.
+
+
+```json
+[
+  {
+    "name": "my-canvas.canvas",
+    "basename": "my-canvas",
+    "relativePath": "Inbox/my-canvas.canvas"
+  },
+  {
+    "name": "visualisation.canvas",
+    "basename": "visualisation",
+    "relativePath": "visualisation.canvas"
+  }
+]
+```
 
 
 ## Configuration
