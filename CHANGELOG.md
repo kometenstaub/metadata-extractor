@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.1.0](https://github.com/kometenstaub/metadata-extractor/compare/1.0.2...1.1.0) (2022-12-20)
+
+
+### Features
+
+* add canvas export ([2709211](https://github.com/kometenstaub/metadata-extractor/commit/2709211a75199deff92ab671d9e3ddd05769a692))
+
+
+### Bug Fixes
+
+* frequency update for canvas ([b96bca2](https://github.com/kometenstaub/metadata-extractor/commit/b96bca2853d40400c59a0e6f21bcba6ae585cc36))
+
 ### [1.0.2](https://github.com/kometenstaub/metadata-extractor/compare/1.0.0...1.0.2) (2022-07-13)
 
 
