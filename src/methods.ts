@@ -106,6 +106,34 @@ export default class Methods {
 		}
 	}
 
+	writeCanvases(fileName: string) {
+		let path = this.plugin.settings.canvasPath;
+		// only change path not to be the plugin folder if the user entered a custom path
+		if (!this.plugin.settings.canvasPath) {
+			path = this.getAbsolutePath(fileName);
+		}
+		const allFiles = this.app.vault.getAllLoadedFiles();
+		const files: file[] = [];
+		for (const TAFile of allFiles) {
+			if (TAFile instanceof TFile) {
+				if (TAFile.extension === 'canvas') {
+					files.push({
+						name: TAFile.name,
+						basename: TAFile.basename,
+						relativePath: TAFile.path,
+					});
+				}
+			}
+		}
+		writeFileSync(path, JSON.stringify(files, null, 2));
+
+		if (this.plugin.settings.consoleLog) {
+			console.log(
+				'Metadata Extractor plugin: wrote the canvas JSON file'
+			);
+		}
+	}
+
 	createCleanFrontmatter(
 		frontmatter: FrontMatterCache
 	): extendedFrontMatterCache {
@@ -325,7 +353,8 @@ export default class Methods {
 	setWritingSchedule(
 		tagFileName: string,
 		metadataFileName: string,
-		allExceptMdFileName: string
+		allExceptMdFileName: string,
+		canvasFileName: string
 	) {
 		if (this.plugin.settings.writingFrequency !== '0') {
 			const intervalInMinutes = parseInt(
@@ -362,10 +391,21 @@ export default class Methods {
 			);
 			// API function to cancel interval when plugin unloads
 			this.plugin.registerInterval(this.plugin.intervalId3);
+
+			// schedule for canvas to JSON
+			window.clearInterval(this.plugin.intervalId4);
+			this.plugin.intervalId4 = undefined;
+			this.plugin.intervalId4 = window.setInterval(
+				() => this.writeCanvases(canvasFileName),
+				milliseconds
+			);
+			// API function to cancel interval when plugin unloads
+			this.plugin.registerInterval(this.plugin.intervalId4);
 		} else if (this.plugin.settings.writingFrequency === '0') {
 			window.clearInterval(this.plugin.intervalId1);
 			window.clearInterval(this.plugin.intervalId2);
 			window.clearInterval(this.plugin.intervalId3);
+			window.clearInterval(this.plugin.intervalId4);
 		}
 	}
 }

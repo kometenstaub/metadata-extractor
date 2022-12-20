@@ -10,6 +10,8 @@ export interface BridgeSettings {
 	allExceptMdFile: string;
 	allExceptMdPath: string;
 	consoleLog: boolean;
+	canvasFile: string;
+	canvasPath: string;
 }
 
 /**

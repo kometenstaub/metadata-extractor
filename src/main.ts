@@ -9,6 +9,7 @@ export default class BridgePlugin extends Plugin {
 	intervalId1: number | undefined = undefined;
 	intervalId2: number | undefined = undefined;
 	intervalId3: number | undefined = undefined;
+	intervalId4: number | undefined = undefined;
 	methods = new Methods(this, this.app);
 
 	async onload() {
@@ -40,6 +41,14 @@ export default class BridgePlugin extends Plugin {
 			},
 		});
 
+		this.addCommand({
+			id: 'write-canvas-json',
+			name: 'Write JSON file with all canvases to disk.',
+			callback: () => {
+				this.methods.writeCanvases(this.settings.canvasFile);
+			},
+		});
+
 		this.addSettingTab(new BridgeSettingTab(this.app, this));
 
 		if (this.settings.writeFilesOnLaunch) {
@@ -47,13 +56,15 @@ export default class BridgePlugin extends Plugin {
 				this.methods.writeTagsToJSON(this.settings.tagFile);
 				this.methods.writeCacheToJSON(this.settings.metadataFile);
 				this.methods.writeAllExceptMd(this.settings.allExceptMdFile);
+				this.methods.writeCanvases(this.settings.canvasFile);
 			});
 		}
 
 		this.methods.setWritingSchedule(
 			this.settings.tagFile,
 			this.settings.metadataFile,
-			this.settings.allExceptMdFile
+			this.settings.allExceptMdFile,
+			this.settings.canvasFile
 		);
 	}
 

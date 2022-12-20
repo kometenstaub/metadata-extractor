@@ -6,9 +6,11 @@ export const DEFAULT_SETTINGS: BridgeSettings = {
 	tagPath: '',
 	metadataPath: '',
 	allExceptMdPath: '',
+	canvasPath: '',
 	tagFile: 'tags.json',
 	metadataFile: 'metadata.json',
 	allExceptMdFile: 'allExceptMd.json',
+	canvasFile: 'canvas.json',
 	writingFrequency: '0',
 	writeFilesOnLaunch: false,
 	consoleLog: false,
@@ -88,6 +90,38 @@ export class BridgeSettingTab extends PluginSettingTab {
 					.setValue(this.plugin.settings.metadataFile)
 					.onChange(async (value) => {
 						this.plugin.settings.metadataFile = value;
+						await this.plugin.saveSettings();
+					})
+			);
+
+		new Setting(containerEl)
+			.setName('File-write path for canvases')
+			.setDesc(
+				"Where the canvas JSON file will be saved. Requires the file name with extension. \
+			If this is filled in, the setting below won't have any effect."
+			)
+			.addText((text) =>
+				text
+					.setPlaceholder('/home/user/Downloads/canvas.json')
+					.setValue(this.plugin.settings.canvasPath)
+					.onChange(async (value) => {
+						this.plugin.settings.canvasPath = value;
+						await this.plugin.saveSettings();
+					})
+			);
+
+		new Setting(containerEl)
+			.setName('File name of canvas JSON')
+			.setDesc(
+				'Requires the .json extension; leave empty if setting above was changed. \
+			Only change this setting if you want to change the name of the saved json in the plugin folder.'
+			)
+			.addText((text) =>
+				text
+					.setPlaceholder('canvas.json')
+					.setValue(this.plugin.settings.canvasFile)
+					.onChange(async (value) => {
+						this.plugin.settings.canvasFile = value;
 						await this.plugin.saveSettings();
 					})
 			);
