@@ -177,7 +177,8 @@ export class BridgeSettingTab extends PluginSettingTab {
 						this.plugin.methods.setWritingSchedule(
 							this.plugin.settings.tagFile,
 							this.plugin.settings.metadataFile,
-							this.plugin.settings.allExceptMdFile
+							this.plugin.settings.allExceptMdFile,
+							this.plugin.settings.canvasFile
 						);
 					})
 			);
